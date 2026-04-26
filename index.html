@@ -1,288 +1,511 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>German Reader — CEFR Analyzer</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <script src="https://unpkg.com/lucide@latest"></script>
-    <style>
-        body { font-family: 'Inter', sans-serif; background-color: #fafaf9; color: #1c1917; }
-        .cefr-a1 { color: #ef4444; } .cefr-bg-a1 { background-color: #ef4444; } .cefr-border-a1 { border-color: #ef4444; }
-        .cefr-a2 { color: #f59e0b; } .cefr-bg-a2 { background-color: #f59e0b; } .cefr-border-a2 { border-color: #f59e0b; }
-        .cefr-b1 { color: #10b981; } .cefr-bg-b1 { background-color: #10b981; } .cefr-border-b1 { border-color: #10b981; }
-        .cefr-b2 { color: #3b82f6; } .cefr-bg-b2 { background-color: #3b82f6; } .cefr-border-b2 { border-color: #3b82f6; }
-        .cefr-c1 { color: #8b5cf6; } .cefr-bg-c1 { background-color: #8b5cf6; } .cefr-border-c1 { border-color: #8b5cf6; }
-        .cefr-unknown { color: #9ca3af; } .cefr-bg-unknown { background-color: #9ca3af; } .cefr-border-unknown { border-color: #9ca3af; }
-        
-        .word-hover:hover { background-color: rgba(28, 25, 23, 0.05); }
-        .tooltip { display: none; position: fixed; z-index: 50; pointer-events: none; }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DEUTSCH MIT GAL</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      fontFamily: { orbitron:['Orbitron','sans-serif'], mono:['Space Mono','monospace'], sans:['Inter','sans-serif'] },
+      colors: {
+        n: { bg:'#e8e2d8', card:'#f5f1ea', border:'#d4cec4', text:'#2c2c2c', dim:'#8a8278',
+             cyan:'#3a7d6e', pink:'#c4606e', green:'#5a9a72', amber:'#c49332', purple:'#7e62a8',
+             red:'#c25050', blue:'#4e82a4' }
+      }
+    }
+  }
+}
+</script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Orbitron:wght@400;700;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/lucide@latest"></script>
+<style>
+body { background:#e8e2d8; color:#2c2c2c; }
+.cefr-a1{color:#c25050}.cefr-bg-a1{background:#c25050}.cefr-border-a1{border-color:#c25050}
+.cefr-a2{color:#c49332}.cefr-bg-a2{background:#c49332}.cefr-border-a2{border-color:#c49332}
+.cefr-b1{color:#5a9a72}.cefr-bg-b1{background:#5a9a72}.cefr-border-b1{border-color:#5a9a72}
+.cefr-b2{color:#4e82a4}.cefr-bg-b2{background:#4e82a4}.cefr-border-b2{border-color:#4e82a4}
+.cefr-c1{color:#7e62a8}.cefr-bg-c1{background:#7e62a8}.cefr-border-c1{border-color:#7e62a8}
+.cefr-unknown{color:#8a8278}.cefr-bg-unknown{background:#8a8278}.cefr-border-unknown{border-color:#8a8278}
+.glow-cyan{box-shadow:0 2px 8px rgba(58,125,110,0.12)}
+.glow-text{text-shadow:none}
+.word-hover:hover{background:rgba(58,125,110,0.1)}
+.r-tooltip{display:none;position:fixed;z-index:50;pointer-events:none}
+::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:#e8e2d8}::-webkit-scrollbar-thumb{background:#c4bdb2;border-radius:3px}
+input,textarea,select{background:#fff!important;color:#2c2c2c!important;border-color:#d4cec4!important}
+input::placeholder,textarea::placeholder{color:#8a8278!important}
+input:focus,textarea:focus,select:focus{outline:none;border-color:#3a7d6e!important;box-shadow:0 0 0 2px rgba(58,125,110,0.15)}
+.s-word.active{background:rgba(58,125,110,0.2);color:#2c2c2c;border-radius:2px}
+@keyframes xpPulse{0%,100%{box-shadow:0 1px 4px rgba(58,125,110,0.15)}50%{box-shadow:0 1px 8px rgba(58,125,110,0.25)}}
+.xp-bar-glow{animation:xpPulse 2s ease-in-out infinite}
+</style>
 </head>
-<body class="min-h-screen py-10 px-4 sm:px-6">
+<body class="min-h-screen py-8 px-4 sm:px-6 font-sans">
+<div class="max-w-4xl mx-auto space-y-6">
 
-    <div class="max-w-4xl mx-auto space-y-8">
-        <!-- Header -->
-        <header class="flex flex-col gap-2">
-            <div class="flex items-center gap-3">
-                <div class="bg-[#1c1917] p-2.5 rounded-xl text-white shadow-lg">
-                    <i data-lucide="languages"></i>
-                </div>
-                <h1 class="text-3xl font-bold tracking-tight text-[#1c1917]">German Reader</h1>
-            </div>
-            <p class="text-[#78716c] text-sm">AI-powered CEFR level highlighter and grammar analyzer.</p>
-        </header>
+<!-- HEADER -->
+<header class="text-center space-y-3 pt-4">
+  <h1 class="font-orbitron text-4xl sm:text-5xl font-black tracking-[0.25em] text-n-cyan">DEUTSCH</h1>
+  <p class="text-n-dim text-[10px] font-mono tracking-[0.3em] uppercase">Level up your German</p>
+  <div class="flex items-center justify-center gap-3 pt-2">
+    <span id="xpLevel" class="font-mono text-[10px] text-n-cyan font-bold tracking-wider">LVL 1</span>
+    <div class="w-48 h-1.5 bg-n-border rounded-full overflow-hidden xp-bar-glow">
+      <div id="xpBar" class="h-full bg-gradient-to-r from-n-cyan to-n-green rounded-full transition-all duration-700" style="width:0%"></div>
+    </div>
+    <span id="xpText" class="font-mono text-[10px] text-n-dim">0 / 50 XP</span>
+  </div>
+</header>
 
-        <!-- Config -->
-        <details class="bg-white border border-[#e7e5e4] rounded-xl p-4 transition-all">
-            <summary class="text-xs font-bold text-[#78716c] uppercase cursor-pointer flex items-center gap-2">
-                <i data-lucide="settings-2" size="14"></i> API Configuration
-            </summary>
-            <div class="mt-4 space-y-2">
-                <label class="block text-sm font-medium">Gemini API Key</label>
-                <input type="password" id="apiKey" class="w-full p-2 border border-[#e7e5e4] rounded-lg text-sm" placeholder="AIza...">
-                <p class="text-[10px] text-[#a4a09c]">Stored locally in your browser. Get one at <a href="https://aistudio.google.com/apikey" target="_blank" class="underline">aistudio.google.com</a></p>
-            </div>
-        </details>
+<!-- API KEY -->
+<details class="bg-n-card border border-n-border rounded-xl p-4">
+  <summary class="text-[10px] font-mono font-bold text-n-dim uppercase cursor-pointer tracking-wider flex items-center gap-2">
+    <i data-lucide="settings-2" size="12"></i> API KEY
+  </summary>
+  <div class="mt-3 space-y-2">
+    <input type="password" id="apiKey" class="w-full p-2 rounded-lg text-sm border" placeholder="AIza...">
+    <p class="text-[10px] text-n-dim">Stored locally. Free at <a href="https://aistudio.google.com/apikey" target="_blank" class="text-n-cyan underline">aistudio.google.com</a></p>
+  </div>
+</details>
 
-        <!-- Input Area -->
-        <section class="bg-white rounded-2xl border border-[#e7e5e4] shadow-sm overflow-hidden focus-within:ring-2 focus-within:ring-[#1c1917]/5">
-            <div class="p-1 border-b border-[#e7e5e4] bg-[#fafaf9] flex items-center justify-between px-4 py-2">
-                <div class="flex items-center gap-2 text-xs font-semibold text-[#78716c] uppercase tracking-wider">
-                    <i data-lucide="book-open" size="14"></i> <span>Input</span>
-                </div>
-                <div class="flex gap-2">
-                    <span class="text-[10px] cefr-a1 font-bold">A1</span>
-                    <span class="text-[10px] cefr-a2 font-bold">A2</span>
-                    <span class="text-[10px] cefr-b1 font-bold">B1</span>
-                    <span class="text-[10px] cefr-b2 font-bold">B2</span>
-                    <span class="text-[10px] cefr-c1 font-bold">C1</span>
-                </div>
-            </div>
-            <textarea id="inputText" class="w-full min-h-[160px] p-6 text-lg bg-transparent border-none focus:outline-none resize-none leading-relaxed" placeholder="Paste German text here..."></textarea>
-            <div class="p-4 bg-[#fafaf9] border-t border-[#e7e5e4] flex items-center justify-between">
-                <div id="status" class="text-[11px] text-[#a4a09c]">Ready to analyze</div>
-                <button id="analyzeBtn" class="flex items-center gap-2 bg-[#1c1917] text-white px-5 py-2.5 rounded-lg text-sm font-semibold hover:bg-black transition-all shadow-md">
-                    <i data-lucide="sparkles" size="18"></i> Analyze Text
-                </button>
-            </div>
-        </section>
+<!-- TABS -->
+<nav class="flex border-b border-n-border">
+  <button class="main-tab font-mono text-xs tracking-wider uppercase px-5 py-3 border-b-2 border-n-cyan text-n-cyan transition-all" data-tab="reader">📖 Reader</button>
+  <button class="main-tab font-mono text-xs tracking-wider uppercase px-5 py-3 border-b-2 border-transparent text-n-dim hover:text-n-text transition-all" data-tab="summarize">📝 Zusammenfassen</button>
+  <button class="main-tab font-mono text-xs tracking-wider uppercase px-5 py-3 border-b-2 border-transparent text-n-dim hover:text-n-text transition-all" data-tab="diktat">🎧 Diktat</button>
+</nav>
 
-        <!-- Results Container -->
-        <div id="results" class="hidden space-y-8">
-            <!-- Annotated Text -->
-            <div class="bg-white rounded-2xl border border-[#e7e5e4] shadow-sm overflow-hidden">
-                <div class="px-6 py-4 border-b border-[#e7e5e4] flex items-center justify-between">
-                    <div class="flex items-center gap-2">
-                        <div class="w-1.5 h-6 bg-[#1c1917] rounded-full"></div>
-                        <h2 class="font-bold text-[#1c1917]">Annotated Text</h2>
-                    </div>
-                    <div id="overallBadge" class="flex items-center gap-2 px-3 py-1 bg-[#1c1917] rounded-full text-white">
-                        <i data-lucide="trophy" size="14"></i>
-                        <span id="overallGrade" class="text-xs font-bold uppercase tracking-wider">Overall Grade: -</span>
-                    </div>
-                </div>
-                <div id="annotatedText" class="p-8 leading-[2.2] text-xl font-medium text-[#44403c]"></div>
-            </div>
+<!-- ========== TAB 1: READER ========== -->
+<div id="tab-reader" class="tab-content space-y-6">
+  <section class="bg-n-card rounded-2xl border border-n-border overflow-hidden">
+    <div class="border-b border-n-border flex items-center justify-between px-5 py-3">
+      <span class="text-[10px] font-mono font-bold text-n-dim uppercase tracking-wider">Input</span>
+      <div class="flex gap-2">
+        <span class="text-[10px] cefr-a1 font-bold">A1</span>
+        <span class="text-[10px] cefr-a2 font-bold">A2</span>
+        <span class="text-[10px] cefr-b1 font-bold">B1</span>
+        <span class="text-[10px] cefr-b2 font-bold">B2</span>
+        <span class="text-[10px] cefr-c1 font-bold">C1</span>
+      </div>
+    </div>
+    <textarea id="r-input" class="w-full min-h-[150px] p-5 text-base bg-transparent border-none resize-none leading-relaxed" placeholder="Paste German text here..."></textarea>
+    <div class="px-5 py-3 border-t border-n-border flex items-center justify-between">
+      <span id="r-status" class="text-[10px] font-mono text-n-dim">Ready</span>
+      <button id="r-analyzeBtn" class="flex items-center gap-2 bg-n-cyan text-white px-5 py-2 rounded-lg text-sm font-bold hover:shadow-md transition-all">
+        <i data-lucide="sparkles" size="16"></i> Analyze
+      </button>
+    </div>
+  </section>
+  <div id="r-results" class="hidden space-y-6">
+    <div class="bg-n-card rounded-2xl border border-n-border overflow-hidden">
+      <div class="px-5 py-3 border-b border-n-border flex items-center justify-between">
+        <h2 class="font-bold text-sm">Annotated Text</h2>
+        <span id="r-grade" class="font-mono text-[10px] font-bold text-n-cyan bg-n-cyan/10 px-3 py-1 rounded-full tracking-wider">GRADE: -</span>
+      </div>
+      <div id="r-annotated" class="p-6 leading-[2.2] text-lg font-medium"></div>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div class="space-y-3">
+        <h3 class="font-mono text-[10px] font-bold text-n-dim uppercase tracking-wider px-1">Grammar</h3>
+        <div id="r-grammar" class="space-y-2"></div>
+      </div>
+      <div class="space-y-3">
+        <h3 class="font-mono text-[10px] font-bold text-n-dim uppercase tracking-wider px-1">Translation</h3>
+        <div id="r-translation" class="p-5 bg-n-card rounded-xl border border-n-border italic text-n-text/70 text-sm leading-relaxed min-h-[80px]"></div>
+      </div>
+    </div>
+    <div class="space-y-3">
+      <h3 class="font-mono text-[10px] font-bold text-n-dim uppercase tracking-wider px-1">Sound More Native</h3>
+      <div class="bg-n-card rounded-xl border border-n-cyan/30 p-5 glow-cyan">
+        <div id="r-suggestions" class="grid grid-cols-1 md:grid-cols-2 gap-3"></div>
+      </div>
+    </div>
+  </div>
+</div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <!-- Grammar -->
-                <div class="space-y-4">
-                    <div class="flex items-center gap-2 px-2">
-                        <i data-lucide="clipboard-list" size="20"></i>
-                        <h3 class="font-bold text-lg text-[#1c1917]">Grammar Focus</h3>
-                    </div>
-                    <div id="grammarList" class="space-y-3"></div>
-                </div>
-                <!-- Translation -->
-                <div class="space-y-4">
-                    <div class="flex items-center gap-2 px-2">
-                        <i data-lucide="arrow-right" size="20"></i>
-                        <h3 class="font-bold text-lg text-[#1c1917]">Translation</h3>
-                    </div>
-                    <div id="translationBox" class="p-6 bg-white rounded-2xl border border-[#e7e5e4] shadow-sm italic text-[#44403c] leading-relaxed relative min-h-[100px]"></div>
-                </div>
-            </div>
+<!-- ========== TAB 2: SUMMARIZE ========== -->
+<div id="tab-summarize" class="tab-content hidden space-y-6">
+  <div class="flex gap-2 flex-wrap">
+    <button class="s-tab font-mono text-[10px] px-3 py-1.5 rounded-full bg-n-cyan text-white font-bold" data-pane="paste">Paste text</button>
+    <button class="s-tab font-mono text-[10px] px-3 py-1.5 rounded-full bg-n-card border border-n-border text-n-dim" data-pane="file">Text file</button>
+    <button class="s-tab font-mono text-[10px] px-3 py-1.5 rounded-full bg-n-card border border-n-border text-n-dim" data-pane="audio">Audio file</button>
+    <button class="s-tab font-mono text-[10px] px-3 py-1.5 rounded-full bg-n-card border border-n-border text-n-dim" data-pane="url">Article URL</button>
+  </div>
+  <div id="s-pane-paste" class="s-pane">
+    <textarea id="s-pasteText" class="w-full min-h-[140px] p-4 rounded-xl border text-sm leading-relaxed" placeholder="Paste any text (article, email, notes...)"></textarea>
+  </div>
+  <div id="s-pane-file" class="s-pane hidden">
+    <input type="file" id="s-textFile" accept=".txt,.md,.srt,.vtt,text/plain" class="text-sm">
+    <div id="s-fileInfo" class="text-[10px] text-n-dim mt-1"></div>
+  </div>
+  <div id="s-pane-audio" class="s-pane hidden">
+    <p class="text-[10px] text-n-dim mb-2">Upload audio (mp3, m4a, wav — up to ~18MB). Gemini transcribes and summarizes.</p>
+    <input type="file" id="s-audioFile" accept="audio/*" class="text-sm">
+    <div id="s-audioInfo" class="text-[10px] text-n-dim mt-1"></div>
+  </div>
+  <div id="s-pane-url" class="s-pane hidden">
+    <input type="text" id="s-articleUrl" class="w-full p-3 rounded-xl border text-sm" placeholder="https://example.com/article">
+  </div>
+  <div class="flex gap-3 items-center flex-wrap">
+    <label class="text-[10px] font-mono text-n-dim">Level:
+      <select id="s-level" class="ml-1 p-1.5 rounded-lg text-xs border"><option value="B1">B1</option><option value="B2" selected>B2</option><option value="C1">C1</option></select>
+    </label>
+    <label class="text-[10px] font-mono text-n-dim">Length:
+      <select id="s-length" class="ml-1 p-1.5 rounded-lg text-xs border"><option value="short">Short (~150w)</option><option value="medium" selected>Medium (~300w)</option><option value="long">Long (~500w)</option></select>
+    </label>
+    <label class="text-[10px] font-mono text-n-dim">Model:
+      <select id="s-model" class="ml-1 p-1.5 rounded-lg text-xs border"><option value="gemini-2.5-flash-lite" selected>2.5-flash-lite</option><option value="gemini-2.5-flash">2.5-flash</option><option value="gemini-1.5-flash-8b">1.5-flash-8b</option><option value="gemini-2.0-flash">2.0-flash</option></select>
+    </label>
+    <button id="s-go" class="flex items-center gap-2 bg-n-cyan text-white px-4 py-2 rounded-lg text-sm font-bold hover:shadow-md transition-all">
+      <i data-lucide="sparkles" size="16"></i> Summarize &amp; Read
+    </button>
+    <button id="s-stop" class="bg-n-card border border-n-border text-n-dim px-3 py-2 rounded-lg text-xs font-mono hover:text-n-text">Stop</button>
+  </div>
+  <div id="s-status" class="text-[10px] font-mono text-n-dim"></div>
+  <div id="s-card" class="hidden space-y-4">
+    <div class="bg-n-card rounded-xl border border-n-border p-5 space-y-3">
+      <h3 class="font-mono text-[10px] font-bold text-n-cyan uppercase tracking-wider">Zusammenfassung</h3>
+      <div id="s-summary" class="text-sm leading-relaxed"></div>
+    </div>
+    <details class="bg-n-card rounded-xl border border-n-border p-4">
+      <summary class="text-[10px] font-mono text-n-dim cursor-pointer">Vokabeln</summary>
+      <div id="s-vocab" class="mt-3 text-sm space-y-1"></div>
+    </details>
+    <details class="bg-n-card rounded-xl border border-n-border p-4">
+      <summary class="text-[10px] font-mono text-n-dim cursor-pointer">Source text</summary>
+      <textarea id="s-rawSource" readonly class="mt-3 w-full min-h-[100px] p-3 text-xs rounded-lg border"></textarea>
+    </details>
+  </div>
+</div>
 
-            <!-- Suggestions -->
-            <div class="space-y-4">
-                <div class="flex items-center gap-2 px-2">
-                    <i data-lucide="check-circle-2" size="20"></i>
-                    <h3 class="font-bold text-lg text-[#1c1917]">Sound More Native</h3>
-                </div>
-                <div class="bg-[#1c1917] rounded-2xl p-8 text-white space-y-4 shadow-xl">
-                    <p class="text-xs text-white/50 uppercase tracking-[0.2em] font-bold">Suggestions for Improvement</p>
-                    <div id="suggestionsGrid" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
-                </div>
-            </div>
+<!-- ========== TAB 3: DIKTAT ========== -->
+<div id="tab-diktat" class="tab-content hidden space-y-6">
+  <section class="bg-n-card rounded-2xl border border-n-border p-5 space-y-4">
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <div>
+        <label class="block text-[10px] font-mono font-bold text-n-dim uppercase tracking-wider mb-2">Topic</label>
+        <select id="d-topic" class="w-full p-2.5 rounded-lg text-sm border">
+          <optgroup label="💰 Finance">
+            <option value="M&A: Fusionen und Übernahmen, Due Diligence, Unternehmensbewertung">M&A (Mergers & Acquisitions)</option>
+            <option value="Corporate Finance: Kapitalstruktur, Investitionsrechnung, Cashflow-Analyse">Corporate Finance</option>
+            <option value="Aktienmarkt: Börse, Wertpapiere, Portfoliomanagement, Dividenden">Aktienmarkt (Stock Market)</option>
+            <option value="Makroökonomie: BIP, Inflation, Geldpolitik, Zinsen, Konjunktur">Makroökonomie (Macro)</option>
+            <option value="Mikroökonomie: Angebot und Nachfrage, Preisbildung, Marktstrukturen">Mikroökonomie (Micro)</option>
+            <option value="CFA-Themen: Financial Reporting, Equity Valuation, Fixed Income, Derivatives">CFA Topics</option>
+            <option value="ACCA-Themen: Rechnungslegung, Audit, Steuerrecht, Finanzmanagement">ACCA Topics</option>
+          </optgroup>
+          <optgroup label="🧠 Mind">
+            <option value="Philosophie: Stoizismus, Erkenntnistheorie, Ethik, Existenzialismus">Philosophie (Philosophy)</option>
+            <option value="Psychologie: kognitive Verzerrungen, Verhaltensökonomie, Entscheidungstheorie">Psychologie (Psychology)</option>
+          </optgroup>
+          <optgroup label="🔬 Science &amp; History">
+            <option value="Naturwissenschaft: Physik, Chemie, Biologie, Astronomie">Wissenschaft (Science)</option>
+            <option value="Geschichte: Weltgeschichte, europäische Geschichte, Industrialisierung, Kriege">Geschichte (History)</option>
+          </optgroup>
+          <optgroup label="🌍 Life">
+            <option value="Alltag und tägliches Leben">Alltag (Daily Life)</option>
+            <option value="Reisen und Kultur">Reisen (Travel)</option>
+            <option value="Technologie und digitale Welt">Technologie (Technology)</option>
+          </optgroup>
+        </select>
+      </div>
+      <div>
+        <label class="block text-[10px] font-mono font-bold text-n-dim uppercase tracking-wider mb-2">CEFR Level</label>
+        <div class="flex gap-3 mt-1">
+          <label class="flex items-center gap-1.5 cursor-pointer"><input type="radio" name="d-level" value="A2" checked class="accent-[#3a7d6e]"><span class="text-sm">A2</span></label>
+          <label class="flex items-center gap-1.5 cursor-pointer"><input type="radio" name="d-level" value="B1" class="accent-[#3a7d6e]"><span class="text-sm">B1</span></label>
+          <label class="flex items-center gap-1.5 cursor-pointer"><input type="radio" name="d-level" value="B2" class="accent-[#3a7d6e]"><span class="text-sm">B2</span></label>
+          <label class="flex items-center gap-1.5 cursor-pointer"><input type="radio" name="d-level" value="C1" class="accent-[#3a7d6e]"><span class="text-sm">C1</span></label>
         </div>
-
-        <!-- Footer -->
-        <footer class="pt-8 pb-4 text-center">
-            <p class="text-xs text-[#a4a09c]">Built by <a href="https://galgorithms.wordpress.com/" target="_blank" class="font-semibold text-[#78716c] hover:text-[#1c1917] underline decoration-dotted underline-offset-4">Galgorithms</a></p>
-        </footer>
+      </div>
     </div>
-
-    <!-- Tooltip -->
-    <div id="tooltip" class="tooltip bg-[#1c1917] p-3 rounded-lg shadow-2xl border border-white/10 text-white transition-opacity duration-200">
-        <div id="tooltipContent"></div>
+    <button id="d-generateBtn" class="flex items-center gap-2 bg-n-cyan text-white px-5 py-2 rounded-lg text-sm font-bold hover:shadow-md transition-all w-full justify-center">
+      <i data-lucide="sparkles" size="16"></i> Generate Diktat
+    </button>
+    <div id="d-genStatus" class="text-[10px] font-mono text-n-dim text-center"></div>
+  </section>
+  <section id="d-player" class="hidden bg-n-card rounded-2xl border border-n-border p-5 space-y-4">
+    <div class="flex items-center justify-between">
+      <h2 class="font-bold text-sm">Listen &amp; Type</h2>
+      <span id="d-playCount" class="text-[10px] font-mono text-n-dim">Played: 0</span>
     </div>
+    <div class="flex items-center gap-3 bg-n-bg rounded-xl p-3 border border-n-border">
+      <button id="d-playBtn" class="bg-n-cyan text-white p-2.5 rounded-full hover:shadow-md transition-all"><i data-lucide="play" size="18"></i></button>
+      <button id="d-pauseBtn" class="hidden bg-n-dim text-white p-2.5 rounded-full"><i data-lucide="pause" size="18"></i></button>
+      <button id="d-repeatBtn" class="bg-n-card text-n-text p-2.5 rounded-full border border-n-border hover:border-n-cyan/50 transition-all"><i data-lucide="repeat" size="18"></i></button>
+      <div class="flex-1"></div>
+      <div class="flex items-center gap-2">
+        <span class="text-[10px] font-mono text-n-dim">Speed:</span>
+        <div class="flex gap-1">
+          <button class="d-speed text-[10px] px-2 py-1 rounded bg-n-card border border-n-border text-n-dim" data-speed="0.7">0.7x</button>
+          <button class="d-speed text-[10px] px-2 py-1 rounded bg-n-card border border-n-border text-n-dim" data-speed="0.85">0.85x</button>
+          <button class="d-speed text-[10px] px-2 py-1 rounded bg-n-cyan text-white font-bold border-2 border-n-cyan" data-speed="1">1x</button>
+          <button class="d-speed text-[10px] px-2 py-1 rounded bg-n-card border border-n-border text-n-dim" data-speed="1.2">1.2x</button>
+        </div>
+      </div>
+    </div>
+    <textarea id="d-typed" class="w-full min-h-[120px] p-4 text-base rounded-xl border resize-none leading-relaxed" placeholder="Type what you hear..."></textarea>
+    <div class="flex items-center justify-between">
+      <button id="d-hintBtn" class="text-[10px] text-n-dim hover:text-n-amber underline decoration-dotted underline-offset-4">Show hint</button>
+      <button id="d-checkBtn" class="flex items-center gap-2 bg-n-cyan text-white px-5 py-2 rounded-lg text-sm font-bold hover:shadow-md transition-all">
+        <i data-lucide="check-circle-2" size="16"></i> Check
+      </button>
+    </div>
+    <div id="d-hint" class="hidden text-sm text-n-amber italic bg-n-amber/10 p-3 rounded-lg border border-n-amber/30 font-mono"></div>
+  </section>
+  <section id="d-results" class="hidden space-y-4">
+    <div class="bg-n-card rounded-2xl border border-n-border overflow-hidden">
+      <div class="px-5 py-3 border-b border-n-border flex items-center justify-between">
+        <h2 class="font-bold text-sm">Results</h2>
+        <span id="d-scoreBadge" class="font-mono text-sm font-bold px-4 py-1 rounded-full"></span>
+      </div>
+      <div class="p-5 space-y-3">
+        <div class="w-full bg-n-border rounded-full h-2 overflow-hidden">
+          <div id="d-scoreBar" class="h-full rounded-full transition-all duration-700" style="width:0%"></div>
+        </div>
+        <div id="d-scoreDetails" class="flex gap-3 text-[10px] font-mono text-n-dim"></div>
+      </div>
+    </div>
+    <div class="bg-n-card rounded-2xl border border-n-border p-5 space-y-3">
+      <div class="flex gap-3 text-[10px] text-n-dim">
+        <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-n-green inline-block"></span> Correct</span>
+        <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-n-pink inline-block"></span> Wrong</span>
+        <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-n-amber inline-block"></span> Missing</span>
+        <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-n-dim inline-block"></span> Extra</span>
+      </div>
+      <div id="d-diff" class="leading-[2.2] text-base font-medium"></div>
+    </div>
+    <div class="bg-n-cyan/5 border border-n-cyan/20 rounded-2xl p-5 glow-cyan space-y-2">
+      <span class="font-mono text-[10px] text-n-cyan/70 uppercase tracking-wider font-bold">Original</span>
+      <div id="d-original" class="text-base leading-relaxed text-n-text/80"></div>
+    </div>
+    <button id="d-newBtn" class="flex items-center gap-2 bg-n-card border-2 border-n-cyan text-n-cyan px-5 py-2.5 rounded-lg text-sm font-bold hover:bg-n-cyan hover:text-white transition-all w-full justify-center">
+      <i data-lucide="refresh-cw" size="16"></i> New Diktat
+    </button>
+  </section>
+</div>
 
-    <script>
-        // Init Lucide
-        lucide.createIcons();
+<!-- FOOTER -->
+<footer class="pt-6 pb-4 text-center">
+  <p class="text-[10px] text-n-dim font-mono">Built by <a href="https://galgorithms.wordpress.com/" target="_blank" class="text-n-cyan hover:text-n-text underline decoration-dotted underline-offset-4 font-bold">GALGORITHMS</a></p>
+</footer>
+</div>
 
-        const inputEl = document.getElementById('inputText');
-        const apiKeyEl = document.getElementById('apiKey');
-        const analyzeBtn = document.getElementById('analyzeBtn');
-        const resultsEl = document.getElementById('results');
-        const tooltipEl = document.getElementById('tooltip');
-        const statusEl = document.getElementById('status');
+<!-- Reader Tooltip -->
+<div id="r-tooltip" class="r-tooltip bg-n-card p-3 rounded-lg border border-n-border shadow-lg">
+  <div id="r-tooltipContent"></div>
+</div>
 
-        // Load saved key
-        apiKeyEl.value = localStorage.getItem('gemini_german_reader_key') || '';
-        apiKeyEl.addEventListener('change', () => localStorage.setItem('gemini_german_reader_key', apiKeyEl.value.trim()));
+<script>
+lucide.createIcons();
 
-        const PROMPT = `You are a German CEFR analyzer. Given a German text, return JSON.
-        Rules:
-        - Classify tokens: A1-C1 or unknown (proper nouns/punctuation).
-        - Provide Overall CEFR Grade (overallLevel).
-        - Provide nativeSuggestions (list of strings).
-        - Every token in order in "words" array.
-        - Identify 3-7 grammar points in "grammar" array.
-        - JSON structure: { "overallLevel": "...", "nativeSuggestions": [], "words": [{"word":"", "level":"", "lemma":"", "meaning":""}], "grammar": [{"level":"", "topic":"", "explanation":""}], "translation": "" }`;
+// ===== SHARED =====
+const apiKeyEl = document.getElementById('apiKey');
+apiKeyEl.value = localStorage.getItem('deutsch_key') || localStorage.getItem('gemini_german_reader_key') || localStorage.getItem('gemini_key') || '';
+apiKeyEl.addEventListener('change', () => { localStorage.setItem('deutsch_key', apiKeyEl.value.trim()); localStorage.setItem('gemini_german_reader_key', apiKeyEl.value.trim()); localStorage.setItem('gemini_key', apiKeyEl.value.trim()); });
+function getKey() { return apiKeyEl.value.trim(); }
 
-        async function analyze() {
-            const key = apiKeyEl.value.trim();
-            const text = inputEl.value.trim();
-            if (!key || !text) return alert('Please provide an API key and German text.');
+// Tab switching
+document.querySelectorAll('.main-tab').forEach(t => {
+  t.addEventListener('click', () => {
+    document.querySelectorAll('.main-tab').forEach(x => { x.classList.remove('border-n-cyan','text-n-cyan'); x.classList.add('border-transparent','text-n-dim'); });
+    document.querySelectorAll('.tab-content').forEach(x => x.classList.add('hidden'));
+    t.classList.add('border-n-cyan','text-n-cyan'); t.classList.remove('border-transparent','text-n-dim');
+    document.getElementById('tab-' + t.dataset.tab).classList.remove('hidden');
+  });
+});
 
-            analyzeBtn.disabled = true;
-            analyzeBtn.innerHTML = `<i data-lucide="loader-2" class="animate-spin" size="18"></i> Analyzing...`;
-            lucide.createIcons();
-            statusEl.textContent = 'Contacting AI...';
+// XP System
+const LEVELS = [0,50,150,300,500,750,1000,1500,2000,3000,5000];
+let xp = parseInt(localStorage.getItem('deutsch_xp') || '0');
+function getLevel(x) { let l=1; for(let i=1;i<LEVELS.length;i++){if(x>=LEVELS[i])l=i+1;else break;} return l; }
+function updateXP() {
+  const lvl=getLevel(xp), cur=LEVELS[lvl-1]||0, next=LEVELS[lvl]||LEVELS[LEVELS.length-1];
+  const pct=next>cur?Math.min(100,((xp-cur)/(next-cur))*100):100;
+  document.getElementById('xpLevel').textContent='LVL '+lvl;
+  document.getElementById('xpBar').style.width=pct+'%';
+  document.getElementById('xpText').textContent=xp+' / '+next+' XP';
+}
+function addXP(n) { xp+=n; localStorage.setItem('deutsch_xp',xp); updateXP(); }
+updateXP();
 
-            try {
-                const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent?key=${key}`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        contents: [{ parts: [{ text: PROMPT + "\n\nTEXT:\n" + text }] }],
-                        generationConfig: {
-                            responseMimeType: "application/json",
-                            maxOutputTokens: 32768,
-                            temperature: 0.2
-                        }
-                    })
-                });
+// German voice
+let germanVoice=null;
+function loadVoices(){const v=speechSynthesis.getVoices();germanVoice=v.find(x=>x.lang==='de-DE')||v.find(x=>x.lang.startsWith('de'))||null;}
+speechSynthesis.onvoiceschanged=loadVoices; loadVoices();
 
-                const data = await response.json();
-                if (!response.ok) {
-                    throw new Error(data?.error?.message || `HTTP ${response.status}`);
-                }
-                const candidate = data.candidates?.[0];
-                if (!candidate) {
-                    throw new Error('No response from the model. Try again or shorten the text.');
-                }
-                const rawText = (candidate.content?.parts || []).map(p => p.text || '').join('');
-                const firstBrace = rawText.indexOf('{');
-                const lastBrace = rawText.lastIndexOf('}');
-                if (firstBrace === -1 || lastBrace === -1) {
-                    throw new Error('The model did not return JSON. Try again.');
-                }
-                const result = JSON.parse(rawText.slice(firstBrace, lastBrace + 1));
-                render(result);
-                resultsEl.classList.remove('hidden');
-                statusEl.textContent = 'Analysis complete';
-            } catch (err) {
-                console.error('Full error:', err);
-                alert('Analysis failed: ' + err.message + '\n\nOpen browser console (F12) for details.');
-                statusEl.textContent = 'Error: ' + err.message;
-            } finally {
-                analyzeBtn.disabled = false;
-                analyzeBtn.innerHTML = `<i data-lucide="sparkles" size="18"></i> Analyze Text`;
-                lucide.createIcons();
-            }
-        }
+// Gemini helper
+async function geminiCall(model, key, body) {
+  const url='https://generativelanguage.googleapis.com/v1beta/models/'+model+':generateContent?key='+key;
+  const res=await fetch(url,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+  const data=await res.json();
+  if(!res.ok){const e=new Error(data?.error?.message||'HTTP '+res.status);if(res.status===429)e.quota=true;throw e;}
+  const c=data.candidates?.[0];
+  if(!c) throw new Error('No response from model.');
+  return (c.content?.parts||[]).map(p=>p.text||'').join('');
+}
+function escH(s){const d=document.createElement('div');d.textContent=s;return d.innerHTML;}
 
-        function render(data) {
-            // Overall Grade
-            document.getElementById('overallGrade').textContent = `Overall Grade: ${data.overallLevel}`;
+// ===== READER =====
+const rTooltip=document.getElementById('r-tooltip');
+const R_PROMPT=`You are a German CEFR analyzer. Given a German text, return JSON.
+Rules:
+- Classify tokens: A1-C1 or unknown (proper nouns/punctuation).
+- Provide Overall CEFR Grade (overallLevel).
+- Provide nativeSuggestions (list of strings).
+- Every token in order in "words" array.
+- Identify 3-7 grammar points in "grammar" array.
+- JSON structure: { "overallLevel": "...", "nativeSuggestions": [], "words": [{"word":"", "level":"", "lemma":"", "meaning":""}], "grammar": [{"level":"", "topic":"", "explanation":""}], "translation": "" }`;
 
-            // Annotated Text
-            const textContainer = document.getElementById('annotatedText');
-            textContainer.innerHTML = '';
-            data.words.forEach((token, idx) => {
-                const isPunct = /^[\s.,;:!?—–\-„""''()\[\]]+$/.test(token.word);
-                if (isPunct) {
-                    const span = document.createElement('span');
-                    span.className = 'text-[#a4a09c]';
-                    span.textContent = token.word;
-                    textContainer.appendChild(span);
-                } else {
-                    const span = document.createElement('span');
-                    const lvlCls = `cefr-${token.level.toLowerCase()}`;
-                    span.className = `cursor-help transition-colors rounded px-0.5 word-hover ${lvlCls} ${token.level === 'unknown' ? 'underline decoration-dotted' : 'font-bold'}`;
-                    span.textContent = token.word;
-                    
-                    span.addEventListener('mouseenter', (e) => showTooltip(e, token));
-                    span.addEventListener('mousemove', (e) => moveTooltip(e));
-                    span.addEventListener('mouseleave', hideTooltip);
-                    
-                    textContainer.appendChild(span);
-                }
-                if (idx < data.words.length - 1 && !/^[\s.,;:!?]/.test(data.words[idx+1].word)) {
-                    textContainer.appendChild(document.createTextNode(' '));
-                }
-            });
+document.getElementById('r-analyzeBtn').addEventListener('click', async () => {
+  const key=getKey(), text=document.getElementById('r-input').value.trim();
+  if(!key||!text) return alert('Provide API key and German text.');
+  const btn=document.getElementById('r-analyzeBtn'), st=document.getElementById('r-status');
+  btn.disabled=true; btn.innerHTML='<i data-lucide="loader-2" class="animate-spin" size="16"></i> Analyzing...'; lucide.createIcons(); st.textContent='Analyzing...';
+  try {
+    const raw=await geminiCall('gemini-2.5-flash-lite',key,{contents:[{parts:[{text:R_PROMPT+"\n\nTEXT:\n"+text}]}],generationConfig:{responseMimeType:"application/json",maxOutputTokens:32768,temperature:0.2}});
+    const fb=raw.indexOf('{'),lb=raw.lastIndexOf('}');
+    if(fb===-1||lb===-1) throw new Error('No JSON returned.');
+    const data=JSON.parse(raw.slice(fb,lb+1));
+    renderReader(data); document.getElementById('r-results').classList.remove('hidden'); st.textContent='Done'; addXP(10);
+  } catch(e){ console.error(e); alert('Analysis failed: '+e.message); st.textContent='Error'; }
+  finally{ btn.disabled=false; btn.innerHTML='<i data-lucide="sparkles" size="16"></i> Analyze'; lucide.createIcons(); }
+});
 
-            // Grammar
-            const gList = document.getElementById('grammarList');
-            gList.innerHTML = data.grammar.map(g => `
-                <div class="p-5 bg-white rounded-xl border-l-[4px] cefr-border-${g.level.toLowerCase()} border border-[#e7e5e4] shadow-sm">
-                    <div class="flex items-center justify-between mb-2">
-                        <span class="font-bold text-sm text-[#1c1917]">${g.topic}</span>
-                        <span class="text-[10px] font-bold px-1.5 py-0.5 rounded text-white cefr-bg-${g.level.toLowerCase()}">${g.level}</span>
-                    </div>
-                    <p class="text-sm text-[#78716c] leading-relaxed">${g.explanation}</p>
-                </div>
-            `).join('');
+function renderReader(data) {
+  document.getElementById('r-grade').textContent='GRADE: '+data.overallLevel;
+  const tc=document.getElementById('r-annotated'); tc.innerHTML='';
+  data.words.forEach((t,i) => {
+    const isPunct=/^[\s.,;:!?\u2014\u2013\-\u201E\u201C\u201D\u2018\u2019()\[\]]+$/.test(t.word);
+    if(isPunct){const s=document.createElement('span');s.className='text-n-dim';s.textContent=t.word;tc.appendChild(s);}
+    else{const s=document.createElement('span');const cls='cefr-'+t.level.toLowerCase();s.className='cursor-help transition-colors rounded px-0.5 word-hover '+cls+(t.level==='unknown'?' underline decoration-dotted':' font-bold');s.textContent=t.word;s.addEventListener('mouseenter',e=>rShowTip(e,t));s.addEventListener('mousemove',e=>rMoveTip(e));s.addEventListener('mouseleave',()=>rTooltip.style.display='none');tc.appendChild(s);}
+    if(i<data.words.length-1&&!/^[\s.,;:!?]/.test(data.words[i+1].word)) tc.appendChild(document.createTextNode(' '));
+  });
+  document.getElementById('r-grammar').innerHTML=data.grammar.map(g=>'<div class="p-4 bg-n-card rounded-lg border-l-[3px] cefr-border-'+g.level.toLowerCase()+' border border-n-border"><div class="flex items-center justify-between mb-1"><span class="font-bold text-xs">'+escH(g.topic)+'</span><span class="text-[9px] font-bold px-1.5 py-0.5 rounded text-white cefr-bg-'+g.level.toLowerCase()+'">'+g.level+'</span></div><p class="text-xs text-n-dim leading-relaxed">'+escH(g.explanation)+'</p></div>').join('');
+  document.getElementById('r-translation').textContent='"'+data.translation+'"';
+  document.getElementById('r-suggestions').innerHTML=(data.nativeSuggestions||[]).map(s=>'<div class="flex gap-2 items-start p-3 rounded-lg bg-n-cyan/5 border border-n-cyan/15"><span class="text-n-cyan mt-0.5">\u2192</span><p class="text-xs text-n-text/70 leading-relaxed">'+escH(s)+'</p></div>').join('');
+  lucide.createIcons();
+}
+function rShowTip(e,t){rTooltip.style.display='block';document.getElementById('r-tooltipContent').innerHTML='<div class="flex items-center justify-between gap-3"><span class="font-bold uppercase text-xs">'+escH(t.lemma||t.word)+'</span><span class="text-[9px] bg-black/10 px-1 rounded">'+t.level+'</span></div><div class="text-n-dim text-[10px] italic">'+(t.meaning||'---')+'</div>';rMoveTip(e);}
+function rMoveTip(e){rTooltip.style.left=(e.clientX+12)+'px';rTooltip.style.top=(e.clientY+12)+'px';}
 
-            // Translation
-            document.getElementById('translationBox').textContent = `“${data.translation}”`;
+// ===== SUMMARIZE =====
+let sActivePane='paste';
+document.querySelectorAll('.s-tab').forEach(t=>{
+  t.addEventListener('click',()=>{
+    document.querySelectorAll('.s-tab').forEach(x=>{x.className='s-tab font-mono text-[10px] px-3 py-1.5 rounded-full bg-n-card border border-n-border text-n-dim';});
+    document.querySelectorAll('.s-pane').forEach(x=>x.classList.add('hidden'));
+    t.className='s-tab font-mono text-[10px] px-3 py-1.5 rounded-full bg-n-cyan text-white font-bold';
+    sActivePane=t.dataset.pane; document.getElementById('s-pane-'+sActivePane).classList.remove('hidden');
+  });
+});
+document.getElementById('s-textFile').onchange=e=>{const f=e.target.files[0];document.getElementById('s-fileInfo').textContent=f?f.name+' ('+Math.round(f.size/1024)+' KB)':'';};
+document.getElementById('s-audioFile').onchange=e=>{const f=e.target.files[0];if(!f)return;document.getElementById('s-audioInfo').textContent=f.name+' ('+(f.size/1024/1024).toFixed(1)+' MB)'+(f.size>18*1024*1024?' \u26a0 may fail':'');};
+function readFileText(f){return new Promise((r,j)=>{const x=new FileReader();x.onload=()=>r(x.result);x.onerror=j;x.readAsText(f);});}
+function readFileB64(f){return new Promise((r,j)=>{const x=new FileReader();x.onload=()=>r(x.result.split(',')[1]);x.onerror=j;x.readAsDataURL(f);});}
+function sBuildPrompt(level,length){const w=length==='short'?150:length==='long'?500:300;return 'Du bist ein Deutschlehrer. Fasse die Quelle auf '+level+'-Niveau zusammen. Verwende klare, natuerliche Saetze. Struktur: 1) Einleitung, 2) Hauptpunkte, 3) Fazit. Ungefaehr '+w+' Woerter. Danach 8-12 nuetzliche Vokabeln mit deutscher Erklaerung und englischer Uebersetzung.\n\nFalls die Quelle Audio ist, transkribiere sie zuerst und fasse dann zusammen.\n\nNUR gueltiges JSON:\n{"summary":"...","vocab":[{"word":"","erklaerung":"","english":""}]}';}
 
-            // Suggestions
-            const sGrid = document.getElementById('suggestionsGrid');
-            sGrid.innerHTML = data.nativeSuggestions.map(s => `
-                <div class="flex gap-3 items-start bg-white/5 p-4 rounded-xl border border-white/10">
-                    <div class="shrink-0 mt-1 bg-white/20 p-1 rounded-full"><i data-lucide="arrow-right" size="12"></i></div>
-                    <p class="text-sm leading-relaxed text-white/90">${s}</p>
-                </div>
-            `).join('');
-            lucide.createIcons();
-        }
+async function sCallWithFallback(parts,model){
+  const key=getKey(); if(!key) throw new Error('Enter API key.');
+  const chain=[model,'gemini-2.5-flash-lite','gemini-1.5-flash-8b','gemini-1.5-flash'].filter((v,i,a)=>a.indexOf(v)===i);
+  const sStatus=document.getElementById('s-status'); let last;
+  for(const m of chain){try{sStatus.textContent='Model: '+m+'...';const raw=await geminiCall(m,key,{contents:[{parts}],generationConfig:{temperature:0.4,responseMimeType:'application/json'}});return JSON.parse(raw);}catch(e){last=e;if(!e.quota)throw e;}}
+  throw new Error('All models hit quota. Wait and retry.');
+}
 
-        function showTooltip(e, token) {
-            tooltipEl.style.display = 'block';
-            document.getElementById('tooltipContent').innerHTML = `
-                <div class="flex items-center justify-between gap-4">
-                    <span class="font-bold uppercase text-sm">${token.lemma || token.word}</span>
-                    <span class="text-[10px] bg-white/20 px-1 rounded">${token.level}</span>
-                </div>
-                <div class="text-white/80 text-xs italic">${token.meaning || '---'}</div>
-            `;
-            moveTooltip(e);
-        }
+document.getElementById('s-go').addEventListener('click', async ()=>{
+  const sStatus=document.getElementById('s-status');
+  try{
+    document.getElementById('s-card').classList.add('hidden');
+    const level=document.getElementById('s-level').value, length=document.getElementById('s-length').value, model=document.getElementById('s-model').value;
+    const prompt=sBuildPrompt(level,length); let parts=[],src='';
+    if(sActivePane==='paste'){const t=document.getElementById('s-pasteText').value.trim();if(!t)throw new Error('Paste text first.');parts=[{text:prompt+'\n\nQuelle:\n\n'+t.slice(0,50000)}];src=t;}
+    else if(sActivePane==='file'){const f=document.getElementById('s-textFile').files[0];if(!f)throw new Error('Choose a file.');sStatus.textContent='Reading file...';const t=await readFileText(f);parts=[{text:prompt+'\n\nQuelle:\n\n'+t.slice(0,50000)}];src=t;}
+    else if(sActivePane==='audio'){const f=document.getElementById('s-audioFile').files[0];if(!f)throw new Error('Choose audio.');sStatus.textContent='Encoding audio...';const b64=await readFileB64(f);parts=[{text:prompt},{inline_data:{mime_type:f.type||'audio/mpeg',data:b64}}];src='[Audio: '+f.name+']';}
+    else if(sActivePane==='url'){const url=document.getElementById('s-articleUrl').value.trim();if(!url)throw new Error('Paste a URL.');sStatus.textContent='Fetching article...';const res=await fetch('https://r.jina.ai/'+url);if(!res.ok)throw new Error('Reader failed ('+res.status+')');const t=await res.text();parts=[{text:prompt+'\n\nQuelle:\n\n'+t.slice(0,50000)}];src=t;}
+    const result=await sCallWithFallback(parts,model);
+    const sumText=typeof result.summary==='string'?result.summary:typeof result.summary==='object'?JSON.stringify(result.summary):(result.summary||'').toString();
+    const sumEl=document.getElementById('s-summary');sumEl.innerHTML='';
+    sumText.split(/(\s+)/).forEach(w=>{if(/\S/.test(w)){const s=document.createElement('span');s.className='s-word';s.textContent=w;sumEl.appendChild(s);}else{sumEl.appendChild(document.createTextNode(w));}});
+    document.getElementById('s-vocab').innerHTML=(result.vocab||[]).map(v=>'<div class="text-xs"><b class="text-n-cyan">'+escH(v.word)+'</b> \u2014 '+escH(v.erklaerung||v['erkl\u00e4rung']||'')+' <i class="text-n-dim">('+escH(v.english)+')</i></div>').join('');
+    document.getElementById('s-rawSource').value=src.slice(0,10000);
+    document.getElementById('s-card').classList.remove('hidden'); sStatus.textContent='Reading aloud...'; addXP(15);
+    speechSynthesis.cancel();
+    const sentences=sumText.match(/[^.!?]+[.!?]+|\S+$/g)||[sumText];
+    const spans=Array.from(sumEl.querySelectorAll('.s-word')); let wi=0;
+    function speakS(i){if(i>=sentences.length){spans.forEach(s=>s.classList.remove('active'));sStatus.textContent='Done.';return;}const u=new SpeechSynthesisUtterance(sentences[i]);u.lang='de-DE';u.rate=0.9;if(germanVoice)u.voice=germanVoice;u.onboundary=()=>{spans.forEach(s=>s.classList.remove('active'));if(spans[wi])spans[wi].classList.add('active');wi++;};u.onend=()=>speakS(i+1);speechSynthesis.speak(u);}
+    speakS(0);
+  }catch(e){sStatus.textContent='ERROR: '+e.message;}
+});
+document.getElementById('s-stop').addEventListener('click',()=>speechSynthesis.cancel());
 
-        function moveTooltip(e) {
-            tooltipEl.style.left = (e.clientX + 15) + 'px';
-            tooltipEl.style.top = (e.clientY + 15) + 'px';
-        }
+// ===== DIKTAT =====
+let dOriginal='',dSpeed=1,dPlays=0;
+document.querySelectorAll('.d-speed').forEach(btn=>{
+  btn.addEventListener('click',()=>{dSpeed=parseFloat(btn.dataset.speed);document.querySelectorAll('.d-speed').forEach(b=>{b.className='d-speed text-[10px] px-2 py-1 rounded bg-n-card border border-n-border text-n-dim';});btn.className='d-speed text-[10px] px-2 py-1 rounded bg-n-cyan text-white font-bold border-2 border-n-cyan';});
+});
 
-        function hideTooltip() { tooltipEl.style.display = 'none'; }
+document.getElementById('d-generateBtn').addEventListener('click', async ()=>{
+  const key=getKey(),topic=document.getElementById('d-topic').value,level=document.querySelector('input[name="d-level"]:checked').value;
+  if(!key) return alert('Enter API key.');
+  const btn=document.getElementById('d-generateBtn'),st=document.getElementById('d-genStatus');
+  btn.disabled=true;btn.innerHTML='<i data-lucide="loader-2" class="animate-spin" size="16"></i> Generating...';lucide.createIcons();st.textContent='Generating...';
+  try{
+    const prompt='Generate a German text for dictation.\nTopic: '+topic+'\nCEFR: '+level+'\nRules: 40-70 words, 2-4 natural sentences, '+level+'-appropriate vocabulary/grammar. Return ONLY German text.';
+    const raw=await geminiCall('gemini-2.5-flash-lite',key,{contents:[{parts:[{text:prompt}]}],generationConfig:{maxOutputTokens:512,temperature:0.9}});
+    dOriginal=raw.replace(/^["\u201E\u201C\u201D]|["\u201C\u201D]$/g,'').trim();
+    document.getElementById('d-player').classList.remove('hidden');document.getElementById('d-results').classList.add('hidden');
+    document.getElementById('d-typed').value='';document.getElementById('d-hint').classList.add('hidden');
+    dPlays=0;document.getElementById('d-playCount').textContent='Played: 0';document.getElementById('d-scoreBar').style.width='0%';
+    st.textContent='Ready! Press play.';document.getElementById('d-player').scrollIntoView({behavior:'smooth'});
+  }catch(e){alert('Failed: '+e.message);st.textContent='Error';}
+  finally{btn.disabled=false;btn.innerHTML='<i data-lucide="sparkles" size="16"></i> Generate Diktat';lucide.createIcons();}
+});
 
-        analyzeBtn.addEventListener('click', analyze);
-    </script>
+function dSpeak(text){speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(text);u.lang='de-DE';u.rate=dSpeed;if(germanVoice)u.voice=germanVoice;u.onstart=()=>{document.getElementById('d-playBtn').classList.add('hidden');document.getElementById('d-pauseBtn').classList.remove('hidden');};u.onend=()=>{document.getElementById('d-pauseBtn').classList.add('hidden');document.getElementById('d-playBtn').classList.remove('hidden');};speechSynthesis.speak(u);dPlays++;document.getElementById('d-playCount').textContent='Played: '+dPlays;}
+document.getElementById('d-playBtn').addEventListener('click',()=>dSpeak(dOriginal));
+document.getElementById('d-pauseBtn').addEventListener('click',()=>{if(speechSynthesis.speaking){if(speechSynthesis.paused)speechSynthesis.resume();else speechSynthesis.pause();}});
+document.getElementById('d-repeatBtn').addEventListener('click',()=>dSpeak(dOriginal));
+document.getElementById('d-hintBtn').addEventListener('click',()=>{const h=dOriginal.split(/\s+/).map(w=>{const c=w.replace(/^[^a-zA-Z\u00C0-\u024F]/,'');return(c[0]||w[0])+'_'.repeat(Math.max(1,w.length-1));}).join('  ');const el=document.getElementById('d-hint');el.textContent=h;el.classList.remove('hidden');});
+
+document.getElementById('d-checkBtn').addEventListener('click',()=>{
+  const typed=document.getElementById('d-typed').value.trim();if(!typed)return alert('Type what you heard.');
+  speechSynthesis.cancel();document.getElementById('d-pauseBtn').classList.add('hidden');document.getElementById('d-playBtn').classList.remove('hidden');
+  const diff=dComputeDiff(dOriginal,typed);dRenderResults(diff);
+  document.getElementById('d-results').classList.remove('hidden');document.getElementById('d-results').scrollIntoView({behavior:'smooth'});
+});
+
+function dNorm(w){return w.replace(/[.,;:!?\u201E\u201C\u201D\u2018\u2019()\[\]\u2014\u2013\-]/g,'').toLowerCase();}
+function dComputeDiff(orig,typed){
+  const a=orig.split(/\s+/).filter(w=>w),b=typed.split(/\s+/).filter(w=>w),m=a.length,n=b.length;
+  const dp=Array(m+1).fill(null).map(()=>Array(n+1).fill(0));
+  for(let i=0;i<=m;i++)dp[i][0]=i;for(let j=0;j<=n;j++)dp[0][j]=j;
+  for(let i=1;i<=m;i++)for(let j=1;j<=n;j++){if(dNorm(a[i-1])===dNorm(b[j-1]))dp[i][j]=dp[i-1][j-1];else dp[i][j]=1+Math.min(dp[i-1][j],dp[i][j-1],dp[i-1][j-1]);}
+  const r=[];let i=m,j=n;
+  while(i>0||j>0){if(i>0&&j>0&&dNorm(a[i-1])===dNorm(b[j-1])){r.unshift({type:'correct',original:a[i-1],typed:b[j-1]});i--;j--;}
+  else if(i>0&&j>0&&dp[i][j]===dp[i-1][j-1]+1){r.unshift({type:'wrong',original:a[i-1],typed:b[j-1]});i--;j--;}
+  else if(j>0&&(i===0||dp[i][j]===dp[i][j-1]+1)){r.unshift({type:'extra',typed:b[j-1]});j--;}
+  else{r.unshift({type:'missing',original:a[i-1]});i--;}}
+  return r;
+}
+function dRenderResults(diff){
+  const total=diff.filter(d=>d.type!=='extra').length,correct=diff.filter(d=>d.type==='correct').length;
+  const wrong=diff.filter(d=>d.type==='wrong').length,missing=diff.filter(d=>d.type==='missing').length,extra=diff.filter(d=>d.type==='extra').length;
+  const pct=total>0?Math.round(correct/total*100):0;
+  const badge=document.getElementById('d-scoreBadge'),color=pct>=90?'#5a9a72':pct>=70?'#c49332':'#c25050';
+  badge.style.backgroundColor=color;badge.style.color='#fff';badge.textContent=pct+'%';
+  const bar=document.getElementById('d-scoreBar');bar.style.backgroundColor=color;setTimeout(()=>{bar.style.width=pct+'%';},100);
+  document.getElementById('d-scoreDetails').innerHTML='<span>\u2705 '+correct+'</span>'+(wrong?'<span>\u274c '+wrong+'</span>':'')+(missing?'<span>\u26a0\ufe0f '+missing+'</span>':'')+(extra?'<span>\u2795 '+extra+'</span>':'');
+  document.getElementById('d-diff').innerHTML=diff.map(d=>{switch(d.type){
+    case'correct':return'<span class="text-n-green font-medium">'+escH(d.original)+'</span>';
+    case'wrong':return'<span class="text-n-pink line-through opacity-60">'+escH(d.typed)+'</span> <span class="text-n-green font-bold underline decoration-2 underline-offset-4">'+escH(d.original)+'</span>';
+    case'missing':return'<span class="text-n-amber font-bold italic bg-n-amber/10 px-1 rounded">'+escH(d.original)+'</span>';
+    case'extra':return'<span class="text-n-dim line-through opacity-50">'+escH(d.typed)+'</span>';default:return'';}}).join(' ');
+  document.getElementById('d-original').textContent=dOriginal;
+  addXP(correct*5);
+}
+document.getElementById('d-newBtn').addEventListener('click',()=>{document.getElementById('d-results').classList.add('hidden');document.getElementById('d-player').classList.add('hidden');document.getElementById('d-typed').value='';document.getElementById('d-hint').classList.add('hidden');dOriginal='';dPlays=0;document.getElementById('d-scoreBar').style.width='0%';window.scrollTo({top:0,behavior:'smooth'});});
+</script>
 </body>
 </html>
