@@ -349,11 +349,12 @@ input[type="radio"]{accent-color:var(--c-cyan)!important}
     <div id="c-chat" class="space-y-3 min-h-[200px] max-h-[450px] overflow-y-auto p-4 bg-white/30 rounded-2xl border border-n-border"></div>
     <div id="c-input-area" class="bg-n-card p-5 rounded-2xl border border-n-border space-y-3">
       <div class="flex items-center justify-between">
-        <span class="text-[10px] font-mono font-bold text-n-cyan uppercase tracking-wider">Your Turn (Person A)</span>
-        <button id="c-hintBtn" class="text-[10px] text-n-dim hover:text-n-cyan underline decoration-dotted underline-offset-4">Show hint</button>
+        <span class="text-[10px] font-mono font-bold text-n-cyan uppercase tracking-wider">Your Turn — Type the phrase below</span>
       </div>
-      <div id="c-phrase-hint" class="hidden p-3 bg-n-amber/10 border border-dashed border-n-amber/30 rounded-lg text-sm italic text-n-amber font-mono"></div>
-      <textarea id="c-typed" class="w-full min-h-[80px] p-4 text-base rounded-xl border resize-none leading-relaxed" placeholder="Type what you would say in German..."></textarea>
+      <div id="c-phrase-target" class="p-4 bg-n-cyan/10 border border-n-cyan/30 rounded-xl text-base font-medium text-n-text leading-relaxed"></div>
+      <div id="c-phrase-english" class="text-[11px] text-n-dim italic px-1"></div>
+      <textarea id="c-typed" class="w-full min-h-[80px] p-4 text-base rounded-xl border resize-none leading-relaxed" placeholder="Type the phrase exactly as shown above..."></textarea>
+      <div id="c-typo-feedback" class="hidden text-[11px] text-n-red font-mono px-1"></div>
       <button id="c-submitBtn" class="flex items-center gap-2 bg-n-cyan text-white px-5 py-2 rounded-lg text-sm font-bold hover:shadow-md transition-all w-full justify-center">
         <i data-lucide="send" size="16"></i> Send Response
       </button>
@@ -659,39 +660,43 @@ function cProcessTurn(){
     speechSynthesis.speak(u);
   } else {
     document.getElementById('c-input-area').style.display='block';
-    document.getElementById('c-phrase-hint').classList.add('hidden');
-    document.getElementById('c-phrase-hint').textContent=turn.text;
-    document.getElementById('c-typed').value='';document.getElementById('c-typed').focus();
+    document.getElementById('c-phrase-target').textContent=turn.text;
+    document.getElementById('c-phrase-english').textContent='"'+turn.english+'"';
+    document.getElementById('c-typed').value='';
+    document.getElementById('c-typo-feedback').classList.add('hidden');
+    document.getElementById('c-typed').focus();
   }
 }
 
-document.getElementById('c-hintBtn').addEventListener('click',()=>{document.getElementById('c-phrase-hint').classList.toggle('hidden');});
-
 document.getElementById('c-submitBtn').addEventListener('click',()=>{
   const typed=document.getElementById('c-typed').value.trim();
-  if(!typed) return alert('Type your response first.');
+  if(!typed) return alert('Type the phrase first.');
   const target=cDialogue[cIndex];
   const clean=s=>s.toLowerCase().replace(/[.,;:!?\-—–„“”]/g,'').replace(/\s+/g,' ').trim();
-  cTotal++;
   if(clean(typed)===clean(target.text)){
     cAddBubble('A',target.text);
-    cCorrect++;
+    document.getElementById('c-typed').value='';
+    document.getElementById('c-typo-feedback').classList.add('hidden');
+    cTotal++;cCorrect++;
+    cIndex++;
+    setTimeout(cProcessTurn,600);
   } else {
-    // Show what user typed and the correction
-    const div=document.createElement('div');
-    div.className='p-4 shadow-sm chat-bubble-a';
-    const label=document.createElement('div');label.className='text-[9px] font-mono font-bold uppercase mb-1 text-white/70';label.textContent='Person A (You)';
-    const content=document.createElement('div');content.className='text-sm font-medium leading-relaxed';
-    content.innerHTML='<span class="line-through opacity-60">'+escH(typed)+'</span>';
-    const fix=document.createElement('div');fix.className='text-[10px] mt-2 text-white/80 italic border-t border-white/20 pt-2';fix.textContent='→ '+target.text;
-    div.appendChild(label);div.appendChild(content);div.appendChild(fix);
-    document.getElementById('c-chat').appendChild(div);
-    document.getElementById('c-chat').scrollTop=document.getElementById('c-chat').scrollHeight;
+    // Word-level diff feedback
+    const fb=document.getElementById('c-typo-feedback');
+    const tWords=target.text.split(/\s+/),uWords=typed.split(/\s+/);
+    let hint='';
+    const maxLen=Math.max(tWords.length,uWords.length);
+    for(let i=0;i<maxLen;i++){
+      const tw=tWords[i]||'',uw=uWords[i]||'';
+      if(clean(tw)!==clean(uw)) hint+='<span class="text-n-red font-bold">'+escH(tw)+'</span> ';
+      else hint+='<span class="text-n-green">'+escH(tw)+'</span> ';
+    }
+    fb.innerHTML='→ '+hint;
+    fb.classList.remove('hidden');
   }
-  document.getElementById('c-typed').value='';
-  cIndex++;
-  setTimeout(cProcessTurn,500);
 });
+
+document.getElementById('c-typed').addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();document.getElementById('c-submitBtn').click();}});
 
 function cEndSession(){
   clearInterval(cTimerInterval);speechSynthesis.cancel();
