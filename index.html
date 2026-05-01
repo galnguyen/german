@@ -206,8 +206,8 @@ input[type="radio"]{accent-color:var(--c-cyan)!important}
             <option value="ACCA-Themen: Rechnungslegung, Audit, Steuerrecht, Finanzmanagement">ACCA Topics</option>
           </optgroup>
           <optgroup label="🧠 Mind">
-            <option value="Philosophie: Stoizismus, Erkenntnistheorie, Ethik, Existenzialismus, Buddhismus, Metaphysik">Philosophie (Philosophy)</option>
-            <option value="Psychologie: kognitive Verzerrungen, Verhaltensökonomie, Entscheidungstheorie, Neuropsychologie, Persönlichkeitsmerkmale">Psychologie (Psychology)</option>
+            <option value="Philosophie: Stoizismus, Erkenntnistheorie, Ethik, Existenzialismus">Philosophie (Philosophy)</option>
+            <option value="Psychologie: kognitive Verzerrungen, Verhaltensökonomie, Entscheidungstheorie">Psychologie (Psychology)</option>
           </optgroup>
           <optgroup label="🔬 Science &amp; History">
             <option value="Naturwissenschaft: Physik, Chemie, Biologie, Astronomie">Wissenschaft (Science)</option>
@@ -548,7 +548,7 @@ document.getElementById('d-generateBtn').addEventListener('click', async ()=>{
   const btn=document.getElementById('d-generateBtn'),st=document.getElementById('d-genStatus');
   btn.disabled=true;btn.innerHTML='<i data-lucide="loader-2" class="animate-spin" size="16"></i> Generating...';lucide.createIcons();st.textContent='Generating...';
   try{
-    const prompt='Generate a German text for dictation.\nTopic: '+topic+'\nCEFR: '+level+'\nRules: 40-70 words, 2-4 natural sentences, '+level+'-appropriate vocabulary/grammar. Return ONLY German text.';
+    const formats=['a short excerpt from a newspaper article','a paragraph from an email to a colleague','a few sentences from a podcast transcript','a passage from a business report','a snippet from a blog post','an excerpt from a meeting summary','a paragraph from a personal journal entry','a short passage from an interview'];const fmt=formats[Math.floor(Math.random()*formats.length)];const prompt='Write '+fmt+' in German about: '+topic+'.\nCEFR level: '+level+'.\nRules:\n- 40-70 words, 2-4 sentences.\n- Must sound like authentic human writing, NOT a textbook definition or encyclopedia entry.\n- Use natural phrasing, opinions, specific details, or narrative — the way a real person would write or speak.\n- Match '+level+' vocabulary and grammar complexity.\n- Return ONLY the raw German text, no labels or explanations.';
     const raw=await geminiCall('gemini-2.5-flash-lite',key,{contents:[{parts:[{text:prompt}]}],generationConfig:{maxOutputTokens:512,temperature:0.9}});
     dOriginal=raw.replace(/^["\u201E\u201C\u201D]|["\u201C\u201D]$/g,'').trim();
     document.getElementById('d-player').classList.remove('hidden');document.getElementById('d-results').classList.add('hidden');
