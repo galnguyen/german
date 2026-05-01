@@ -9,11 +9,26 @@
 tailwind.config = {
   theme: {
     extend: {
-      fontFamily: { orbitron:['Orbitron','sans-serif'], mono:['Space Mono','monospace'], sans:['Inter','sans-serif'] },
+      fontFamily: { 
+        orbitron: ['Orbitron', 'sans-serif'], 
+        mono: ['Space Mono', 'monospace'], 
+        sans: ['Inter', 'sans-serif'] 
+      },
       colors: {
-        n: { bg:'#e8e2d8', card:'#f5f1ea', border:'#d4cec4', text:'#2c2c2c', dim:'#8a8278',
-             cyan:'#3a7d6e', pink:'#c4606e', green:'#5a9a72', amber:'#c49332', purple:'#7e62a8',
-             red:'#c25050', blue:'#4e82a4' }
+        n: { 
+          bg: 'var(--c-bg)', 
+          card: 'var(--c-card)', 
+          border: 'var(--c-border)', 
+          text: 'var(--c-text)', 
+          dim: 'var(--c-dim)',
+          cyan: 'var(--c-cyan)', 
+          pink: 'var(--c-pink)', 
+          green: 'var(--c-green)', 
+          amber: 'var(--c-amber)', 
+          purple: 'var(--c-purple)',
+          red: 'var(--c-red)', 
+          blue: 'var(--c-blue)' 
+        }
       }
     }
   }
@@ -22,65 +37,183 @@ tailwind.config = {
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Orbitron:wght@400;700;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 <script src="https://unpkg.com/lucide@latest"></script>
 <style>
-body { background:#e8e2d8; color:#2c2c2c; }
-.cefr-a1{color:#c25050}.cefr-bg-a1{background:#c25050}.cefr-border-a1{border-color:#c25050}
-.cefr-a2{color:#c49332}.cefr-bg-a2{background:#c49332}.cefr-border-a2{border-color:#c49332}
-.cefr-b1{color:#5a9a72}.cefr-bg-b1{background:#5a9a72}.cefr-border-b1{border-color:#5a9a72}
-.cefr-b2{color:#4e82a4}.cefr-bg-b2{background:#4e82a4}.cefr-border-b2{border-color:#4e82a4}
-.cefr-c1{color:#7e62a8}.cefr-bg-c1{background:#7e62a8}.cefr-border-c1{border-color:#7e62a8}
-.cefr-unknown{color:#8a8278}.cefr-bg-unknown{background:#8a8278}.cefr-border-unknown{border-color:#8a8278}
-.glow-cyan{box-shadow:0 2px 8px rgba(58,125,110,0.12)}
-.glow-text{text-shadow:none}
-.word-hover:hover{background:rgba(58,125,110,0.1)}
-.r-tooltip{display:none;position:fixed;z-index:50;pointer-events:none}
-::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:#e8e2d8}::-webkit-scrollbar-thumb{background:#c4bdb2;border-radius:3px}
-input,textarea,select{background:#fff!important;color:#2c2c2c!important;border-color:#d4cec4!important}
-input::placeholder,textarea::placeholder{color:#8a8278!important}
-input:focus,textarea:focus,select:focus{outline:none;border-color:#3a7d6e!important;box-shadow:0 0 0 2px rgba(58,125,110,0.15)}
-.s-word.active{background:rgba(58,125,110,0.2);color:#2c2c2c;border-radius:2px}
-@keyframes xpPulse{0%,100%{box-shadow:0 1px 4px rgba(58,125,110,0.15)}50%{box-shadow:0 1px 8px rgba(58,125,110,0.25)}}
-.xp-bar-glow{animation:xpPulse 2s ease-in-out infinite}
+/* CSS VARIABLES FOR THEME SWITCHING */
+:root {
+  --c-bg: #e8e2d8;
+  --c-card: #f5f1ea;
+  --c-border: #d4cec4;
+  --c-text: #2c2c2c;
+  --c-dim: #8a8278;
+  --c-cyan: #3a7d6e;
+  --c-pink: #c4606e;
+  --c-green: #5a9a72;
+  --c-amber: #c49332;
+  --c-purple: #7e62a8;
+  --c-red: #c25050;
+  --c-blue: #4e82a4;
+}
+
+body.theme-game {
+  /* Galactic Cyber Theme - Eye Friendly */
+  --c-bg: #0f111a;
+  --c-card: #181b28;
+  --c-border: #2a2f42;
+  --c-text: #e2e8f0;
+  --c-dim: #64748b;
+  --c-cyan: #06b6d4;  /* Cyber Cyan */
+  --c-pink: #ec4899;  /* Neon Pink */
+  --c-green: #10b981; /* Matrix Green */
+  --c-amber: #f59e0b; /* Cyber Gold */
+  --c-purple: #8b5cf6; /* Deep Purple */
+  --c-red: #ef4444;   /* Alert Red */
+  --c-blue: #3b82f6;  /* Holo Blue */
+}
+
+body { background: var(--c-bg); color: var(--c-text); -webkit-tap-highlight-color: transparent; transition: background-color 0.3s ease, color 0.3s ease; }
+
+.cefr-a1 { color: var(--c-red) } .cefr-bg-a1 { background: var(--c-red) } .cefr-border-a1 { border-color: var(--c-red) }
+.cefr-a2 { color: var(--c-amber) } .cefr-bg-a2 { background: var(--c-amber) } .cefr-border-a2 { border-color: var(--c-amber) }
+.cefr-b1 { color: var(--c-green) } .cefr-bg-b1 { background: var(--c-green) } .cefr-border-b1 { border-color: var(--c-green) }
+.cefr-b2 { color: var(--c-blue) } .cefr-bg-b2 { background: var(--c-blue) } .cefr-border-b2 { border-color: var(--c-blue) }
+.cefr-c1 { color: var(--c-purple) } .cefr-bg-c1 { background: var(--c-purple) } .cefr-border-c1 { border-color: var(--c-purple) }
+.cefr-unknown { color: var(--c-dim) } .cefr-bg-unknown { background: var(--c-dim) } .cefr-border-unknown { border-color: var(--c-dim) }
+
+.glow-cyan { box-shadow: 0 4px 12px rgba(var(--c-cyan), 0.15); transition: box-shadow 0.3s; }
+body.theme-game .glow-cyan { box-shadow: 0 0 15px rgba(6, 182, 212, 0.2); }
+
+.word-hover:hover { background: rgba(58, 125, 110, 0.2); }
+body.theme-game .word-hover:hover { background: rgba(6, 182, 212, 0.2); }
+
+.r-tooltip { display: none; position: fixed; z-index: 100; pointer-events: none; }
+::-webkit-scrollbar { width: 6px }
+::-webkit-scrollbar-track { background: var(--c-bg) }
+::-webkit-scrollbar-thumb { background: var(--c-border); border-radius: 3px }
+
+.s-word.active { background: var(--c-cyan); color: #fff; border-radius: 2px; }
+
+@keyframes xpPulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.7; } }
+.xp-bar-glow { animation: xpPulse 2s ease-in-out infinite; }
+
+#notification-container { position: fixed; bottom: 20px; right: 20px; z-index: 1000; display: flex; flex-direction: column; gap: 8px; }
+.toast { padding: 12px 20px; border-radius: 12px; background: var(--c-card); color: var(--c-text); border: 1px solid var(--c-border); font-size: 13px; font-weight: 600; box-shadow: 0 4px 12px rgba(0,0,0,0.2); animation: slideIn 0.3s ease-out; }
+@keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+
+input, textarea, select { background: var(--c-card) !important; color: var(--c-text) !important; border: 1px solid var(--c-border) !important; transition: all 0.2s; }
+input:focus, textarea:focus, select:focus { border-color: var(--c-cyan) !important; box-shadow: 0 0 0 2px rgba(6, 182, 212, 0.15) !important; outline: none; }
+
+.chat-bubble-b { position: relative; background: var(--c-card); border: 1px solid var(--c-border); border-radius: 0 16px 16px 16px; margin-right: 20%; }
+.chat-bubble-a { position: relative; background: var(--c-cyan); color: #fff; border-radius: 16px 0 16px 16px; margin-left: 20%; }
 </style>
 </head>
-<body class="min-h-screen py-8 px-4 sm:px-6 font-sans">
-<div class="max-w-4xl mx-auto space-y-6">
+<body class="min-h-screen py-8 px-4 sm:px-6 font-sans antialiased">
+<div id="notification-container"></div>
+
+<!-- THEME SWITCHER -->
+<button id="themeToggle" class="absolute top-4 right-4 sm:top-6 sm:right-6 flex items-center gap-2 px-4 py-2 rounded-full border border-n-border bg-n-card text-n-dim hover:text-n-cyan hover:border-n-cyan transition-all text-xs font-mono font-bold shadow-sm z-50">
+  <i id="themeIcon" data-lucide="book-open" size="14"></i>
+  <span id="themeLabel" class="hidden sm:inline">LEARN MODE</span>
+</button>
+
+<div class="max-w-5xl mx-auto space-y-6 pt-6 sm:pt-2">
 
 <!-- HEADER -->
 <header class="text-center space-y-3 pt-4">
   <h1 class="font-orbitron text-4xl sm:text-5xl font-black tracking-[0.25em] text-n-cyan">DEUTSCH</h1>
-  <p class="text-n-dim text-[10px] font-mono tracking-[0.3em] uppercase">Level up your German</p>
-  <div class="flex items-center justify-center gap-3 pt-2">
-    <span id="xpLevel" class="font-mono text-[10px] text-n-cyan font-bold tracking-wider">LVL 1</span>
-    <div class="w-48 h-1.5 bg-n-border rounded-full overflow-hidden xp-bar-glow">
-      <div id="xpBar" class="h-full bg-gradient-to-r from-n-cyan to-n-green rounded-full transition-all duration-700" style="width:0%"></div>
+  <p class="text-n-dim text-[10px] font-mono tracking-[0.3em] uppercase">Level up your German Intelligence</p>
+  <div class="flex flex-col items-center gap-2 pt-2">
+    <div class="flex items-center gap-3">
+      <span id="xpLevel" class="font-mono text-[10px] text-n-cyan font-bold tracking-wider">LVL 1</span>
+      <div class="w-48 h-1.5 bg-n-border rounded-full overflow-hidden">
+        <div id="xpBar" class="h-full bg-gradient-to-r from-n-cyan to-n-green rounded-full transition-all duration-700 xp-bar-glow" style="width:0%"></div>
+      </div>
+      <span id="xpText" class="font-mono text-[10px] text-n-dim">0 / 50 XP</span>
+      <div id="streakBadge" class="hidden flex items-center gap-1 text-n-amber bg-n-amber/10 px-2 py-0.5 rounded-full font-mono text-[10px] font-bold shadow-sm transition-all border border-n-amber/20"><i data-lucide="flame" size="12"></i> <span id="streakText">0</span></div>
     </div>
-    <span id="xpText" class="font-mono text-[10px] text-n-dim">0 / 50 XP</span>
   </div>
 </header>
 
 <!-- API KEY -->
-<details class="bg-n-card border border-n-border rounded-xl p-4">
+<details class="bg-n-card border border-n-border rounded-xl p-4 max-w-4xl mx-auto">
   <summary class="text-[10px] font-mono font-bold text-n-dim uppercase cursor-pointer tracking-wider flex items-center gap-2">
-    <i data-lucide="settings-2" size="12"></i> API KEY
+    <i data-lucide="settings-2" size="12"></i> CONFIGURATION
   </summary>
   <div class="mt-3 space-y-2">
-    <input type="password" id="apiKey" class="w-full p-2 rounded-lg text-sm border" placeholder="AIza...">
-    <p class="text-[10px] text-n-dim">Stored locally. Free at <a href="https://aistudio.google.com/apikey" target="_blank" class="text-n-cyan underline">aistudio.google.com</a></p>
+    <input type="password" id="apiKey" class="w-full p-2.5 rounded-lg text-sm border" placeholder="Paste Gemini API Key...">
+    <p class="text-[10px] text-n-dim flex items-center gap-1">
+      <i data-lucide="info" size="10"></i> 
+      Stored locally. Get one at <a href="https://aistudio.google.com/apikey" target="_blank" class="text-n-cyan underline">Google AI Studio</a>.
+    </p>
   </div>
 </details>
 
 <!-- TABS -->
-<nav class="flex border-b border-n-border">
-  <button class="main-tab font-mono text-xs tracking-wider uppercase px-5 py-3 border-b-2 border-n-cyan text-n-cyan transition-all" data-tab="reader">📖 Reader</button>
-  <button class="main-tab font-mono text-xs tracking-wider uppercase px-5 py-3 border-b-2 border-transparent text-n-dim hover:text-n-text transition-all" data-tab="summarize">📝 Zusammenfassen</button>
-  <button class="main-tab font-mono text-xs tracking-wider uppercase px-5 py-3 border-b-2 border-transparent text-n-dim hover:text-n-text transition-all" data-tab="diktat">🎧 Diktat</button>
+<nav class="flex border-b border-n-border overflow-x-auto max-w-4xl mx-auto">
+  <button class="main-tab flex-none font-mono text-xs tracking-wider uppercase px-5 py-3 border-b-2 border-n-cyan text-n-cyan transition-all" data-tab="dashboard">📊 Dashboard</button>
+  <button class="main-tab flex-none font-mono text-xs tracking-wider uppercase px-5 py-3 border-b-2 border-transparent text-n-dim hover:text-n-text transition-all" data-tab="reader">📖 Reader</button>
+  <button class="main-tab flex-none font-mono text-xs tracking-wider uppercase px-5 py-3 border-b-2 border-transparent text-n-dim hover:text-n-text transition-all" data-tab="summarize">📝 Summary</button>
+  <button class="main-tab flex-none font-mono text-xs tracking-wider uppercase px-5 py-3 border-b-2 border-transparent text-n-dim hover:text-n-text transition-all" data-tab="diktat">🎧 Diktat</button>
+  <button class="main-tab flex-none font-mono text-xs tracking-wider uppercase px-5 py-3 border-b-2 border-transparent text-n-dim hover:text-n-text transition-all" data-tab="conversation">💬 Konversation</button>
 </nav>
 
+<!-- ========== TAB 0: DASHBOARD ========== -->
+<div id="tab-dashboard" class="tab-content space-y-6 animate-in fade-in max-w-4xl mx-auto">
+  <section class="grid grid-cols-2 md:grid-cols-4 gap-4">
+    <div class="bg-n-card rounded-2xl border border-n-border p-5 flex flex-col items-center justify-center gap-1 shadow-sm">
+      <i data-lucide="zap" size="20" class="text-n-cyan mb-1"></i>
+      <span class="text-[10px] font-mono text-n-dim uppercase tracking-widest font-bold">Total XP</span>
+      <span id="dash-xp" class="text-xl font-black font-orbitron text-n-text">0</span>
+    </div>
+    <div class="bg-n-card rounded-2xl border border-n-border p-5 flex flex-col items-center justify-center gap-1 shadow-sm">
+      <i data-lucide="award" size="20" class="text-n-purple mb-1"></i>
+      <span class="text-[10px] font-mono text-n-dim uppercase tracking-widest font-bold">Level</span>
+      <span id="dash-lvl" class="text-xl font-black font-orbitron text-n-text">1</span>
+    </div>
+    <div class="bg-n-amber/5 rounded-2xl border border-n-amber/30 p-5 flex flex-col items-center justify-center gap-1 shadow-sm">
+      <i data-lucide="flame" size="20" class="text-n-amber mb-1"></i>
+      <span class="text-[10px] font-mono text-n-amber uppercase tracking-widest font-bold">Current Streak</span>
+      <span id="dash-streak" class="text-xl font-black font-orbitron text-n-amber">0</span>
+    </div>
+    <div class="bg-n-card rounded-2xl border border-n-border p-5 flex flex-col items-center justify-center gap-1 shadow-sm">
+      <i data-lucide="calendar-check-2" size="20" class="text-n-green mb-1"></i>
+      <span class="text-[10px] font-mono text-n-dim uppercase tracking-widest font-bold">Max Streak</span>
+      <span id="dash-max-streak" class="text-xl font-black font-orbitron text-n-text">0</span>
+    </div>
+  </section>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <!-- HEATMAP -->
+    <section class="bg-n-card rounded-2xl border border-n-border p-6 shadow-lg space-y-4">
+      <h3 class="font-mono text-sm font-bold text-n-cyan uppercase tracking-widest flex items-center gap-2"><i data-lucide="activity" size="16"></i> Activity Heatmap</h3>
+      <div class="overflow-x-auto pb-4">
+        <div id="heatmap-grid" class="grid grid-rows-7 gap-1.5 w-max" style="grid-auto-flow: column;">
+          <!-- Rendered via JS -->
+        </div>
+      </div>
+      <div class="flex justify-end items-center gap-2 text-[10px] text-n-dim font-mono mt-2">
+        <span>Less</span>
+        <div class="w-3 h-3 rounded-[2px] bg-n-card border border-n-border/50"></div>
+        <div class="w-3 h-3 rounded-[2px] bg-n-cyan/30 border border-transparent"></div>
+        <div class="w-3 h-3 rounded-[2px] bg-n-cyan/60 border border-transparent"></div>
+        <div class="w-3 h-3 rounded-[2px] bg-n-cyan border border-transparent"></div>
+        <span>More</span>
+      </div>
+    </section>
+
+    <!-- SKILL BREAKDOWN -->
+    <section class="bg-n-card rounded-2xl border border-n-border p-6 shadow-lg space-y-5">
+      <h3 class="font-mono text-sm font-bold text-n-cyan uppercase tracking-widest flex items-center gap-2"><i data-lucide="pie-chart" size="16"></i> Skill Distribution</h3>
+      <div id="skill-breakdown" class="space-y-4 pt-2">
+        <!-- Rendered via JS -->
+      </div>
+    </section>
+  </div>
+</div>
+
 <!-- ========== TAB 1: READER ========== -->
-<div id="tab-reader" class="tab-content space-y-6">
+<div id="tab-reader" class="tab-content hidden space-y-6 animate-in fade-in max-w-4xl mx-auto">
   <section class="bg-n-card rounded-2xl border border-n-border overflow-hidden">
     <div class="border-b border-n-border flex items-center justify-between px-5 py-3">
-      <span class="text-[10px] font-mono font-bold text-n-dim uppercase tracking-wider">Input</span>
+      <span class="text-[10px] font-mono font-bold text-n-dim uppercase tracking-wider">German Text Input</span>
       <div class="flex gap-2">
         <span class="text-[10px] cefr-a1 font-bold">A1</span>
         <span class="text-[10px] cefr-a2 font-bold">A2</span>
@@ -90,9 +223,9 @@ input:focus,textarea:focus,select:focus{outline:none;border-color:#3a7d6e!import
       </div>
     </div>
     <textarea id="r-input" class="w-full min-h-[150px] p-5 text-base bg-transparent border-none resize-none leading-relaxed" placeholder="Paste German text here..."></textarea>
-    <div class="px-5 py-3 border-t border-n-border flex items-center justify-between">
-      <span id="r-status" class="text-[10px] font-mono text-n-dim">Ready</span>
-      <button id="r-analyzeBtn" class="flex items-center gap-2 bg-n-cyan text-white px-5 py-2 rounded-lg text-sm font-bold hover:shadow-md transition-all">
+    <div class="px-5 py-3 border-t border-n-border flex items-center justify-between bg-n-bg/30">
+      <span id="r-status" class="text-[10px] font-mono text-n-dim uppercase">Ready for analysis</span>
+      <button id="r-analyzeBtn" class="flex items-center gap-2 bg-n-cyan text-white px-6 py-2 rounded-lg text-sm font-bold hover:brightness-110 active:scale-95 transition-all shadow-sm">
         <i data-lucide="sparkles" size="16"></i> Analyze
       </button>
     </div>
@@ -100,23 +233,23 @@ input:focus,textarea:focus,select:focus{outline:none;border-color:#3a7d6e!import
   <div id="r-results" class="hidden space-y-6">
     <div class="bg-n-card rounded-2xl border border-n-border overflow-hidden">
       <div class="px-5 py-3 border-b border-n-border flex items-center justify-between">
-        <h2 class="font-bold text-sm">Annotated Text</h2>
-        <span id="r-grade" class="font-mono text-[10px] font-bold text-n-cyan bg-n-cyan/10 px-3 py-1 rounded-full tracking-wider">GRADE: -</span>
+        <h2 class="font-bold text-sm uppercase font-mono tracking-tight text-n-dim">Annotated Insight</h2>
+        <span id="r-grade" class="font-mono text-[10px] font-bold text-n-cyan bg-n-cyan/10 px-3 py-1 rounded-full tracking-widest border border-n-cyan/20">GRADE: -</span>
       </div>
-      <div id="r-annotated" class="p-6 leading-[2.2] text-lg font-medium"></div>
+      <div id="r-annotated" class="p-6 leading-[2.4] text-lg font-medium selection:bg-n-cyan/20"></div>
     </div>
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
       <div class="space-y-3">
-        <h3 class="font-mono text-[10px] font-bold text-n-dim uppercase tracking-wider px-1">Grammar</h3>
+        <h3 class="font-mono text-[10px] font-bold text-n-dim uppercase tracking-wider px-1">Structure & Grammar</h3>
         <div id="r-grammar" class="space-y-2"></div>
       </div>
       <div class="space-y-3">
-        <h3 class="font-mono text-[10px] font-bold text-n-dim uppercase tracking-wider px-1">Translation</h3>
+        <h3 class="font-mono text-[10px] font-bold text-n-dim uppercase tracking-wider px-1">Universal Meaning</h3>
         <div id="r-translation" class="p-5 bg-n-card rounded-xl border border-n-border italic text-n-text/70 text-sm leading-relaxed min-h-[80px]"></div>
       </div>
     </div>
     <div class="space-y-3">
-      <h3 class="font-mono text-[10px] font-bold text-n-dim uppercase tracking-wider px-1">Sound More Native</h3>
+      <h3 class="font-mono text-[10px] font-bold text-n-dim uppercase tracking-wider px-1">Native Optimization</h3>
       <div class="bg-n-card rounded-xl border border-n-cyan/30 p-5 glow-cyan">
         <div id="r-suggestions" class="grid grid-cols-1 md:grid-cols-2 gap-3"></div>
       </div>
@@ -125,387 +258,965 @@ input:focus,textarea:focus,select:focus{outline:none;border-color:#3a7d6e!import
 </div>
 
 <!-- ========== TAB 2: SUMMARIZE ========== -->
-<div id="tab-summarize" class="tab-content hidden space-y-6">
+<div id="tab-summarize" class="tab-content hidden space-y-6 max-w-4xl mx-auto">
   <div class="flex gap-2 flex-wrap">
-    <button class="s-tab font-mono text-[10px] px-3 py-1.5 rounded-full bg-n-cyan text-white font-bold" data-pane="paste">Paste text</button>
-    <button class="s-tab font-mono text-[10px] px-3 py-1.5 rounded-full bg-n-card border border-n-border text-n-dim" data-pane="file">Text file</button>
-    <button class="s-tab font-mono text-[10px] px-3 py-1.5 rounded-full bg-n-card border border-n-border text-n-dim" data-pane="audio">Audio file</button>
-    <button class="s-tab font-mono text-[10px] px-3 py-1.5 rounded-full bg-n-card border border-n-border text-n-dim" data-pane="url">Article URL</button>
+    <button class="s-tab font-mono text-[10px] px-3 py-1.5 rounded-full bg-n-cyan text-white font-bold" data-pane="paste">TEXT PASTE</button>
+    <button class="s-tab font-mono text-[10px] px-3 py-1.5 rounded-full bg-n-card border border-n-border text-n-dim" data-pane="file">DOCUMENT</button>
+    <button class="s-tab font-mono text-[10px] px-3 py-1.5 rounded-full bg-n-card border border-n-border text-n-dim" data-pane="audio">AUDIO FILE</button>
+    <button class="s-tab font-mono text-[10px] px-3 py-1.5 rounded-full bg-n-card border border-n-border text-n-dim" data-pane="url">ARTICLE URL</button>
   </div>
-  <div id="s-pane-paste" class="s-pane">
-    <textarea id="s-pasteText" class="w-full min-h-[140px] p-4 rounded-xl border text-sm leading-relaxed" placeholder="Paste any text (article, email, notes...)"></textarea>
+  <div id="s-pane-paste" class="s-pane animate-in slide-in-from-bottom-2">
+    <textarea id="s-pasteText" class="w-full min-h-[140px] p-4 rounded-xl border text-sm leading-relaxed" placeholder="Paste full content for condensation..."></textarea>
   </div>
-  <div id="s-pane-file" class="s-pane hidden">
-    <input type="file" id="s-textFile" accept=".txt,.md,.srt,.vtt,text/plain" class="text-sm">
-    <div id="s-fileInfo" class="text-[10px] text-n-dim mt-1"></div>
-  </div>
-  <div id="s-pane-audio" class="s-pane hidden">
-    <p class="text-[10px] text-n-dim mb-2">Upload audio (mp3, m4a, wav — up to ~18MB). Gemini transcribes and summarizes.</p>
-    <input type="file" id="s-audioFile" accept="audio/*" class="text-sm">
-    <div id="s-audioInfo" class="text-[10px] text-n-dim mt-1"></div>
-  </div>
-  <div id="s-pane-url" class="s-pane hidden">
-    <input type="text" id="s-articleUrl" class="w-full p-3 rounded-xl border text-sm" placeholder="https://example.com/article">
-  </div>
-  <div class="flex gap-3 items-center flex-wrap">
-    <label class="text-[10px] font-mono text-n-dim">Level:
-      <select id="s-level" class="ml-1 p-1.5 rounded-lg text-xs border"><option value="B1">B1</option><option value="B2" selected>B2</option><option value="C1">C1</option></select>
-    </label>
-    <label class="text-[10px] font-mono text-n-dim">Length:
-      <select id="s-length" class="ml-1 p-1.5 rounded-lg text-xs border"><option value="short">Short (~150w)</option><option value="medium" selected>Medium (~300w)</option><option value="long">Long (~500w)</option></select>
-    </label>
-    <label class="text-[10px] font-mono text-n-dim">Model:
-      <select id="s-model" class="ml-1 p-1.5 rounded-lg text-xs border"><option value="gemini-2.5-flash-lite" selected>2.5-flash-lite</option><option value="gemini-2.5-flash">2.5-flash</option><option value="gemini-1.5-flash-8b">1.5-flash-8b</option><option value="gemini-2.0-flash">2.0-flash</option></select>
-    </label>
-    <button id="s-go" class="flex items-center gap-2 bg-n-cyan text-white px-4 py-2 rounded-lg text-sm font-bold hover:shadow-md transition-all">
-      <i data-lucide="sparkles" size="16"></i> Summarize &amp; Read
-    </button>
-    <button id="s-stop" class="bg-n-card border border-n-border text-n-dim px-3 py-2 rounded-lg text-xs font-mono hover:text-n-text">Stop</button>
-  </div>
-  <div id="s-status" class="text-[10px] font-mono text-n-dim"></div>
-  <div id="s-card" class="hidden space-y-4">
-    <div class="bg-n-card rounded-xl border border-n-border p-5 space-y-3">
-      <h3 class="font-mono text-[10px] font-bold text-n-cyan uppercase tracking-wider">Zusammenfassung</h3>
-      <div id="s-summary" class="text-sm leading-relaxed"></div>
+  <div id="s-pane-file" class="s-pane hidden animate-in slide-in-from-bottom-2">
+    <div class="border-2 border-dashed border-n-border rounded-xl p-8 text-center bg-n-card/50">
+      <input type="file" id="s-textFile" accept=".txt,.md,.srt,.pdf" class="hidden">
+      <label for="s-textFile" class="cursor-pointer flex flex-col items-center gap-2">
+        <i data-lucide="file-up" size="24" class="text-n-dim"></i>
+        <span class="text-sm font-semibold">Select .txt, .md or .pdf</span>
+        <span id="s-fileInfo" class="text-[10px] text-n-dim">Max 1MB</span>
+      </label>
     </div>
-    <details class="bg-n-card rounded-xl border border-n-border p-4">
-      <summary class="text-[10px] font-mono text-n-dim cursor-pointer">Vokabeln</summary>
-      <div id="s-vocab" class="mt-3 text-sm space-y-1"></div>
-    </details>
-    <details class="bg-n-card rounded-xl border border-n-border p-4">
-      <summary class="text-[10px] font-mono text-n-dim cursor-pointer">Source text</summary>
-      <textarea id="s-rawSource" readonly class="mt-3 w-full min-h-[100px] p-3 text-xs rounded-lg border"></textarea>
+  </div>
+  <div id="s-pane-audio" class="s-pane hidden animate-in slide-in-from-bottom-2">
+    <div class="border-2 border-dashed border-n-border rounded-xl p-8 text-center bg-n-card/50">
+      <input type="file" id="s-audioFile" accept="audio/*" class="hidden">
+      <label for="s-audioFile" class="cursor-pointer flex flex-col items-center gap-2">
+        <i data-lucide="mic" size="24" class="text-n-dim"></i>
+        <span class="text-sm font-semibold">Select Audio (MP3/M4A)</span>
+        <span id="s-audioInfo" class="text-[10px] text-n-dim">Max 18MB for transcription</span>
+      </label>
+    </div>
+  </div>
+  <div id="s-pane-url" class="s-pane hidden animate-in slide-in-from-bottom-2">
+    <input type="text" id="s-articleUrl" class="w-full p-4 rounded-xl border text-sm" placeholder="https://news.google.de/...">
+  </div>
+  <div class="flex gap-4 items-center flex-wrap bg-n-card/50 p-4 rounded-xl border border-n-border">
+    <div class="flex items-center gap-2">
+      <span class="text-[10px] font-mono text-n-dim">CEFR:</span>
+      <select id="s-level" class="p-1.5 rounded-lg text-xs border"><option value="B1">B1</option><option value="B2" selected>B2</option><option value="C1">C1</option></select>
+    </div>
+    <div class="flex items-center gap-2">
+      <span class="text-[10px] font-mono text-n-dim">LEN:</span>
+      <select id="s-length" class="p-1.5 rounded-lg text-xs border"><option value="short">150w</option><option value="medium" selected>300w</option><option value="long">500w</option></select>
+    </div>
+    <button id="s-go" class="flex items-center gap-2 bg-n-cyan text-white px-5 py-2 rounded-lg text-sm font-bold hover:brightness-110 active:scale-95 transition-all ml-auto">
+      <i data-lucide="zap" size="16"></i> Process
+    </button>
+  </div>
+  <div id="s-status" class="text-[10px] font-mono text-n-dim text-center h-4"></div>
+  <div id="s-card" class="hidden space-y-4 animate-in fade-in">
+    <div class="bg-n-card rounded-xl border border-n-border p-6 space-y-4">
+      <div class="flex items-center justify-between">
+        <h3 class="font-mono text-[10px] font-bold text-n-cyan uppercase tracking-widest">Zusammenfassung</h3>
+        <button id="s-stop" class="text-[10px] text-n-dim hover:text-n-red font-mono flex items-center gap-1">
+          <i data-lucide="square" size="10"></i> STOP TTS
+        </button>
+      </div>
+      <div id="s-summary" class="text-base leading-[1.8] text-n-text/90"></div>
+    </div>
+    <details class="bg-n-card rounded-xl border border-n-border overflow-hidden">
+      <summary class="p-4 text-[10px] font-mono text-n-dim cursor-pointer hover:bg-black/5 select-none uppercase tracking-widest">Wortschatz (Vocabulary)</summary>
+      <div id="s-vocab" class="p-4 pt-0 text-sm space-y-2 border-t border-n-border/50 bg-n-bg/20"></div>
     </details>
   </div>
 </div>
 
 <!-- ========== TAB 3: DIKTAT ========== -->
-<div id="tab-diktat" class="tab-content hidden space-y-6">
-  <section class="bg-n-card rounded-2xl border border-n-border p-5 space-y-4">
-    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-      <div>
-        <label class="block text-[10px] font-mono font-bold text-n-dim uppercase tracking-wider mb-2">Topic</label>
-        <select id="d-topic" class="w-full p-2.5 rounded-lg text-sm border">
-          <optgroup label="💰 Finance">
-            <option value="M&A: Fusionen und Übernahmen, Due Diligence, Unternehmensbewertung">M&A (Mergers & Acquisitions)</option>
-            <option value="Corporate Finance: Kapitalstruktur, Investitionsrechnung, Cashflow-Analyse">Corporate Finance</option>
-            <option value="Aktienmarkt: Börse, Wertpapiere, Portfoliomanagement, Dividenden">Aktienmarkt (Stock Market)</option>
-            <option value="Makroökonomie: BIP, Inflation, Geldpolitik, Zinsen, Konjunktur">Makroökonomie (Macro)</option>
-            <option value="Mikroökonomie: Angebot und Nachfrage, Preisbildung, Marktstrukturen">Mikroökonomie (Micro)</option>
-            <option value="CFA-Themen: Financial Reporting, Equity Valuation, Fixed Income, Derivatives">CFA Topics</option>
-            <option value="ACCA-Themen: Rechnungslegung, Audit, Steuerrecht, Finanzmanagement">ACCA Topics</option>
+<div id="tab-diktat" class="tab-content hidden space-y-6 max-w-4xl mx-auto">
+  <section class="bg-n-card rounded-2xl border border-n-border p-6 space-y-6">
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+      <div class="space-y-2">
+        <label class="block text-[10px] font-mono font-bold text-n-dim uppercase tracking-wider">Expertise Topic</label>
+        <select id="d-topic" class="w-full p-3 rounded-lg text-sm border font-medium">
+          <optgroup label="Finance & Economy">
+            <option value="M&A: Fusionen und Übernahmen, Due Diligence">Mergers & Acquisitions</option>
+            <option value="Aktienmarkt und Wertpapieranalyse">Stock Market</option>
+            <option value="Geldpolitik der EZB und Inflation">Macroeconomics</option>
           </optgroup>
-          <optgroup label="🧠 Mind">
-            <option value="Philosophie: Stoizismus, Erkenntnistheorie, Ethik, Existenzialismus">Philosophie (Philosophy)</option>
-            <option value="Psychologie: kognitive Verzerrungen, Verhaltensökonomie, Entscheidungstheorie">Psychologie (Psychology)</option>
-          </optgroup>
-          <optgroup label="🔬 Science &amp; History">
-            <option value="Naturwissenschaft: Physik, Chemie, Biologie, Astronomie">Wissenschaft (Science)</option>
-            <option value="Geschichte: Weltgeschichte, europäische Geschichte, Industrialisierung, Kriege">Geschichte (History)</option>
-          </optgroup>
-          <optgroup label="🌍 Life">
-            <option value="Alltag und tägliches Leben">Alltag (Daily Life)</option>
-            <option value="Reisen und Kultur">Reisen (Travel)</option>
-            <option value="Technologie und digitale Welt">Technologie (Technology)</option>
+          <optgroup label="Philosophy & Mind">
+            <option value="Stoizismus und Lebensführung">Philosophy</option>
+            <option value="Kognitive Psychologie und Bias">Psychology</option>
           </optgroup>
         </select>
       </div>
-      <div>
-        <label class="block text-[10px] font-mono font-bold text-n-dim uppercase tracking-wider mb-2">CEFR Level</label>
-        <div class="flex gap-3 mt-1">
-          <label class="flex items-center gap-1.5 cursor-pointer"><input type="radio" name="d-level" value="A2" checked class="accent-[#3a7d6e]"><span class="text-sm">A2</span></label>
-          <label class="flex items-center gap-1.5 cursor-pointer"><input type="radio" name="d-level" value="B1" class="accent-[#3a7d6e]"><span class="text-sm">B1</span></label>
-          <label class="flex items-center gap-1.5 cursor-pointer"><input type="radio" name="d-level" value="B2" class="accent-[#3a7d6e]"><span class="text-sm">B2</span></label>
-          <label class="flex items-center gap-1.5 cursor-pointer"><input type="radio" name="d-level" value="C1" class="accent-[#3a7d6e]"><span class="text-sm">C1</span></label>
+      <div class="space-y-2">
+        <label class="block text-[10px] font-mono font-bold text-n-dim uppercase tracking-wider">Skill Level</label>
+        <div class="flex items-center gap-4 h-10">
+          <label class="flex items-center gap-1.5 cursor-pointer"><input type="radio" name="d-level" value="A2" checked class="w-4 h-4 accent-n-cyan"><span class="text-sm">A2</span></label>
+          <label class="flex items-center gap-1.5 cursor-pointer"><input type="radio" name="d-level" value="B1" class="w-4 h-4 accent-n-cyan"><span class="text-sm">B1</span></label>
+          <label class="flex items-center gap-1.5 cursor-pointer"><input type="radio" name="d-level" value="B2" class="w-4 h-4 accent-n-cyan"><span class="text-sm">B2</span></label>
+          <label class="flex items-center gap-1.5 cursor-pointer"><input type="radio" name="d-level" value="C1" class="w-4 h-4 accent-n-cyan"><span class="text-sm">C1</span></label>
         </div>
       </div>
     </div>
-    <button id="d-generateBtn" class="flex items-center gap-2 bg-n-cyan text-white px-5 py-2 rounded-lg text-sm font-bold hover:shadow-md transition-all w-full justify-center">
-      <i data-lucide="sparkles" size="16"></i> Generate Diktat
+    <button id="d-generateBtn" class="flex items-center gap-2 bg-n-cyan text-white px-5 py-3 rounded-lg text-sm font-bold hover:brightness-110 transition-all w-full justify-center shadow-md">
+      <i data-lucide="headphones" size="18"></i> Generate Dictation Session
     </button>
-    <div id="d-genStatus" class="text-[10px] font-mono text-n-dim text-center"></div>
   </section>
-  <section id="d-player" class="hidden bg-n-card rounded-2xl border border-n-border p-5 space-y-4">
-    <div class="flex items-center justify-between">
-      <h2 class="font-bold text-sm">Listen &amp; Type</h2>
-      <span id="d-playCount" class="text-[10px] font-mono text-n-dim">Played: 0</span>
+  <section id="d-player" class="hidden bg-n-card rounded-2xl border border-n-border p-6 space-y-6">
+    <div class="flex items-center justify-between border-b border-n-border pb-3">
+      <h2 class="font-bold text-sm uppercase tracking-tight">Transcription Interface</h2>
+      <span id="d-playCount" class="text-[10px] font-mono text-n-dim bg-n-bg px-2 py-0.5 rounded">Plays: 0</span>
     </div>
-    <div class="flex items-center gap-3 bg-n-bg rounded-xl p-3 border border-n-border">
-      <button id="d-playBtn" class="bg-n-cyan text-white p-2.5 rounded-full hover:shadow-md transition-all"><i data-lucide="play" size="18"></i></button>
-      <button id="d-pauseBtn" class="hidden bg-n-dim text-white p-2.5 rounded-full"><i data-lucide="pause" size="18"></i></button>
-      <button id="d-repeatBtn" class="bg-n-card text-n-text p-2.5 rounded-full border border-n-border hover:border-n-cyan/50 transition-all"><i data-lucide="repeat" size="18"></i></button>
-      <div class="flex-1"></div>
-      <div class="flex items-center gap-2">
-        <span class="text-[10px] font-mono text-n-dim">Speed:</span>
-        <div class="flex gap-1">
-          <button class="d-speed text-[10px] px-2 py-1 rounded bg-n-card border border-n-border text-n-dim" data-speed="0.7">0.7x</button>
-          <button class="d-speed text-[10px] px-2 py-1 rounded bg-n-card border border-n-border text-n-dim" data-speed="0.85">0.85x</button>
-          <button class="d-speed text-[10px] px-2 py-1 rounded bg-n-cyan text-white font-bold border-2 border-n-cyan" data-speed="1">1x</button>
-          <button class="d-speed text-[10px] px-2 py-1 rounded bg-n-card border border-n-border text-n-dim" data-speed="1.2">1.2x</button>
+    <div class="flex flex-wrap items-center gap-4 bg-n-bg/50 rounded-xl p-4 border border-n-border">
+      <button id="d-playBtn" class="bg-n-cyan text-white p-3 rounded-full"><i data-lucide="play" size="20"></i></button>
+      <button id="d-pauseBtn" class="hidden bg-n-dim text-white p-3 rounded-full"><i data-lucide="pause" size="20"></i></button>
+      <button id="d-repeatBtn" class="bg-n-card text-n-text p-3 rounded-full border border-n-border"><i data-lucide="rotate-ccw" size="20"></i></button>
+      <div class="flex gap-1.5">
+        <button class="d-speed text-[10px] px-3 py-1.5 rounded-lg bg-n-card border border-n-border" data-speed="0.75">0.75x</button>
+        <button class="d-speed text-[10px] px-3 py-1.5 rounded-lg bg-n-cyan text-white font-bold" data-speed="1">1.0x</button>
+      </div>
+    </div>
+    <textarea id="d-typed" class="w-full min-h-[160px] p-5 text-lg rounded-xl border resize-none leading-relaxed" placeholder="Type what you hear..."></textarea>
+    <button id="d-checkBtn" class="bg-n-cyan text-white px-8 py-2.5 rounded-lg text-sm font-bold w-full">Verify Results</button>
+  </section>
+  <section id="d-results" class="hidden space-y-6 animate-in fade-in"></section>
+</div>
+
+<!-- ========== TAB 4: CONVERSATION ========== -->
+<div id="tab-conversation" class="tab-content hidden space-y-6 max-w-4xl mx-auto">
+  <section class="bg-n-card rounded-2xl border border-n-border p-6 space-y-6">
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+      <div class="space-y-2">
+        <label class="block text-[10px] font-mono font-bold text-n-dim uppercase tracking-wider">Scenario</label>
+        <select id="c-topic" class="w-full p-3 rounded-lg text-sm border font-medium">
+          <option value="Meeting: Eine Besprechung im Büro organisieren">Office Meeting</option>
+          <option value="Präsentation: Ein neues Projekt vorstellen">Presentation</option>
+          <option value="Aufgabendelegation: Arbeit im Team verteilen">Work Delegation</option>
+          <option value="Technik-Probleme: Computer, Drucker oder Projektor funktionieren nicht">Technical Issues</option>
+          <option value="Planung: Ein Event oder eine Strategie planen">Strategic Planning</option>
+          <option value="Reiseplanung: Eine Geschäftsreise oder einen Urlaub buchen">Travel Planning</option>
+          <option value="Feiertagsplanung: Pläne für den nächsten Urlaub">Holiday Plans</option>
+          <option value="Hobbys: Über Freizeitaktivitäten sprechen">Hobbies & Interests</option>
+          <option value="Wochenende: Über Pläne für das Wochenende reden">Weekend Plans</option>
+        </select>
+      </div>
+      <div class="space-y-2">
+        <label class="block text-[10px] font-mono font-bold text-n-dim uppercase tracking-wider">Complexity</label>
+        <div class="flex items-center gap-4 h-10">
+          <label class="flex items-center gap-1.5 cursor-pointer"><input type="radio" name="c-level" value="A2" class="w-4 h-4 accent-n-cyan"><span class="text-sm">A2</span></label>
+          <label class="flex items-center gap-1.5 cursor-pointer"><input type="radio" name="c-level" value="B1" checked class="w-4 h-4 accent-n-cyan"><span class="text-sm">B1</span></label>
+          <label class="flex items-center gap-1.5 cursor-pointer"><input type="radio" name="c-level" value="B2" class="w-4 h-4 accent-n-cyan"><span class="text-sm">B2</span></label>
+          <label class="flex items-center gap-1.5 cursor-pointer"><input type="radio" name="c-level" value="C1" class="w-4 h-4 accent-n-cyan"><span class="text-sm">C1</span></label>
         </div>
       </div>
     </div>
-    <textarea id="d-typed" class="w-full min-h-[120px] p-4 text-base rounded-xl border resize-none leading-relaxed" placeholder="Type what you hear..."></textarea>
-    <div class="flex items-center justify-between">
-      <button id="d-hintBtn" class="text-[10px] text-n-dim hover:text-n-amber underline decoration-dotted underline-offset-4">Show hint</button>
-      <button id="d-checkBtn" class="flex items-center gap-2 bg-n-cyan text-white px-5 py-2 rounded-lg text-sm font-bold hover:shadow-md transition-all">
-        <i data-lucide="check-circle-2" size="16"></i> Check
-      </button>
-    </div>
-    <div id="d-hint" class="hidden text-sm text-n-amber italic bg-n-amber/10 p-3 rounded-lg border border-n-amber/30 font-mono"></div>
-  </section>
-  <section id="d-results" class="hidden space-y-4">
-    <div class="bg-n-card rounded-2xl border border-n-border overflow-hidden">
-      <div class="px-5 py-3 border-b border-n-border flex items-center justify-between">
-        <h2 class="font-bold text-sm">Results</h2>
-        <span id="d-scoreBadge" class="font-mono text-sm font-bold px-4 py-1 rounded-full"></span>
-      </div>
-      <div class="p-5 space-y-3">
-        <div class="w-full bg-n-border rounded-full h-2 overflow-hidden">
-          <div id="d-scoreBar" class="h-full rounded-full transition-all duration-700" style="width:0%"></div>
-        </div>
-        <div id="d-scoreDetails" class="flex gap-3 text-[10px] font-mono text-n-dim"></div>
-      </div>
-    </div>
-    <div class="bg-n-card rounded-2xl border border-n-border p-5 space-y-3">
-      <div class="flex gap-3 text-[10px] text-n-dim">
-        <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-n-green inline-block"></span> Correct</span>
-        <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-n-pink inline-block"></span> Wrong</span>
-        <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-n-amber inline-block"></span> Missing</span>
-        <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-n-dim inline-block"></span> Extra</span>
-      </div>
-      <div id="d-diff" class="leading-[2.2] text-base font-medium"></div>
-    </div>
-    <div class="bg-n-cyan/5 border border-n-cyan/20 rounded-2xl p-5 glow-cyan space-y-2">
-      <span class="font-mono text-[10px] text-n-cyan/70 uppercase tracking-wider font-bold">Original</span>
-      <div id="d-original" class="text-base leading-relaxed text-n-text/80"></div>
-    </div>
-    <button id="d-newBtn" class="flex items-center gap-2 bg-n-card border-2 border-n-cyan text-n-cyan px-5 py-2.5 rounded-lg text-sm font-bold hover:bg-n-cyan hover:text-white transition-all w-full justify-center">
-      <i data-lucide="refresh-cw" size="16"></i> New Diktat
+    <button id="c-startBtn" class="flex items-center gap-2 bg-n-cyan text-white px-5 py-3 rounded-lg text-sm font-bold hover:brightness-110 transition-all w-full justify-center shadow-md">
+      <i data-lucide="message-square" size="18"></i> Start Roleplay
     </button>
+  </section>
+
+  <div id="c-active-box" class="hidden space-y-6">
+    <!-- TIMER & PROGRESS -->
+    <div class="flex items-center justify-between bg-n-card px-5 py-3 rounded-xl border border-n-border">
+      <div class="flex items-center gap-2 text-n-cyan font-mono text-xs font-bold">
+        <i data-lucide="timer" size="14"></i> <span id="c-timer">05:00</span>
+      </div>
+      <div id="c-progress" class="text-[10px] font-mono text-n-dim uppercase tracking-widest">Turn 1 / 6</div>
+    </div>
+
+    <!-- CHAT WINDOW -->
+    <div id="c-chat" class="space-y-4 min-h-[300px] max-h-[500px] overflow-y-auto p-4 bg-n-bg/30 rounded-2xl border border-n-border shadow-inner">
+      <!-- Bubbles injected here -->
+    </div>
+
+    <!-- INPUT AREA -->
+    <div id="c-input-area" class="bg-n-card p-5 rounded-2xl border border-n-border shadow-lg space-y-3 animate-in slide-in-from-bottom-4">
+      <div class="flex items-center justify-between">
+        <span class="text-[10px] font-mono font-bold text-n-cyan uppercase tracking-widest">Your Turn (Person A)</span>
+        <button id="c-hintBtn" class="text-[10px] text-n-dim hover:text-n-cyan italic">Need a hint?</button>
+      </div>
+      <textarea id="c-typed" class="w-full min-h-[80px] p-4 text-base rounded-xl border resize-none leading-relaxed shadow-inner" placeholder="Type exactly what you hear or see in the hint..."></textarea>
+      <div id="c-phrase-hint" class="hidden p-3 bg-n-bg border border-dashed border-n-cyan/30 rounded-lg text-xs italic text-n-dim font-mono mb-2"></div>
+      <div class="flex gap-2">
+        <button id="c-submitBtn" class="flex-1 bg-n-cyan text-white py-2.5 rounded-lg text-sm font-bold shadow-md hover:brightness-110">Send Response</button>
+      </div>
+    </div>
+  </div>
+
+  <section id="c-report" class="hidden space-y-6 animate-in zoom-in-95">
+    <div class="bg-n-card rounded-2xl border border-n-border p-6 shadow-lg">
+      <h2 class="font-orbitron font-black text-xl text-n-cyan mb-4 text-center">SESSION SUMMARY</h2>
+      <div id="c-full-script" class="space-y-4 text-sm leading-relaxed"></div>
+    </div>
+    <button id="c-restartBtn" class="w-full bg-n-cyan text-white py-3 rounded-xl font-bold shadow-lg">New Conversation</button>
   </section>
 </div>
 
 <!-- FOOTER -->
-<footer class="pt-6 pb-4 text-center">
-  <p class="text-[10px] text-n-dim font-mono">Built by <a href="https://galgorithms.wordpress.com/" target="_blank" class="text-n-cyan hover:text-n-text underline decoration-dotted underline-offset-4 font-bold">GALGORITHMS</a></p>
+<footer class="pt-12 pb-8 text-center max-w-4xl mx-auto">
+  <p class="text-[10px] text-n-dim font-mono tracking-widest flex items-center justify-center gap-2">
+    ENGINEERED BY <a href="https://galgorithms.wordpress.com/" target="_blank" class="text-n-cyan hover:text-n-text font-black underline decoration-2 underline-offset-4">GALGORITHMS</a>
+  </p>
 </footer>
 </div>
 
 <!-- Reader Tooltip -->
-<div id="r-tooltip" class="r-tooltip bg-n-card p-3 rounded-lg border border-n-border shadow-lg">
+<div id="r-tooltip" class="r-tooltip bg-n-card p-4 rounded-xl border border-n-border shadow-2xl max-w-xs ring-4 ring-black/5">
   <div id="r-tooltipContent"></div>
 </div>
 
 <script>
 lucide.createIcons();
 
-// ===== SHARED =====
-const apiKeyEl = document.getElementById('apiKey');
-apiKeyEl.value = localStorage.getItem('deutsch_key') || localStorage.getItem('gemini_german_reader_key') || localStorage.getItem('gemini_key') || '';
-apiKeyEl.addEventListener('change', () => { localStorage.setItem('deutsch_key', apiKeyEl.value.trim()); localStorage.setItem('gemini_german_reader_key', apiKeyEl.value.trim()); localStorage.setItem('gemini_key', apiKeyEl.value.trim()); });
-function getKey() { return apiKeyEl.value.trim(); }
+// ===== THEME LOGIC =====
+const themeToggleBtn = document.getElementById('themeToggle');
+const themeIcon = document.getElementById('themeIcon');
+const themeLabel = document.getElementById('themeLabel');
+let isGameMode = localStorage.getItem('deutsch_theme') === 'game';
 
-// Tab switching
-document.querySelectorAll('.main-tab').forEach(t => {
-  t.addEventListener('click', () => {
-    document.querySelectorAll('.main-tab').forEach(x => { x.classList.remove('border-n-cyan','text-n-cyan'); x.classList.add('border-transparent','text-n-dim'); });
-    document.querySelectorAll('.tab-content').forEach(x => x.classList.add('hidden'));
-    t.classList.add('border-n-cyan','text-n-cyan'); t.classList.remove('border-transparent','text-n-dim');
-    document.getElementById('tab-' + t.dataset.tab).classList.remove('hidden');
-  });
-});
-
-// XP System
-const LEVELS = [0,50,150,300,500,750,1000,1500,2000,3000,5000];
-let xp = parseInt(localStorage.getItem('deutsch_xp') || '0');
-function getLevel(x) { let l=1; for(let i=1;i<LEVELS.length;i++){if(x>=LEVELS[i])l=i+1;else break;} return l; }
-function updateXP() {
-  const lvl=getLevel(xp), cur=LEVELS[lvl-1]||0, next=LEVELS[lvl]||LEVELS[LEVELS.length-1];
-  const pct=next>cur?Math.min(100,((xp-cur)/(next-cur))*100):100;
-  document.getElementById('xpLevel').textContent='LVL '+lvl;
-  document.getElementById('xpBar').style.width=pct+'%';
-  document.getElementById('xpText').textContent=xp+' / '+next+' XP';
-}
-function addXP(n) { xp+=n; localStorage.setItem('deutsch_xp',xp); updateXP(); }
-updateXP();
-
-// German voice
-let germanVoice=null;
-function loadVoices(){const v=speechSynthesis.getVoices();germanVoice=v.find(x=>x.lang==='de-DE')||v.find(x=>x.lang.startsWith('de'))||null;}
-speechSynthesis.onvoiceschanged=loadVoices; loadVoices();
-
-// Gemini helper
-async function geminiCall(model, key, body) {
-  const url='https://generativelanguage.googleapis.com/v1beta/models/'+model+':generateContent?key='+key;
-  const res=await fetch(url,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
-  const data=await res.json();
-  if(!res.ok){const e=new Error(data?.error?.message||'HTTP '+res.status);if(res.status===429)e.quota=true;throw e;}
-  const c=data.candidates?.[0];
-  if(!c) throw new Error('No response from model.');
-  return (c.content?.parts||[]).map(p=>p.text||'').join('');
-}
-function escH(s){const d=document.createElement('div');d.textContent=s;return d.innerHTML;}
-
-// ===== READER =====
-const rTooltip=document.getElementById('r-tooltip');
-const R_PROMPT=`You are a German CEFR analyzer. Given a German text, return JSON.
-Rules:
-- Classify tokens: A1-C1 or unknown (proper nouns/punctuation).
-- Provide Overall CEFR Grade (overallLevel).
-- Provide nativeSuggestions (list of strings).
-- Every token in order in "words" array.
-- Identify 3-7 grammar points in "grammar" array.
-- JSON structure: { "overallLevel": "...", "nativeSuggestions": [], "words": [{"word":"", "level":"", "lemma":"", "meaning":""}], "grammar": [{"level":"", "topic":"", "explanation":""}], "translation": "" }`;
-
-document.getElementById('r-analyzeBtn').addEventListener('click', async () => {
-  const key=getKey(), text=document.getElementById('r-input').value.trim();
-  if(!key||!text) return alert('Provide API key and German text.');
-  const btn=document.getElementById('r-analyzeBtn'), st=document.getElementById('r-status');
-  btn.disabled=true; btn.innerHTML='<i data-lucide="loader-2" class="animate-spin" size="16"></i> Analyzing...'; lucide.createIcons(); st.textContent='Analyzing...';
-  try {
-    const raw=await geminiCall('gemini-2.5-flash-lite',key,{contents:[{parts:[{text:R_PROMPT+"\n\nTEXT:\n"+text}]}],generationConfig:{responseMimeType:"application/json",maxOutputTokens:32768,temperature:0.2}});
-    const fb=raw.indexOf('{'),lb=raw.lastIndexOf('}');
-    if(fb===-1||lb===-1) throw new Error('No JSON returned.');
-    const data=JSON.parse(raw.slice(fb,lb+1));
-    renderReader(data); document.getElementById('r-results').classList.remove('hidden'); st.textContent='Done'; addXP(10);
-  } catch(e){ console.error(e); alert('Analysis failed: '+e.message); st.textContent='Error'; }
-  finally{ btn.disabled=false; btn.innerHTML='<i data-lucide="sparkles" size="16"></i> Analyze'; lucide.createIcons(); }
-});
-
-function renderReader(data) {
-  document.getElementById('r-grade').textContent='GRADE: '+data.overallLevel;
-  const tc=document.getElementById('r-annotated'); tc.innerHTML='';
-  data.words.forEach((t,i) => {
-    const isPunct=/^[\s.,;:!?\u2014\u2013\-\u201E\u201C\u201D\u2018\u2019()\[\]]+$/.test(t.word);
-    if(isPunct){const s=document.createElement('span');s.className='text-n-dim';s.textContent=t.word;tc.appendChild(s);}
-    else{const s=document.createElement('span');const cls='cefr-'+t.level.toLowerCase();s.className='cursor-help transition-colors rounded px-0.5 word-hover '+cls+(t.level==='unknown'?' underline decoration-dotted':' font-bold');s.textContent=t.word;s.addEventListener('mouseenter',e=>rShowTip(e,t));s.addEventListener('mousemove',e=>rMoveTip(e));s.addEventListener('mouseleave',()=>rTooltip.style.display='none');tc.appendChild(s);}
-    if(i<data.words.length-1&&!/^[\s.,;:!?]/.test(data.words[i+1].word)) tc.appendChild(document.createTextNode(' '));
-  });
-  document.getElementById('r-grammar').innerHTML=data.grammar.map(g=>'<div class="p-4 bg-n-card rounded-lg border-l-[3px] cefr-border-'+g.level.toLowerCase()+' border border-n-border"><div class="flex items-center justify-between mb-1"><span class="font-bold text-xs">'+escH(g.topic)+'</span><span class="text-[9px] font-bold px-1.5 py-0.5 rounded text-white cefr-bg-'+g.level.toLowerCase()+'">'+g.level+'</span></div><p class="text-xs text-n-dim leading-relaxed">'+escH(g.explanation)+'</p></div>').join('');
-  document.getElementById('r-translation').textContent='"'+data.translation+'"';
-  document.getElementById('r-suggestions').innerHTML=(data.nativeSuggestions||[]).map(s=>'<div class="flex gap-2 items-start p-3 rounded-lg bg-n-cyan/5 border border-n-cyan/15"><span class="text-n-cyan mt-0.5">\u2192</span><p class="text-xs text-n-text/70 leading-relaxed">'+escH(s)+'</p></div>').join('');
+function applyTheme() {
+  if (isGameMode) {
+    document.body.classList.add('theme-game');
+    themeIcon.setAttribute('data-lucide', 'gamepad-2');
+    themeLabel.textContent = 'GAME MODE';
+  } else {
+    document.body.classList.remove('theme-game');
+    themeIcon.setAttribute('data-lucide', 'book-open');
+    themeLabel.textContent = 'LEARN MODE';
+  }
   lucide.createIcons();
 }
-function rShowTip(e,t){rTooltip.style.display='block';document.getElementById('r-tooltipContent').innerHTML='<div class="flex items-center justify-between gap-3"><span class="font-bold uppercase text-xs">'+escH(t.lemma||t.word)+'</span><span class="text-[9px] bg-black/10 px-1 rounded">'+t.level+'</span></div><div class="text-n-dim text-[10px] italic">'+(t.meaning||'---')+'</div>';rMoveTip(e);}
-function rMoveTip(e){rTooltip.style.left=(e.clientX+12)+'px';rTooltip.style.top=(e.clientY+12)+'px';}
+applyTheme();
 
-// ===== SUMMARIZE =====
-let sActivePane='paste';
-document.querySelectorAll('.s-tab').forEach(t=>{
-  t.addEventListener('click',()=>{
-    document.querySelectorAll('.s-tab').forEach(x=>{x.className='s-tab font-mono text-[10px] px-3 py-1.5 rounded-full bg-n-card border border-n-border text-n-dim';});
-    document.querySelectorAll('.s-pane').forEach(x=>x.classList.add('hidden'));
-    t.className='s-tab font-mono text-[10px] px-3 py-1.5 rounded-full bg-n-cyan text-white font-bold';
-    sActivePane=t.dataset.pane; document.getElementById('s-pane-'+sActivePane).classList.remove('hidden');
+themeToggleBtn.addEventListener('click', () => {
+  isGameMode = !isGameMode;
+  localStorage.setItem('deutsch_theme', isGameMode ? 'game' : 'learn');
+  applyTheme();
+});
+
+// ===== SYSTEM HELPERS =====
+function notify(msg, type = 'info') {
+  const container = document.getElementById('notification-container');
+  const toast = document.createElement('div');
+  toast.className = 'toast';
+  const color = type === 'error' ? 'var(--c-red)' : type === 'success' ? 'var(--c-green)' : 'var(--c-text)';
+  toast.style.borderLeft = `4px solid ${color}`;
+  toast.textContent = msg;
+  container.appendChild(toast);
+  setTimeout(() => {
+    toast.style.opacity = '0';
+    toast.style.transform = 'translateX(20px)';
+    setTimeout(() => toast.remove(), 300);
+  }, 4000);
+}
+
+const apiKeyEl = document.getElementById('apiKey');
+apiKeyEl.value = localStorage.getItem('deutsch_key') || '';
+apiKeyEl.addEventListener('change', () => localStorage.setItem('deutsch_key', apiKeyEl.value.trim()));
+function getKey() { return apiKeyEl.value.trim(); }
+
+async function fetchWithRetry(url, options, maxRetries = 5) {
+  for (let i = 0; i < maxRetries; i++) {
+    try {
+      const res = await fetch(url, options);
+      if (res.status === 429) {
+        const delay = Math.pow(2, i) * 1000;
+        await new Promise(r => setTimeout(r, delay));
+        continue;
+      }
+      if (!res.ok) {
+        const data = await res.json();
+        throw new Error(data?.error?.message || `HTTP ${res.status}`);
+      }
+      return await res.json();
+    } catch (e) {
+      if (i === maxRetries - 1) throw e;
+      const delay = Math.pow(2, i) * 1000;
+      await new Promise(r => setTimeout(r, delay));
+    }
+  }
+}
+
+async function geminiCall(prompt, model = 'gemini-2.5-flash-preview-09-2025', isJson = false) {
+  const key = getKey();
+  if (!key) {
+    notify('Please enter an API Key in Configuration.', 'error');
+    throw new Error('No API Key');
+  }
+  const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${key}`;
+  const payload = {
+    contents: [{ parts: [{ text: prompt }] }],
+    generationConfig: isJson ? { responseMimeType: "application/json" } : {}
+  };
+  const data = await fetchWithRetry(url, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload)
+  });
+  const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
+  if (!text) throw new Error('Empty response from AI');
+  return text;
+}
+
+// XP SYSTEM & SKILLS
+const LEVELS = [0, 50, 150, 300, 500, 750, 1000, 1500, 2000, 3000];
+let xp = parseInt(localStorage.getItem('deutsch_xp') || '0');
+let skillXP = JSON.parse(localStorage.getItem('deutsch_skill_xp') || '{"reader":0,"summarize":0,"diktat":0,"conversation":0}');
+
+// --- ACTIVITY & STREAK SYSTEM ---
+let activityLog = JSON.parse(localStorage.getItem('deutsch_activity') || '{}');
+let currentStreak = parseInt(localStorage.getItem('deutsch_streak') || '0');
+let maxStreak = parseInt(localStorage.getItem('deutsch_max_streak') || '0');
+let lastActive = localStorage.getItem('deutsch_last_active');
+
+function getYYYYMMDD(date = new Date()) {
+  return date.getFullYear() + '-' + String(date.getMonth() + 1).padStart(2, '0') + '-' + String(date.getDate()).padStart(2, '0');
+}
+
+function checkStreakOnLoad() {
+  const today = getYYYYMMDD();
+  if (lastActive && lastActive !== today) {
+    const lastDate = new Date(lastActive);
+    const currDate = new Date(today);
+    lastDate.setHours(0,0,0,0);
+    currDate.setHours(0,0,0,0);
+    const diffDays = Math.round((currDate - lastDate) / (1000 * 60 * 60 * 24));
+    if (diffDays > 1) {
+      currentStreak = 0; 
+      localStorage.setItem('deutsch_streak', 0);
+    }
+  }
+  updateStreakUI();
+}
+
+function recordActivity(xpGained) {
+  const today = getYYYYMMDD();
+  activityLog[today] = (activityLog[today] || 0) + xpGained;
+  localStorage.setItem('deutsch_activity', JSON.stringify(activityLog));
+
+  if (lastActive !== today) {
+    if (lastActive) {
+      const lastDate = new Date(lastActive);
+      const currDate = new Date(today);
+      lastDate.setHours(0,0,0,0);
+      currDate.setHours(0,0,0,0);
+      const diffDays = Math.round((currDate - lastDate) / (1000 * 60 * 60 * 24));
+      
+      if (diffDays === 1) {
+        currentStreak++;
+      } else if (diffDays > 1) {
+        currentStreak = 1;
+      } else if (currentStreak === 0) {
+        currentStreak = 1;
+      }
+    } else {
+      currentStreak = 1;
+    }
+    lastActive = today;
+    localStorage.setItem('deutsch_last_active', today);
+    
+    if (currentStreak > maxStreak) {
+      maxStreak = currentStreak;
+      localStorage.setItem('deutsch_max_streak', maxStreak);
+    }
+    localStorage.setItem('deutsch_streak', currentStreak);
+  } else if (currentStreak === 0) {
+     currentStreak = 1;
+     localStorage.setItem('deutsch_streak', 1);
+  }
+  updateStreakUI();
+  renderHeatmap();
+}
+
+function updateStreakUI() {
+  const badge = document.getElementById('streakBadge');
+  const text = document.getElementById('streakText');
+  if (currentStreak > 0) {
+    badge.classList.remove('hidden');
+    text.textContent = currentStreak;
+  } else {
+    badge.classList.add('hidden');
+  }
+  
+  const dStreak = document.getElementById('dash-streak');
+  if (dStreak) {
+    dStreak.textContent = currentStreak;
+    document.getElementById('dash-max-streak').textContent = maxStreak;
+    document.getElementById('dash-xp').textContent = xp;
+    
+    let lvl = 1;
+    for(let i=1; i<LEVELS.length; i++) if(xp >= LEVELS[i]) lvl = i+1;
+    document.getElementById('dash-lvl').textContent = lvl;
+  }
+}
+
+function renderHeatmap() {
+  const container = document.getElementById('heatmap-grid');
+  if (!container) return;
+  container.innerHTML = '';
+  
+  const today = new Date();
+  const currentDayOfWeek = today.getDay(); 
+  const daysToRender = (26 * 7) + currentDayOfWeek;
+  const startDate = new Date(today);
+  startDate.setDate(today.getDate() - daysToRender);
+  
+  let maxDailyXP = 10;
+  for(let key in activityLog) if(activityLog[key] > maxDailyXP) maxDailyXP = activityLog[key];
+
+  for (let i = 0; i <= daysToRender; i++) {
+    const d = new Date(startDate);
+    d.setDate(startDate.getDate() + i);
+    const dStr = getYYYYMMDD(d);
+    
+    const dayXP = activityLog[dStr] || 0;
+    let colorClass = 'bg-n-card border border-n-border/50'; 
+    if (dayXP > 0) {
+      const intensity = dayXP / maxDailyXP;
+      if (intensity <= 0.3) colorClass = 'bg-n-cyan/30 border border-transparent';
+      else if (intensity <= 0.6) colorClass = 'bg-n-cyan/60 border border-transparent';
+      else colorClass = 'bg-n-cyan border border-transparent';
+    }
+
+    const cell = document.createElement('div');
+    cell.className = `w-3 h-3 rounded-[2px] transition-all hover:ring-2 hover:ring-n-cyan/50 ${colorClass}`;
+    cell.title = `${dStr}: ${dayXP} XP`;
+    container.appendChild(cell);
+  }
+}
+
+function renderSkillBreakdown() {
+  const container = document.getElementById('skill-breakdown');
+  if (!container) return;
+
+  const totalSkillXP = Object.values(skillXP).reduce((a, b) => a + b, 0) || 1; 
+  
+  const skillsConfig = [
+    { id: 'reader', label: 'Reader Analysis', icon: 'book-open', color: 'bg-n-cyan' },
+    { id: 'summarize', label: 'Summarization', icon: 'file-text', color: 'bg-n-purple' },
+    { id: 'diktat', label: 'Dictation', icon: 'headphones', color: 'bg-n-green' },
+    { id: 'conversation', label: 'Conversation', icon: 'message-square', color: 'bg-n-amber' }
+  ];
+
+  container.innerHTML = skillsConfig.map(s => {
+    const val = skillXP[s.id] || 0;
+    const pct = Math.round((val / totalSkillXP) * 100);
+    return `
+      <div class="flex flex-col gap-1.5">
+        <div class="flex justify-between items-center text-[11px] font-mono font-bold uppercase tracking-wider text-n-dim">
+          <span class="flex items-center gap-2"><i data-lucide="${s.icon}" size="14"></i> ${s.label}</span>
+          <span class="text-n-text">${val} XP <span class="opacity-50">(${pct}%)</span></span>
+        </div>
+        <div class="w-full bg-n-border rounded-full h-2.5 overflow-hidden shadow-inner">
+          <div class="h-full ${s.color} transition-all duration-1000 ease-out" style="width: ${pct}%"></div>
+        </div>
+      </div>
+    `;
+  }).join('');
+  lucide.createIcons();
+}
+
+checkStreakOnLoad();
+renderHeatmap();
+renderSkillBreakdown();
+// ---------------------------------
+
+function updateXP() {
+  let lvl = 1;
+  for(let i=1; i<LEVELS.length; i++) if(xp >= LEVELS[i]) lvl = i+1;
+  const cur = LEVELS[lvl-1], next = LEVELS[lvl] || LEVELS[LEVELS.length-1];
+  const pct = Math.min(100, ((xp - cur) / (next - cur)) * 100);
+  document.getElementById('xpLevel').textContent = 'LVL ' + lvl;
+  document.getElementById('xpBar').style.width = pct + '%';
+  document.getElementById('xpText').textContent = `${xp} / ${next} XP`;
+  if (document.getElementById('dash-xp')) {
+    document.getElementById('dash-xp').textContent = xp;
+    document.getElementById('dash-lvl').textContent = lvl;
+  }
+}
+
+function addXP(n, skillType = 'general') {
+  xp += n;
+  localStorage.setItem('deutsch_xp', xp);
+  
+  if (skillType !== 'general') {
+    skillXP[skillType] = (skillXP[skillType] || 0) + n;
+    localStorage.setItem('deutsch_skill_xp', JSON.stringify(skillXP));
+  }
+  
+  updateXP();
+  recordActivity(n);
+  renderSkillBreakdown();
+  notify(`+${n} XP Gained!`, 'success');
+}
+updateXP();
+
+// TAB SWITCHING
+document.querySelectorAll('.main-tab').forEach(t => {
+  t.addEventListener('click', () => {
+    document.querySelectorAll('.main-tab').forEach(x => {
+      x.classList.remove('border-n-cyan', 'text-n-cyan');
+      x.classList.add('border-transparent', 'text-n-dim');
+    });
+    document.querySelectorAll('.tab-content').forEach(x => x.classList.add('hidden'));
+    t.classList.add('border-n-cyan', 'text-n-cyan');
+    t.classList.remove('border-transparent', 'text-n-dim');
+    document.getElementById('tab-' + t.dataset.tab).classList.remove('hidden');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    speechSynthesis.cancel();
   });
 });
-document.getElementById('s-textFile').onchange=e=>{const f=e.target.files[0];document.getElementById('s-fileInfo').textContent=f?f.name+' ('+Math.round(f.size/1024)+' KB)':'';};
-document.getElementById('s-audioFile').onchange=e=>{const f=e.target.files[0];if(!f)return;document.getElementById('s-audioInfo').textContent=f.name+' ('+(f.size/1024/1024).toFixed(1)+' MB)'+(f.size>18*1024*1024?' \u26a0 may fail':'');};
-function readFileText(f){return new Promise((r,j)=>{const x=new FileReader();x.onload=()=>r(x.result);x.onerror=j;x.readAsText(f);});}
-function readFileB64(f){return new Promise((r,j)=>{const x=new FileReader();x.onload=()=>r(x.result.split(',')[1]);x.onerror=j;x.readAsDataURL(f);});}
-function sBuildPrompt(level,length){const w=length==='short'?150:length==='long'?500:300;return 'Du bist ein Deutschlehrer. Fasse die Quelle auf '+level+'-Niveau zusammen. Verwende klare, natuerliche Saetze. Struktur: 1) Einleitung, 2) Hauptpunkte, 3) Fazit. Ungefaehr '+w+' Woerter. Danach 8-12 nuetzliche Vokabeln mit deutscher Erklaerung und englischer Uebersetzung.\n\nFalls die Quelle Audio ist, transkribiere sie zuerst und fasse dann zusammen.\n\nNUR gueltiges JSON:\n{"summary":"...","vocab":[{"word":"","erklaerung":"","english":""}]}';}
 
-async function sCallWithFallback(parts,model){
-  const key=getKey(); if(!key) throw new Error('Enter API key.');
-  const chain=[model,'gemini-2.5-flash-lite','gemini-1.5-flash-8b','gemini-1.5-flash'].filter((v,i,a)=>a.indexOf(v)===i);
-  const sStatus=document.getElementById('s-status'); let last;
-  for(const m of chain){try{sStatus.textContent='Model: '+m+'...';const raw=await geminiCall(m,key,{contents:[{parts}],generationConfig:{temperature:0.4,responseMimeType:'application/json'}});return JSON.parse(raw);}catch(e){last=e;if(!e.quota)throw e;}}
-  throw new Error('All models hit quota. Wait and retry.');
+// TTS VOICE CACHE
+let germanVoice = null;
+function loadVoices() {
+  const v = speechSynthesis.getVoices();
+  germanVoice = v.find(x => x.lang === 'de-DE') || v.find(x => x.lang.startsWith('de')) || null;
+}
+speechSynthesis.onvoiceschanged = loadVoices; loadVoices();
+
+// ===== TAB 1: READER LOGIC OVERRIDES =====
+const R_PROMPT = `Analyze this German text and return a JSON object:
+{
+  "overallLevel": "A1-C1",
+  "translation": "English translation of text",
+  "words": [{"word": "string", "level": "A1-C1", "lemma": "base form", "meaning": "English meaning"}],
+  "grammar": [{"level": "B1", "topic": "Passive", "explanation": "Brief context"}],
+  "nativeSuggestions": ["Alternative natural phrasing"]
+}
+Only return valid JSON. Do not include markdown formatting.`;
+
+document.getElementById('r-analyzeBtn').addEventListener('click', async () => {
+  const text = document.getElementById('r-input').value.trim();
+  if (!text) return notify('Please paste German text first.', 'error');
+  
+  const btn = document.getElementById('r-analyzeBtn');
+  const st = document.getElementById('r-status');
+  btn.disabled = true;
+  btn.innerHTML = '<i data-lucide="loader-2" class="animate-spin" size="16"></i> Processing...';
+  st.textContent = 'Neural Linguistic Processing...';
+  lucide.createIcons();
+
+  try {
+    const raw = await geminiCall(`${R_PROMPT}\n\nTEXT:\n${text}`, 'gemini-2.5-flash-preview-09-2025', true);
+    const data = JSON.parse(raw);
+    
+    // Render Reader details
+    document.getElementById('r-grade').textContent = 'GRADE: ' + data.overallLevel;
+    const tc = document.getElementById('r-annotated');
+    tc.innerHTML = '';
+    
+    data.words.forEach((t, i) => {
+      const isPunct = /^[.,;:!?\(\)\[\]]+$/.test(t.word);
+      const s = document.createElement('span');
+      if (isPunct) {
+        s.className = 'text-n-dim px-0.5';
+        s.textContent = t.word;
+      } else {
+        const cls = 'cefr-' + (t.level || 'unknown').toLowerCase();
+        s.className = `cursor-help transition-all rounded px-1 word-hover ${cls} font-bold`;
+        s.textContent = t.word;
+        s.addEventListener('mouseenter', e => rShowTip(e, t));
+        s.addEventListener('mousemove', e => {
+          const tip = document.getElementById('r-tooltip');
+          tip.style.left = Math.min(window.innerWidth - 200, e.clientX + 15) + 'px';
+          tip.style.top = (e.clientY + 15) + 'px';
+        });
+        s.addEventListener('mouseleave', () => { document.getElementById('r-tooltip').style.display = 'none'; });
+      }
+      tc.appendChild(s);
+      if (i < data.words.length - 1) tc.appendChild(document.createTextNode(' '));
+    });
+
+    document.getElementById('r-grammar').innerHTML = data.grammar.map(g => `
+      <div class="p-4 bg-n-card rounded-xl border border-n-border border-l-4 cefr-border-${g.level.toLowerCase()}">
+        <div class="flex items-center justify-between mb-1">
+          <span class="font-bold text-xs uppercase tracking-tight">${g.topic}</span>
+          <span class="text-[9px] px-2 py-0.5 rounded-full text-white cefr-bg-${g.level.toLowerCase()} font-black">${g.level}</span>
+        </div>
+        <p class="text-[11px] text-n-dim leading-relaxed font-medium">${g.explanation}</p>
+      </div>`).join('');
+    
+    document.getElementById('r-translation').textContent = `"${data.translation}"`;
+    document.getElementById('r-suggestions').innerHTML = (data.nativeSuggestions || []).map(s => `
+      <div class="flex gap-2 items-start p-3 rounded-lg bg-n-cyan/5 border border-n-cyan/10">
+        <i data-lucide="arrow-right" class="text-n-cyan flex-none mt-1" size="12"></i>
+        <p class="text-xs text-n-text/80 leading-relaxed font-medium">${s}</p>
+      </div>`).join('');
+    
+    document.getElementById('r-results').classList.remove('hidden');
+    st.textContent = 'Analysis Complete';
+    
+    // Log Activity to Reader Skill
+    addXP(10, 'reader');
+  } catch (e) {
+    console.error(e);
+    notify('Analysis failed: ' + e.message, 'error');
+    st.textContent = 'Process Error';
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = '<i data-lucide="sparkles" size="16"></i> Analyze';
+    lucide.createIcons();
+  }
+});
+
+function rShowTip(e, t) {
+  const tip = document.getElementById('r-tooltip');
+  tip.style.display = 'block';
+  document.getElementById('r-tooltipContent').innerHTML = `
+    <div class="flex items-center justify-between gap-4 border-b border-n-border/50 pb-2 mb-2">
+      <span class="font-black text-sm uppercase tracking-tighter text-n-cyan">${t.lemma || t.word}</span>
+      <span class="text-[9px] font-mono bg-n-bg px-2 py-0.5 rounded-full border border-n-border">${t.level}</span>
+    </div>
+    <div class="text-n-text text-xs leading-relaxed italic font-medium">"${t.meaning || 'N/A'}"</div>
+  `;
 }
 
-document.getElementById('s-go').addEventListener('click', async ()=>{
-  const sStatus=document.getElementById('s-status');
-  try{
-    document.getElementById('s-card').classList.add('hidden');
-    const level=document.getElementById('s-level').value, length=document.getElementById('s-length').value, model=document.getElementById('s-model').value;
-    const prompt=sBuildPrompt(level,length); let parts=[],src='';
-    if(sActivePane==='paste'){const t=document.getElementById('s-pasteText').value.trim();if(!t)throw new Error('Paste text first.');parts=[{text:prompt+'\n\nQuelle:\n\n'+t.slice(0,50000)}];src=t;}
-    else if(sActivePane==='file'){const f=document.getElementById('s-textFile').files[0];if(!f)throw new Error('Choose a file.');sStatus.textContent='Reading file...';const t=await readFileText(f);parts=[{text:prompt+'\n\nQuelle:\n\n'+t.slice(0,50000)}];src=t;}
-    else if(sActivePane==='audio'){const f=document.getElementById('s-audioFile').files[0];if(!f)throw new Error('Choose audio.');sStatus.textContent='Encoding audio...';const b64=await readFileB64(f);parts=[{text:prompt},{inline_data:{mime_type:f.type||'audio/mpeg',data:b64}}];src='[Audio: '+f.name+']';}
-    else if(sActivePane==='url'){const url=document.getElementById('s-articleUrl').value.trim();if(!url)throw new Error('Paste a URL.');sStatus.textContent='Fetching article...';const res=await fetch('https://r.jina.ai/'+url);if(!res.ok)throw new Error('Reader failed ('+res.status+')');const t=await res.text();parts=[{text:prompt+'\n\nQuelle:\n\n'+t.slice(0,50000)}];src=t;}
-    const result=await sCallWithFallback(parts,model);
-    const sumText=typeof result.summary==='string'?result.summary:typeof result.summary==='object'?JSON.stringify(result.summary):(result.summary||'').toString();
-    const sumEl=document.getElementById('s-summary');sumEl.innerHTML='';
-    sumText.split(/(\s+)/).forEach(w=>{if(/\S/.test(w)){const s=document.createElement('span');s.className='s-word';s.textContent=w;sumEl.appendChild(s);}else{sumEl.appendChild(document.createTextNode(w));}});
-    document.getElementById('s-vocab').innerHTML=(result.vocab||[]).map(v=>'<div class="text-xs"><b class="text-n-cyan">'+escH(v.word)+'</b> \u2014 '+escH(v.erklaerung||v['erkl\u00e4rung']||'')+' <i class="text-n-dim">('+escH(v.english)+')</i></div>').join('');
-    document.getElementById('s-rawSource').value=src.slice(0,10000);
-    document.getElementById('s-card').classList.remove('hidden'); sStatus.textContent='Reading aloud...'; addXP(15);
-    speechSynthesis.cancel();
-    const sentences=sumText.match(/[^.!?]+[.!?]+|\S+$/g)||[sumText];
-    const spans=Array.from(sumEl.querySelectorAll('.s-word')); let wi=0;
-    function speakS(i){if(i>=sentences.length){spans.forEach(s=>s.classList.remove('active'));sStatus.textContent='Done.';return;}const u=new SpeechSynthesisUtterance(sentences[i]);u.lang='de-DE';u.rate=0.9;if(germanVoice)u.voice=germanVoice;u.onboundary=()=>{spans.forEach(s=>s.classList.remove('active'));if(spans[wi])spans[wi].classList.add('active');wi++;};u.onend=()=>speakS(i+1);speechSynthesis.speak(u);}
-    speakS(0);
-  }catch(e){sStatus.textContent='ERROR: '+e.message;}
-});
-document.getElementById('s-stop').addEventListener('click',()=>speechSynthesis.cancel());
-
-// ===== DIKTAT =====
-let dOriginal='',dSpeed=1,dPlays=0;
-document.querySelectorAll('.d-speed').forEach(btn=>{
-  btn.addEventListener('click',()=>{dSpeed=parseFloat(btn.dataset.speed);document.querySelectorAll('.d-speed').forEach(b=>{b.className='d-speed text-[10px] px-2 py-1 rounded bg-n-card border border-n-border text-n-dim';});btn.className='d-speed text-[10px] px-2 py-1 rounded bg-n-cyan text-white font-bold border-2 border-n-cyan';});
+// ===== TAB 2: SUMMARIZE LOGIC OVERRIDES =====
+let sActivePane = 'paste';
+document.querySelectorAll('.s-tab').forEach(t => {
+  t.addEventListener('click', () => {
+    document.querySelectorAll('.s-tab').forEach(x => {
+      x.className = 's-tab font-mono text-[10px] px-3 py-1.5 rounded-full bg-n-card border border-n-border text-n-dim';
+    });
+    document.querySelectorAll('.s-pane').forEach(x => x.classList.add('hidden'));
+    t.className = 's-tab font-mono text-[10px] px-3 py-1.5 rounded-full bg-n-cyan text-white font-bold';
+    sActivePane = t.dataset.pane;
+    document.getElementById('s-pane-' + sActivePane).classList.remove('hidden');
+  });
 });
 
-document.getElementById('d-generateBtn').addEventListener('click', async ()=>{
-  const key=getKey(),topic=document.getElementById('d-topic').value,level=document.querySelector('input[name="d-level"]:checked').value;
-  if(!key) return alert('Enter API key.');
-  const btn=document.getElementById('d-generateBtn'),st=document.getElementById('d-genStatus');
-  btn.disabled=true;btn.innerHTML='<i data-lucide="loader-2" class="animate-spin" size="16"></i> Generating...';lucide.createIcons();st.textContent='Generating...';
-  try{
-    const prompt='Generate a German text for dictation.\nTopic: '+topic+'\nCEFR: '+level+'\nRules: 40-70 words, 2-4 natural sentences, '+level+'-appropriate vocabulary/grammar. Return ONLY German text.';
-    const raw=await geminiCall('gemini-2.5-flash-lite',key,{contents:[{parts:[{text:prompt}]}],generationConfig:{maxOutputTokens:512,temperature:0.9}});
-    dOriginal=raw.replace(/^["\u201E\u201C\u201D]|["\u201C\u201D]$/g,'').trim();
-    document.getElementById('d-player').classList.remove('hidden');document.getElementById('d-results').classList.add('hidden');
-    document.getElementById('d-typed').value='';document.getElementById('d-hint').classList.add('hidden');
-    dPlays=0;document.getElementById('d-playCount').textContent='Played: 0';document.getElementById('d-scoreBar').style.width='0%';
-    st.textContent='Ready! Press play.';document.getElementById('d-player').scrollIntoView({behavior:'smooth'});
-  }catch(e){alert('Failed: '+e.message);st.textContent='Error';}
-  finally{btn.disabled=false;btn.innerHTML='<i data-lucide="sparkles" size="16"></i> Generate Diktat';lucide.createIcons();}
+document.getElementById('s-go').addEventListener('click', async () => {
+  const st = document.getElementById('s-status');
+  try {
+    const level = document.getElementById('s-level').value;
+    const length = document.getElementById('s-length').value;
+    const wordTarget = length === 'short' ? 150 : length === 'long' ? 500 : 300;
+    
+    let sourceContent = "";
+    if (sActivePane === 'paste') sourceContent = document.getElementById('s-pasteText').value.trim();
+    if (!sourceContent) throw new Error("Please enter source content.");
+    
+    st.textContent = "AI Analysis In Progress...";
+    const prompt = `German teacher persona. Summarize at ${level} level. 
+    Length: approx ${wordTarget} words. Structure: Introduction, Points, Conclusion.
+    Follow with 10 vocab items: {"word": "de", "erklaerung": "de", "english": "en"}.
+    Return JSON: {"summary": "string", "vocab": []}`;
+    
+    const resultRaw = await geminiCall(`${prompt}\n\nCONTENT:\n${sourceContent}`, 'gemini-2.5-flash-preview-09-2025', true);
+    const result = JSON.parse(resultRaw);
+    
+    const sumEl = document.getElementById('s-summary');
+    sumEl.innerHTML = '';
+    result.summary.split(/\s+/).forEach(w => {
+      const span = document.createElement('span');
+      span.className = 's-word';
+      span.textContent = w + ' ';
+      sumEl.appendChild(span);
+    });
+
+    document.getElementById('s-vocab').innerHTML = result.vocab.map(v => `
+      <div class="flex gap-2">
+        <span class="font-bold text-n-cyan flex-none">${v.word}</span>
+        <span class="text-n-dim flex-1 italic">— ${v.erklaerung} (${v.english})</span>
+      </div>`).join('');
+    
+    document.getElementById('s-card').classList.remove('hidden');
+    st.textContent = "Ready";
+    
+    // Log Activity to Summarize Skill
+    addXP(15, 'summarize');
+    
+  } catch(e) {
+    st.textContent = "Processing Error";
+    notify(e.message, 'error');
+  }
+});
+document.getElementById('s-stop').addEventListener('click', () => speechSynthesis.cancel());
+
+// ===== TAB 3: DIKTAT LOGIC OVERRIDES =====
+let dOriginal = "";
+let dSpeed = 1;
+let dPlays = 0;
+
+document.querySelectorAll('.d-speed').forEach(btn => {
+  btn.addEventListener('click', () => {
+    dSpeed = parseFloat(btn.dataset.speed);
+    document.querySelectorAll('.d-speed').forEach(b => {
+      b.className = 'd-speed text-[10px] px-3 py-1.5 rounded-lg bg-n-card border border-n-border text-n-dim font-bold';
+    });
+    btn.className = 'd-speed text-[10px] px-3 py-1.5 rounded-lg bg-n-cyan text-white font-bold border border-n-cyan';
+  });
 });
 
-function dSpeak(text){speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(text);u.lang='de-DE';u.rate=dSpeed;if(germanVoice)u.voice=germanVoice;u.onstart=()=>{document.getElementById('d-playBtn').classList.add('hidden');document.getElementById('d-pauseBtn').classList.remove('hidden');};u.onend=()=>{document.getElementById('d-pauseBtn').classList.add('hidden');document.getElementById('d-playBtn').classList.remove('hidden');};speechSynthesis.speak(u);dPlays++;document.getElementById('d-playCount').textContent='Played: '+dPlays;}
-document.getElementById('d-playBtn').addEventListener('click',()=>dSpeak(dOriginal));
-document.getElementById('d-pauseBtn').addEventListener('click',()=>{if(speechSynthesis.speaking){if(speechSynthesis.paused)speechSynthesis.resume();else speechSynthesis.pause();}});
-document.getElementById('d-repeatBtn').addEventListener('click',()=>dSpeak(dOriginal));
-document.getElementById('d-hintBtn').addEventListener('click',()=>{const h=dOriginal.split(/\s+/).map(w=>{const c=w.replace(/^[^a-zA-Z\u00C0-\u024F]/,'');return(c[0]||w[0])+'_'.repeat(Math.max(1,w.length-1));}).join('  ');const el=document.getElementById('d-hint');el.textContent=h;el.classList.remove('hidden');});
-
-document.getElementById('d-checkBtn').addEventListener('click',()=>{
-  const typed=document.getElementById('d-typed').value.trim();if(!typed)return alert('Type what you heard.');
-  speechSynthesis.cancel();document.getElementById('d-pauseBtn').classList.add('hidden');document.getElementById('d-playBtn').classList.remove('hidden');
-  const diff=dComputeDiff(dOriginal,typed);dRenderResults(diff);
-  document.getElementById('d-results').classList.remove('hidden');document.getElementById('d-results').scrollIntoView({behavior:'smooth'});
+document.getElementById('d-generateBtn').addEventListener('click', async () => {
+  const topic = document.getElementById('d-topic').value;
+  const level = document.querySelector('input[name="d-level"]:checked').value;
+  const btn = document.getElementById('d-generateBtn');
+  btn.disabled = true;
+  
+  try {
+    const prompt = `Generate a German dictation text. Topic: ${topic}. CEFR: ${level}. 
+    Length: 40-60 words. Natural sentences. Return ONLY the raw German text.`;
+    const raw = await geminiCall(prompt);
+    dOriginal = raw.trim();
+    
+    document.getElementById('d-player').classList.remove('hidden');
+    document.getElementById('d-results').classList.add('hidden');
+    document.getElementById('d-typed').value = '';
+    dPlays = 0;
+    document.getElementById('d-playCount').textContent = 'Plays: 0';
+    
+    notify("New dictation ready!", 'success');
+  } catch(e) {
+    notify(e.message, 'error');
+  } finally {
+    btn.disabled = false;
+  }
 });
 
-function dNorm(w){return w.replace(/[.,;:!?\u201E\u201C\u201D\u2018\u2019()\[\]\u2014\u2013\-]/g,'').toLowerCase();}
-function dComputeDiff(orig,typed){
-  const a=orig.split(/\s+/).filter(w=>w),b=typed.split(/\s+/).filter(w=>w),m=a.length,n=b.length;
-  const dp=Array(m+1).fill(null).map(()=>Array(n+1).fill(0));
-  for(let i=0;i<=m;i++)dp[i][0]=i;for(let j=0;j<=n;j++)dp[0][j]=j;
-  for(let i=1;i<=m;i++)for(let j=1;j<=n;j++){if(dNorm(a[i-1])===dNorm(b[j-1]))dp[i][j]=dp[i-1][j-1];else dp[i][j]=1+Math.min(dp[i-1][j],dp[i][j-1],dp[i-1][j-1]);}
-  const r=[];let i=m,j=n;
-  while(i>0||j>0){if(i>0&&j>0&&dNorm(a[i-1])===dNorm(b[j-1])){r.unshift({type:'correct',original:a[i-1],typed:b[j-1]});i--;j--;}
-  else if(i>0&&j>0&&dp[i][j]===dp[i-1][j-1]+1){r.unshift({type:'wrong',original:a[i-1],typed:b[j-1]});i--;j--;}
-  else if(j>0&&(i===0||dp[i][j]===dp[i][j-1]+1)){r.unshift({type:'extra',typed:b[j-1]});j--;}
-  else{r.unshift({type:'missing',original:a[i-1]});i--;}}
-  return r;
+function speakDictation() {
+  speechSynthesis.cancel();
+  const u = new SpeechSynthesisUtterance(dOriginal);
+  u.lang = 'de-DE';
+  u.rate = dSpeed;
+  u.onstart = () => { document.getElementById('d-playBtn').classList.add('hidden'); document.getElementById('d-pauseBtn').classList.remove('hidden'); };
+  u.onend = () => { document.getElementById('d-pauseBtn').classList.add('hidden'); document.getElementById('d-playBtn').classList.remove('hidden'); };
+  speechSynthesis.speak(u);
+  dPlays++;
+  document.getElementById('d-playCount').textContent = `Plays: ${dPlays}`;
 }
-function dRenderResults(diff){
-  const total=diff.filter(d=>d.type!=='extra').length,correct=diff.filter(d=>d.type==='correct').length;
-  const wrong=diff.filter(d=>d.type==='wrong').length,missing=diff.filter(d=>d.type==='missing').length,extra=diff.filter(d=>d.type==='extra').length;
-  const pct=total>0?Math.round(correct/total*100):0;
-  const badge=document.getElementById('d-scoreBadge'),color=pct>=90?'#5a9a72':pct>=70?'#c49332':'#c25050';
-  badge.style.backgroundColor=color;badge.style.color='#fff';badge.textContent=pct+'%';
-  const bar=document.getElementById('d-scoreBar');bar.style.backgroundColor=color;setTimeout(()=>{bar.style.width=pct+'%';},100);
-  document.getElementById('d-scoreDetails').innerHTML='<span>\u2705 '+correct+'</span>'+(wrong?'<span>\u274c '+wrong+'</span>':'')+(missing?'<span>\u26a0\ufe0f '+missing+'</span>':'')+(extra?'<span>\u2795 '+extra+'</span>':'');
-  document.getElementById('d-diff').innerHTML=diff.map(d=>{switch(d.type){
-    case'correct':return'<span class="text-n-green font-medium">'+escH(d.original)+'</span>';
-    case'wrong':return'<span class="text-n-pink line-through opacity-60">'+escH(d.typed)+'</span> <span class="text-n-green font-bold underline decoration-2 underline-offset-4">'+escH(d.original)+'</span>';
-    case'missing':return'<span class="text-n-amber font-bold italic bg-n-amber/10 px-1 rounded">'+escH(d.original)+'</span>';
-    case'extra':return'<span class="text-n-dim line-through opacity-50">'+escH(d.typed)+'</span>';default:return'';}}).join(' ');
-  document.getElementById('d-original').textContent=dOriginal;
-  addXP(correct*5);
+
+document.getElementById('d-playBtn').addEventListener('click', speakDictation);
+document.getElementById('d-pauseBtn').addEventListener('click', () => {
+  if(speechSynthesis.speaking) {
+    if(speechSynthesis.paused) speechSynthesis.resume();
+    else speechSynthesis.pause();
+  }
+});
+document.getElementById('d-repeatBtn').addEventListener('click', speakDictation);
+
+document.getElementById('d-checkBtn').addEventListener('click', () => {
+  const typed = document.getElementById('d-typed').value.trim();
+  if(!typed) return notify("Type something before checking.", "info");
+  
+  const diff = computeDiff(dOriginal, typed);
+  
+  // Log Activity to Diktat Skill
+  const correct = diff.filter(d => d.type === 'correct').length;
+  addXP(Math.round(correct * 1.5), 'diktat');
+
+  renderDiktatResults(diff);
+  document.getElementById('d-results').classList.remove('hidden');
+  document.getElementById('d-results').scrollIntoView({ behavior: 'smooth' });
+});
+
+function computeDiff(orig, typed) {
+  const a = orig.split(/\s+/);
+  const b = typed.split(/\s+/);
+  const result = [];
+  let i=0, j=0;
+  
+  while(i < a.length || j < b.length) {
+    const wA = (a[i] || "").replace(/[.,!?]/g, "").toLowerCase();
+    const wB = (b[j] || "").replace(/[.,!?]/g, "").toLowerCase();
+    
+    if(wA === wB) {
+      result.push({ type: 'correct', val: a[i] });
+      i++; j++;
+    } else if(wA && !wB) {
+      result.push({ type: 'missing', val: a[i] });
+      i++;
+    } else if(!wA && wB) {
+      result.push({ type: 'extra', val: b[j] });
+      j++;
+    } else {
+      result.push({ type: 'wrong', val: b[j], expected: a[i] });
+      i++; j++;
+    }
+  }
+  return result;
 }
-document.getElementById('d-newBtn').addEventListener('click',()=>{document.getElementById('d-results').classList.add('hidden');document.getElementById('d-player').classList.add('hidden');document.getElementById('d-typed').value='';document.getElementById('d-hint').classList.add('hidden');dOriginal='';dPlays=0;document.getElementById('d-scoreBar').style.width='0%';window.scrollTo({top:0,behavior:'smooth'});});
+
+function renderDiktatResults(diff) {
+  const total = diff.length;
+  const correct = diff.filter(d => d.type === 'correct').length;
+  const pct = Math.round((correct / total) * 100);
+  
+  document.getElementById('d-results').innerHTML = `
+    <div class="bg-n-card p-6 rounded-2xl border border-n-border shadow-lg">
+      <div class="flex items-center justify-between mb-4">
+        <h3 class="font-bold text-sm uppercase">Accuracy: <span class="text-${pct > 80 ? 'n-green' : pct > 50 ? 'n-amber' : 'n-red'}">${pct}%</span></h3>
+      </div>
+      <div class="text-xl leading-relaxed font-medium">
+        ${diff.map(d => {
+          if(d.type === 'correct') return `<span class="text-n-green">${d.val}</span>`;
+          if(d.type === 'wrong') return `<span class="text-n-pink line-through opacity-50">${d.val}</span> <span class="text-n-green font-bold underline">${d.expected}</span>`;
+          if(d.type === 'missing') return `<span class="text-n-amber font-bold">[${d.val}]</span>`;
+          if(d.type === 'extra') return `<span class="text-n-dim line-through opacity-30">${d.val}</span>`;
+          return "";
+        }).join(' ')}
+      </div>
+    </div>
+  `;
+}
+
+// ===== TAB 4: CONVERSATION LOGIC =====
+let cDialogue = [];
+let cIndex = 0;
+let cTimeRemaining = 300; // 5 mins
+let cTimerInterval = null;
+
+const C_PROMPT = `Generate a realistic German dialogue for roleplay.
+Scenario: {topic}
+CEFR Level: {level}
+Person B starts. Person A is the user.
+The dialogue should have exactly 6-8 total turns (alternating B-A).
+Format: JSON array of objects.
+Object: {"speaker": "B"|"A", "text": "German text", "english": "English translation"}
+Tone: Professional, friendly, and natural for daily life or work.`;
+
+document.getElementById('c-startBtn').addEventListener('click', async () => {
+  const topic = document.getElementById('c-topic').value;
+  const level = document.querySelector('input[name="c-level"]:checked').value;
+  const btn = document.getElementById('c-startBtn');
+  btn.disabled = true;
+  btn.innerHTML = '<i data-lucide="loader-2" class="animate-spin" size="18"></i> Preparing Roleplay...';
+  lucide.createIcons();
+
+  try {
+    const raw = await geminiCall(C_PROMPT.replace('{topic}', topic).replace('{level}', level), 'gemini-2.5-flash-preview-09-2025', true);
+    cDialogue = JSON.parse(raw);
+    cIndex = 0;
+    cTimeRemaining = 300;
+    
+    document.getElementById('c-active-box').classList.remove('hidden');
+    document.getElementById('tab-conversation').querySelector('section').classList.add('hidden');
+    document.getElementById('c-report').classList.add('hidden');
+    document.getElementById('c-chat').innerHTML = '';
+    document.getElementById('c-typed').value = '';
+    
+    startConversationTimer();
+    processNextTurn();
+    notify("Conversation started!", "success");
+  } catch (e) {
+    notify("Failed to start: " + e.message, "error");
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = '<i data-lucide="message-square" size="18"></i> Start Roleplay';
+    lucide.createIcons();
+  }
+});
+
+function startConversationTimer() {
+  clearInterval(cTimerInterval);
+  cTimerInterval = setInterval(() => {
+    cTimeRemaining--;
+    const mins = Math.floor(cTimeRemaining / 60);
+    const secs = cTimeRemaining % 60;
+    document.getElementById('c-timer').textContent = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+    if (cTimeRemaining <= 0) endConversation();
+  }, 1000);
+}
+
+function processNextTurn() {
+  if (cIndex >= cDialogue.length) {
+    endConversation();
+    return;
+  }
+
+  const turn = cDialogue[cIndex];
+  document.getElementById('c-progress').textContent = `Turn ${cIndex + 1} / ${cDialogue.length}`;
+
+  if (turn.speaker === 'B') {
+    document.getElementById('c-input-area').classList.add('hidden');
+    addChatBubble('B', turn.text);
+    speakTurn(turn.text, () => {
+      setTimeout(() => {
+        cIndex++;
+        processNextTurn();
+      }, 500);
+    });
+  } else {
+    document.getElementById('c-input-area').classList.remove('hidden');
+    document.getElementById('c-phrase-hint').classList.add('hidden');
+    document.getElementById('c-phrase-hint').textContent = turn.text;
+    document.getElementById('c-typed').focus();
+  }
+}
+
+function addChatBubble(speaker, text) {
+  const container = document.getElementById('c-chat');
+  const bubble = document.createElement('div');
+  bubble.className = `p-4 mb-4 shadow-sm animate-in fade-in slide-in-from-bottom-2 ${speaker === 'B' ? 'chat-bubble-b' : 'chat-bubble-a'}`;
+  
+  const label = document.createElement('div');
+  label.className = `text-[9px] font-mono font-bold uppercase mb-1 ${speaker === 'B' ? 'text-n-dim' : 'text-white/70'}`;
+  label.textContent = speaker === 'B' ? 'Person B (AI)' : 'Person A (You)';
+  
+  const content = document.createElement('div');
+  content.className = 'text-sm font-medium leading-relaxed';
+  content.textContent = text;
+
+  bubble.appendChild(label);
+  bubble.appendChild(content);
+  container.appendChild(bubble);
+  container.scrollTop = container.scrollHeight;
+}
+
+function speakTurn(text, callback) {
+  const u = new SpeechSynthesisUtterance(text);
+  u.lang = 'de-DE';
+  u.rate = 0.95;
+  if (germanVoice) u.voice = germanVoice;
+  u.onend = callback;
+  speechSynthesis.speak(u);
+}
+
+document.getElementById('c-hintBtn').addEventListener('click', () => {
+  document.getElementById('c-phrase-hint').classList.toggle('hidden');
+});
+
+document.getElementById('c-submitBtn').addEventListener('click', () => {
+  const typed = document.getElementById('c-typed').value.trim();
+  const target = cDialogue[cIndex].text.trim();
+  
+  if (!typed) return notify("Please type your response first.", "info");
+
+  const clean = s => s.toLowerCase().replace(/[.,!?;:]/g, "").trim();
+  
+  if (clean(typed) === clean(target)) {
+    addChatBubble('A', target);
+    document.getElementById('c-typed').value = '';
+    cIndex++;
+    
+    // Log Activity to Conversation Skill
+    addXP(10, 'conversation');
+    
+    setTimeout(processNextTurn, 600);
+  } else {
+    notify("Try again! Make sure to match the natural phrase exactly.", "error");
+    document.getElementById('c-phrase-hint').classList.remove('hidden');
+  }
+});
+
+function endConversation() {
+  clearInterval(cTimerInterval);
+  document.getElementById('c-active-box').classList.add('hidden');
+  document.getElementById('c-report').classList.remove('hidden');
+  
+  const scriptContainer = document.getElementById('c-full-script');
+  scriptContainer.innerHTML = cDialogue.map(t => `
+    <div class="border-b border-n-border/50 pb-2">
+      <div class="flex items-center gap-2 mb-1">
+        <span class="font-mono text-[10px] font-bold ${t.speaker === 'B' ? 'text-n-dim' : 'text-n-cyan'}">PERSON ${t.speaker}</span>
+      </div>
+      <p class="font-medium text-n-text">${t.text}</p>
+      <p class="text-[11px] text-n-dim italic">"${t.english}"</p>
+    </div>
+  `).join('');
+  
+  // Log Completion Bonus to Conversation Skill
+  addXP(25, 'conversation');
+  notify("Roleplay complete!", "success");
+}
+
+document.getElementById('c-restartBtn').addEventListener('click', () => {
+  document.getElementById('c-report').classList.add('hidden');
+  document.getElementById('tab-conversation').querySelector('section').classList.remove('hidden');
+});
 </script>
 </body>
 </html>
