@@ -166,7 +166,7 @@ input[type="radio"]{accent-color:var(--c-cyan)!important}
       <select id="s-length" class="ml-1 p-1.5 rounded-lg text-xs border"><option value="short">Short (~150w)</option><option value="medium" selected>Medium (~300w)</option><option value="long">Long (~500w)</option></select>
     </label>
     <label class="text-[10px] font-mono text-n-dim">Model:
-      <select id="s-model" class="ml-1 p-1.5 rounded-lg text-xs border"><option value="gemini-2.5-flash-lite" selected>2.5-flash-lite</option><option value="gemini-2.5-flash">2.5-flash</option><option value="gemini-1.5-flash-8b">1.5-flash-8b</option><option value="gemini-2.0-flash">2.0-flash</option></select>
+      <select id="s-model" class="ml-1 p-1.5 rounded-lg text-xs border"><option value="gemini-2.5-flash-lite" selected>2.5-flash-lite</option><option value="gemini-2.5-flash">2.5-flash</option><option value="gemini-1.5-flash">1.5-flash</option><option value="gemini-2.0-flash">2.0-flash</option></select>
     </label>
     <button id="s-go" class="flex items-center gap-2 bg-n-cyan text-white px-4 py-2 rounded-lg text-sm font-bold hover:shadow-md transition-all">
       <i data-lucide="sparkles" size="16"></i> Summarize &amp; Read
@@ -473,7 +473,7 @@ async function geminiCall(model, key, body) {
 function escH(s){const d=document.createElement('div');d.textContent=s;return d.innerHTML;}
 async function geminiCallWithFallback(parts,primaryModel,genConfig){
   const key=getKey();if(!key)throw new Error('Enter API key.');
-  const models=[primaryModel,'gemini-2.0-flash','gemini-1.5-flash-8b'].filter((v,i,a)=>a.indexOf(v)===i);
+  const models=[primaryModel,'gemini-2.0-flash','gemini-1.5-flash'].filter((v,i,a)=>a.indexOf(v)===i);
   let lastErr;
   for(const m of models){
     try{return await geminiCall(m,key,{contents:[{parts}],generationConfig:genConfig||{}});}
@@ -543,7 +543,7 @@ function sBuildPrompt(level,length){const w=length==='short'?150:length==='long'
 
 async function sCallWithFallback(parts,model){
   const key=getKey(); if(!key) throw new Error('Enter API key.');
-  const chain=[model,'gemini-2.5-flash-lite','gemini-1.5-flash-8b','gemini-1.5-flash'].filter((v,i,a)=>a.indexOf(v)===i);
+  const chain=[model,'gemini-2.5-flash-lite','gemini-2.0-flash','gemini-1.5-flash'].filter((v,i,a)=>a.indexOf(v)===i);
   const sStatus=document.getElementById('s-status'); let last;
   for(const m of chain){try{sStatus.textContent='Model: '+m+'...';const raw=await geminiCall(m,key,{contents:[{parts}],generationConfig:{temperature:0.4,responseMimeType:'application/json'}});return JSON.parse(raw);}catch(e){last=e;if(!e.quota)throw e;}}
   throw new Error('All models hit quota. Wait and retry.');
@@ -588,7 +588,7 @@ document.getElementById('d-generateBtn').addEventListener('click', async ()=>{
   btn.disabled=true;btn.innerHTML='<i data-lucide="loader-2" class="animate-spin" size="16"></i> Generating...';lucide.createIcons();st.textContent='Generating...';
   try{
     const formats=['a short excerpt from a newspaper article','a paragraph from an email to a colleague','a few sentences from a podcast transcript','a passage from a business report','a snippet from a blog post','an excerpt from a meeting summary','a paragraph from a personal journal entry','a short passage from an interview','a paragraph from someone reflecting on their experiences','an excerpt from a magazine opinion column'];const fmt=formats[Math.floor(Math.random()*formats.length)];const prompt='Write '+fmt+' in German. The topic area is: '+topic+'.\nCEFR level: '+level+'.\n\nCRITICAL RULES:\n- 40-70 words, 2-4 sentences.\n- ABSOLUTELY DO NOT define or explain the topic keywords. NEVER start with "X ist..." or "X bedeutet...".\n- Instead, write as if a real person is LIVING the topic: describe a specific situation, share a personal experience, give an opinion, tell a mini-story, or discuss real-life implications.\n- BAD example (NEVER do this): "Der Aktienmarkt ist ein Ort, wo Wertpapiere gehandelt werden. Due Diligence bedeutet..."\n- GOOD example: "Gestern habe ich endlich meine ersten ETFs verkauft. Mein Kollege meinte, ich solle warten, aber nach drei Monaten im Minus hatte ich keine Geduld mehr."\n- Use concrete details: names, numbers, places, emotions, opinions.\n- Match '+level+' vocabulary and grammar.\n- Return ONLY the raw German text, nothing else.';
-    const raw=await geminiCall('gemini-2.5-flash-lite',key,{contents:[{parts:[{text:prompt}]}],generationConfig:{maxOutputTokens:512,temperature:0.9}});
+    st.textContent='Trying models...';const raw=await geminiCallWithFallback([{text:prompt}],'gemini-2.5-flash-lite',{maxOutputTokens:512,temperature:0.9});
     dOriginal=raw.replace(/^["\u201E\u201C\u201D]|["\u201C\u201D]$/g,'').trim();
     document.getElementById('d-player').classList.remove('hidden');document.getElementById('d-results').classList.add('hidden');
     document.getElementById('d-typed').value='';document.getElementById('d-hint').classList.add('hidden');
@@ -653,7 +653,7 @@ document.getElementById('c-startBtn').addEventListener('click', async ()=>{
   btn.disabled=true;btn.innerHTML='<i data-lucide="loader-2" class="animate-spin" size="16"></i> Generating...';lucide.createIcons();st.textContent='Creating scenario...';
   try{
     const prompt=C_PROMPT.replace('{topic}',topic).replace('{level}',level);
-    const raw=await geminiCall('gemini-2.5-flash-lite',key,{contents:[{parts:[{text:prompt}]}],generationConfig:{responseMimeType:'application/json',maxOutputTokens:4096,temperature:0.8}});
+    st.textContent='Trying models...';const raw=await geminiCallWithFallback([{text:prompt}],'gemini-2.5-flash-lite',{responseMimeType:'application/json',maxOutputTokens:4096,temperature:0.8});
     const fb=raw.indexOf('['),lb=raw.lastIndexOf(']');
     if(fb===-1||lb===-1) throw new Error('No JSON array returned.');
     cDialogue=JSON.parse(raw.slice(fb,lb+1));
