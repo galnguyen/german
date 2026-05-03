@@ -79,15 +79,16 @@ input[type="radio"]{accent-color:var(--c-cyan)!important}
 </details>
 
 <!-- TABS -->
-<nav class="flex border-b border-n-border">
-  <button class="main-tab font-mono text-xs tracking-wider uppercase px-5 py-3 border-b-2 border-n-cyan text-n-cyan transition-all" data-tab="reader">📖 Reader</button>
+<nav class="flex border-b border-n-border overflow-x-auto">
+  <button class="main-tab font-mono text-xs tracking-wider uppercase px-5 py-3 border-b-2 border-n-cyan text-n-cyan transition-all" data-tab="diktat">🎧 Diktat</button>
   <button class="main-tab font-mono text-xs tracking-wider uppercase px-5 py-3 border-b-2 border-transparent text-n-dim hover:text-n-text transition-all" data-tab="summarize">📝 Zusammenfassen</button>
-  <button class="main-tab font-mono text-xs tracking-wider uppercase px-5 py-3 border-b-2 border-transparent text-n-dim hover:text-n-text transition-all" data-tab="diktat">🎧 Diktat</button>
+  <button class="main-tab font-mono text-xs tracking-wider uppercase px-5 py-3 border-b-2 border-transparent text-n-dim hover:text-n-text transition-all" data-tab="reader">📖 Reader</button>
+  <button class="main-tab font-mono text-xs tracking-wider uppercase px-5 py-3 border-b-2 border-transparent text-n-dim hover:text-n-text transition-all" data-tab="grammar">🔬 Satzanalyse</button>
   <button class="main-tab font-mono text-xs tracking-wider uppercase px-5 py-3 border-b-2 border-transparent text-n-dim hover:text-n-text transition-all" data-tab="conversation">💬 Konversation</button>
 </nav>
 
 <!-- ========== TAB 1: READER ========== -->
-<div id="tab-reader" class="tab-content space-y-6">
+<div id="tab-reader" class="tab-content hidden space-y-6">
   <section class="bg-n-card rounded-2xl border border-n-border overflow-hidden">
     <div class="border-b border-n-border flex items-center justify-between px-5 py-3">
       <span class="text-[10px] font-mono font-bold text-n-dim uppercase tracking-wider">Input</span>
@@ -190,7 +191,7 @@ input[type="radio"]{accent-color:var(--c-cyan)!important}
 </div>
 
 <!-- ========== TAB 3: DIKTAT ========== -->
-<div id="tab-diktat" class="tab-content hidden space-y-6">
+<div id="tab-diktat" class="tab-content space-y-6">
   <section class="bg-n-card rounded-2xl border border-n-border p-5 space-y-4">
     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
       <div>
@@ -207,6 +208,7 @@ input[type="radio"]{accent-color:var(--c-cyan)!important}
           </optgroup>
           <optgroup label="🧠 Mind">
             <option value="Philosophie: Stoizismus, Erkenntnistheorie, Ethik, Existenzialismus">Philosophie (Philosophy)</option>
+            <option value="Buddhismus: Achtsamkeit, Meditation, Loslassen, Mitgefühl, Karma, der Weg zur inneren Ruhe">Buddhismus (Buddhism)</option>
             <option value="Psychologie: kognitive Verzerrungen, Verhaltensökonomie, Entscheidungstheorie">Psychologie (Psychology)</option>
           </optgroup>
           <optgroup label="🔬 Science &amp; History">
@@ -373,6 +375,33 @@ input[type="radio"]{accent-color:var(--c-cyan)!important}
   </section>
 </div>
 
+<!-- ========== TAB 5: SATZANALYSE ========== -->
+<div id="tab-grammar" class="tab-content hidden space-y-6">
+  <section class="bg-n-card rounded-2xl border border-n-border overflow-hidden">
+    <div class="border-b border-n-border px-5 py-3">
+      <span class="text-[10px] font-mono font-bold text-n-dim uppercase tracking-wider">Paste German text for grammatical breakdown</span>
+    </div>
+    <textarea id="g-input" class="w-full min-h-[120px] p-5 text-base bg-transparent border-none resize-none leading-relaxed" placeholder="Ich habe gestern eine Suppe gegessen, die meine Mutter gekocht hat."></textarea>
+    <div class="px-5 py-3 border-t border-n-border flex items-center justify-between">
+      <span id="g-status" class="text-[10px] font-mono text-n-dim">Ready</span>
+      <button id="g-analyzeBtn" class="flex items-center gap-2 bg-n-cyan text-white px-5 py-2 rounded-lg text-sm font-bold hover:shadow-md transition-all">
+        <i data-lucide="scan-search" size="16"></i> Analyze
+      </button>
+    </div>
+  </section>
+  <div class="flex flex-wrap gap-3 text-[10px] font-mono px-1">
+    <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-full inline-block" style="background:var(--c-red)"></span> Subjekt</span>
+    <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-full inline-block" style="background:var(--c-amber)"></span> Verb</span>
+    <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-full inline-block" style="background:var(--c-green)"></span> Akkusativ</span>
+    <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-full inline-block" style="background:var(--c-cyan)"></span> Dativ</span>
+    <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-full inline-block" style="background:var(--c-purple)"></span> Genitiv</span>
+    <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-full inline-block" style="background:var(--c-blue)"></span> Adverb</span>
+    <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-full inline-block" style="background:var(--c-pink)"></span> Adjektiv</span>
+    <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-full inline-block" style="background:var(--c-dim)"></span> Sonstiges</span>
+  </div>
+  <div id="g-results" class="hidden space-y-6"></div>
+</div>
+
 <!-- FOOTER -->
 <footer class="pt-6 pb-4 text-center">
   <p class="text-[10px] text-n-dim font-mono">Built by <a href="https://galgorithms.wordpress.com/" target="_blank" class="text-n-cyan hover:text-n-text underline decoration-dotted underline-offset-4 font-bold">GALGORITHMS</a></p>
@@ -442,6 +471,16 @@ async function geminiCall(model, key, body) {
   return (c.content?.parts||[]).map(p=>p.text||'').join('');
 }
 function escH(s){const d=document.createElement('div');d.textContent=s;return d.innerHTML;}
+async function geminiCallWithFallback(parts,primaryModel,genConfig){
+  const key=getKey();if(!key)throw new Error('Enter API key.');
+  const models=[primaryModel,'gemini-2.0-flash','gemini-1.5-flash-8b'].filter((v,i,a)=>a.indexOf(v)===i);
+  let lastErr;
+  for(const m of models){
+    try{return await geminiCall(m,key,{contents:[{parts}],generationConfig:genConfig||{}});}
+    catch(e){lastErr=e;if(!e.quota)throw e;}
+  }
+  throw new Error('All models quota exceeded. Wait 2-3 min and retry, or upgrade your Gemini API plan at ai.google.dev/pricing');
+}
 
 // ===== READER =====
 const rTooltip=document.getElementById('r-tooltip');
@@ -460,7 +499,7 @@ document.getElementById('r-analyzeBtn').addEventListener('click', async () => {
   const btn=document.getElementById('r-analyzeBtn'), st=document.getElementById('r-status');
   btn.disabled=true; btn.innerHTML='<i data-lucide="loader-2" class="animate-spin" size="16"></i> Analyzing...'; lucide.createIcons(); st.textContent='Analyzing...';
   try {
-    const raw=await geminiCall('gemini-2.5-flash-lite',key,{contents:[{parts:[{text:R_PROMPT+"\n\nTEXT:\n"+text}]}],generationConfig:{responseMimeType:"application/json",maxOutputTokens:32768,temperature:0.2}});
+    st.textContent='Trying models...';const raw=await geminiCallWithFallback([{text:R_PROMPT+"\n\nTEXT:\n"+text}],'gemini-2.5-flash-lite',{responseMimeType:"application/json",maxOutputTokens:32768,temperature:0.2});
     const fb=raw.indexOf('{'),lb=raw.lastIndexOf('}');
     if(fb===-1||lb===-1) throw new Error('No JSON returned.');
     const data=JSON.parse(raw.slice(fb,lb+1));
@@ -548,7 +587,7 @@ document.getElementById('d-generateBtn').addEventListener('click', async ()=>{
   const btn=document.getElementById('d-generateBtn'),st=document.getElementById('d-genStatus');
   btn.disabled=true;btn.innerHTML='<i data-lucide="loader-2" class="animate-spin" size="16"></i> Generating...';lucide.createIcons();st.textContent='Generating...';
   try{
-    const formats=['a short excerpt from a newspaper article','a paragraph from an email to a colleague','a few sentences from a podcast transcript','a passage from a business report','a snippet from a blog post','an excerpt from a meeting summary','a paragraph from a personal journal entry','a short passage from an interview'];const fmt=formats[Math.floor(Math.random()*formats.length)];const prompt='Write '+fmt+' in German about: '+topic+'.\nCEFR level: '+level+'.\nRules:\n- 40-70 words, 2-4 sentences.\n- Must sound like authentic human writing, NOT a textbook definition or encyclopedia entry.\n- Use natural phrasing, opinions, specific details, or narrative — the way a real person would write or speak.\n- Match '+level+' vocabulary and grammar complexity.\n- Return ONLY the raw German text, no labels or explanations.';
+    const formats=['a short excerpt from a newspaper article','a paragraph from an email to a colleague','a few sentences from a podcast transcript','a passage from a business report','a snippet from a blog post','an excerpt from a meeting summary','a paragraph from a personal journal entry','a short passage from an interview','a paragraph from someone reflecting on their experiences','an excerpt from a magazine opinion column'];const fmt=formats[Math.floor(Math.random()*formats.length)];const prompt='Write '+fmt+' in German. The topic area is: '+topic+'.\nCEFR level: '+level+'.\n\nCRITICAL RULES:\n- 40-70 words, 2-4 sentences.\n- ABSOLUTELY DO NOT define or explain the topic keywords. NEVER start with "X ist..." or "X bedeutet...".\n- Instead, write as if a real person is LIVING the topic: describe a specific situation, share a personal experience, give an opinion, tell a mini-story, or discuss real-life implications.\n- BAD example (NEVER do this): "Der Aktienmarkt ist ein Ort, wo Wertpapiere gehandelt werden. Due Diligence bedeutet..."\n- GOOD example: "Gestern habe ich endlich meine ersten ETFs verkauft. Mein Kollege meinte, ich solle warten, aber nach drei Monaten im Minus hatte ich keine Geduld mehr."\n- Use concrete details: names, numbers, places, emotions, opinions.\n- Match '+level+' vocabulary and grammar.\n- Return ONLY the raw German text, nothing else.';
     const raw=await geminiCall('gemini-2.5-flash-lite',key,{contents:[{parts:[{text:prompt}]}],generationConfig:{maxOutputTokens:512,temperature:0.9}});
     dOriginal=raw.replace(/^["\u201E\u201C\u201D]|["\u201C\u201D]$/g,'').trim();
     document.getElementById('d-player').classList.remove('hidden');document.getElementById('d-results').classList.add('hidden');
@@ -713,6 +752,52 @@ document.getElementById('c-restartBtn').addEventListener('click',()=>{
   document.getElementById('c-report').classList.add('hidden');
   document.getElementById('c-setup').classList.remove('hidden');
 });
+
+// ===== TAB 5: SATZANALYSE =====
+const G_PROMPT='Expert German grammar parser. For each sentence, return every token with its grammatical role and case.\nRoles: subject, verb, akk_object, dat_object, gen_attribute, adverb, adjective, preposition, article, conjunction, relative_pronoun, particle, other.\nFor nouns/pronouns/articles specify kasus: Nominativ, Akkusativ, Dativ, Genitiv.\nFor verbs: note tense, person, number. If split (Perfekt habe...gegessen, Modal+Infinitiv, Trennbar), mark BOTH parts as verb and explain the Satzklammer in verbAnalysis.\nFor Relativsaetze: identify the Relativpronomen, its case, and what it refers to.\nFor adjective declension: note the ending and why (nach bestimmtem Artikel, nach unbestimmtem Artikel, ohne Artikel).\nReturn ONLY valid JSON:\n{"sentences":[{"original":"...","translation":"English","tokens":[{"word":"...","role":"...","kasus":"...","info":"brief grammar note"}],"verbAnalysis":"tense, conjugation, Satzklammer explanation","kasusNotes":"which noun/pronoun has which case and why","clauseStructure":"Hauptsatz/Nebensatz/Relativsatz + word order notes"}]}';
+const G_COLORS={subject:'--c-red',verb:'--c-amber',akk_object:'--c-green',dat_object:'--c-cyan',gen_attribute:'--c-purple',adverb:'--c-blue',adjective:'--c-pink'};
+function gCol(r){const v=G_COLORS[r];return v?'var('+v+')':'var(--c-dim)';}
+document.getElementById('g-analyzeBtn').addEventListener('click',async()=>{
+  const text=document.getElementById('g-input').value.trim();if(!text)return notify('Paste German text first.','error');
+  const btn=document.getElementById('g-analyzeBtn'),st=document.getElementById('g-status');
+  btn.disabled=true;btn.innerHTML='<i data-lucide="loader-2" class="animate-spin" size="16"></i> Parsing...';lucide.createIcons();st.textContent='Analyzing grammar...';
+  try{
+    st.textContent='Trying models...';const raw=await geminiCallWithFallback([{text:G_PROMPT+'\n\nTEXT:\n'+text}],'gemini-2.5-flash-lite',{responseMimeType:"application/json"});
+    const fb=raw.indexOf('{'),lb=raw.lastIndexOf('}');
+    const data=(fb!==-1)?JSON.parse(raw.slice(fb,lb+1)):JSON.parse(raw);gRender(data);
+    document.getElementById('g-results').classList.remove('hidden');st.textContent='Done';addXP(10);
+  }catch(e){console.error(e);notify('Grammar analysis failed: '+e.message,'error');st.textContent='Error';}
+  finally{btn.disabled=false;btn.innerHTML='<i data-lucide="scan-search" size="16"></i> Analyze';lucide.createIcons();}
+});
+function gRender(data){
+  const box=document.getElementById('g-results');
+  box.innerHTML=(data.sentences||[]).map((s,i)=>{
+    const tok=s.tokens.map(t=>{
+      const col=gCol(t.role);
+      const kas=t.kasus?'<sup style="font-size:7px;opacity:0.6;margin-left:2px">'+escH(t.kasus.slice(0,3))+'</sup>':'';
+      const rl=escH(t.role+(t.kasus?' · '+t.kasus:'')).replace(/"/g,'&quot;');
+      const inf=escH(t.info||'').replace(/"/g,'&quot;');
+      return '<span class="g-tok cursor-help inline-block px-1.5 py-1 mx-0.5 rounded transition-all hover:opacity-75" style="color:'+col+';border-bottom:2.5px solid '+col+'" data-rl="'+rl+'" data-inf="'+inf+'">'+escH(t.word)+kas+'</span>';
+    }).join(' ');
+    return '<div class="bg-n-card rounded-2xl border border-n-border overflow-hidden mb-4">'
+      +'<div class="px-5 py-2 border-b border-n-border flex justify-between"><span class="text-[9px] font-mono text-n-dim uppercase">Satz '+(i+1)+'</span><span class="text-[9px] font-mono text-n-dim italic truncate ml-3">'+escH(s.clauseStructure||'')+'</span></div>'
+      +'<div class="p-5 text-lg leading-[3] font-medium">'+tok+'</div>'
+      +'<div class="px-5 py-2 border-t border-n-border text-sm italic text-n-dim">„'+escH(s.translation)+'“</div>'
+      +'<div class="px-5 py-3 space-y-2 border-t border-n-border text-xs leading-relaxed">'
+      +(s.verbAnalysis?'<div><b class="font-mono text-[9px] uppercase tracking-wider" style="color:var(--c-amber)">Verb:</b> <span class="text-n-text/80">'+escH(s.verbAnalysis)+'</span></div>':'')
+      +(s.kasusNotes?'<div><b class="font-mono text-[9px] uppercase tracking-wider" style="color:var(--c-cyan)">Kasus:</b> <span class="text-n-text/80">'+escH(s.kasusNotes)+'</span></div>':'')
+      +'</div></div>';
+  }).join('');
+  box.querySelectorAll('.g-tok').forEach(el=>{
+    el.addEventListener('mouseenter',e=>{
+      const tip=document.getElementById('r-tooltip');
+      document.getElementById('r-tooltipContent').innerHTML='<div class="text-[9px] font-mono text-n-dim uppercase mb-1">'+escH(el.dataset.rl)+'</div><div class="text-xs text-n-text leading-relaxed">'+escH(el.dataset.inf)+'</div>';
+      tip.style.display='block';tip.style.left=Math.min(window.innerWidth-220,e.clientX+12)+'px';tip.style.top=(e.clientY+12)+'px';
+    });
+    el.addEventListener('mousemove',e=>{const tip=document.getElementById('r-tooltip');tip.style.left=Math.min(window.innerWidth-220,e.clientX+12)+'px';tip.style.top=(e.clientY+12)+'px';});
+    el.addEventListener('mouseleave',()=>{document.getElementById('r-tooltip').style.display='none';});
+  });
+}
 </script>
 </body>
 </html>
