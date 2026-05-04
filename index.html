@@ -489,7 +489,7 @@ Rules:
 - Classify tokens: A1-C1 or unknown (proper nouns/punctuation).
 - Provide Overall CEFR Grade (overallLevel).
 - Provide nativeSuggestions (list of strings).
-- Every token in order in "words" array.
+- Every token in order in "words" array. CRITICAL: Punctuation (. , ; : ! ? ...) MUST be separate tokens with level "unknown". Never attach punctuation to a word. "Haus." = two tokens: {"word":"Haus"} then {"word":"."}. For paragraph breaks, insert {"word":"PARA","level":"unknown","lemma":"","meaning":""}.
 - Identify 3-7 grammar points in "grammar" array.
 - JSON structure: { "overallLevel": "...", "nativeSuggestions": [], "words": [{"word":"", "level":"", "lemma":"", "meaning":""}], "grammar": [{"level":"", "topic":"", "explanation":""}], "translation": "" }`;
 
@@ -503,6 +503,8 @@ document.getElementById('r-analyzeBtn').addEventListener('click', async () => {
     const fb=raw.indexOf('{'),lb=raw.lastIndexOf('}');
     if(fb===-1||lb===-1) throw new Error('No JSON returned.');
     const data=JSON.parse(raw.slice(fb,lb+1));
+    // Post-process: split attached punctuation into separate tokens
+    if(data.words){const nw=[];data.words.forEach(t=>{if(!t.word)return;const m=t.word.match(/^(.+?)([.,;:!?]+)$/);if(m&&m[1].length>0){nw.push({word:m[1],level:t.level,lemma:t.lemma,meaning:t.meaning});nw.push({word:m[2],level:'unknown',lemma:'',meaning:''});}else{nw.push(t);}});data.words=nw;}
     renderReader(data); document.getElementById('r-results').classList.remove('hidden'); st.textContent='Done'; addXP(10);
   } catch(e){ console.error(e); alert('Analysis failed: '+e.message); st.textContent='Error'; }
   finally{ btn.disabled=false; btn.innerHTML='<i data-lucide="sparkles" size="16"></i> Analyze'; lucide.createIcons(); }
@@ -513,7 +515,8 @@ function renderReader(data) {
   const tc=document.getElementById('r-annotated'); tc.innerHTML='';
   data.words.forEach((t,i) => {
     const isPunct=/^[\s.,;:!?\u2014\u2013\-\u201E\u201C\u201D\u2018\u2019()\[\]]+$/.test(t.word);
-    if(isPunct){const s=document.createElement('span');s.className='text-n-dim';s.textContent=t.word;tc.appendChild(s);}
+    if(t.word==='PARA'){tc.appendChild(document.createElement('br'));tc.appendChild(document.createElement('br'));return;}
+    if(isPunct){const s=document.createElement('span');s.className='text-n-text/60 font-semibold';s.textContent=t.word;tc.appendChild(s);}
     else{const s=document.createElement('span');const cls='cefr-'+t.level.toLowerCase();s.className='cursor-help transition-colors rounded px-0.5 word-hover '+cls+(t.level==='unknown'?' underline decoration-dotted':' font-bold');s.textContent=t.word;s.addEventListener('mouseenter',e=>rShowTip(e,t));s.addEventListener('mousemove',e=>rMoveTip(e));s.addEventListener('mouseleave',()=>rTooltip.style.display='none');tc.appendChild(s);}
     if(i<data.words.length-1&&!/^[\s.,;:!?]/.test(data.words[i+1].word)) tc.appendChild(document.createTextNode(' '));
   });
@@ -539,7 +542,7 @@ document.getElementById('s-textFile').onchange=e=>{const f=e.target.files[0];doc
 document.getElementById('s-audioFile').onchange=e=>{const f=e.target.files[0];if(!f)return;document.getElementById('s-audioInfo').textContent=f.name+' ('+(f.size/1024/1024).toFixed(1)+' MB)'+(f.size>18*1024*1024?' \u26a0 may fail':'');};
 function readFileText(f){return new Promise((r,j)=>{const x=new FileReader();x.onload=()=>r(x.result);x.onerror=j;x.readAsText(f);});}
 function readFileB64(f){return new Promise((r,j)=>{const x=new FileReader();x.onload=()=>r(x.result.split(',')[1]);x.onerror=j;x.readAsDataURL(f);});}
-function sBuildPrompt(level,length){const w=length==='short'?150:length==='long'?500:300;return 'Du bist ein Deutschlehrer. Fasse die Quelle auf '+level+'-Niveau zusammen. Verwende klare, natuerliche Saetze. Struktur: 1) Einleitung, 2) Hauptpunkte, 3) Fazit. Ungefaehr '+w+' Woerter. Danach 8-12 nuetzliche Vokabeln mit deutscher Erklaerung und englischer Uebersetzung.\n\nFalls die Quelle Audio ist, transkribiere sie zuerst und fasse dann zusammen.\n\nNUR gueltiges JSON:\n{"summary":"...","vocab":[{"word":"","erklaerung":"","english":""}]}';}
+function sBuildPrompt(level,length){const w=length==='short'?150:length==='long'?500:300;return 'Du bist ein Deutschlehrer. Fasse die Quelle auf '+level+'-Niveau zusammen. Verwende klare, natuerliche Saetze. Gliedere den Text in Einleitung, Hauptpunkte und Fazit. Ungefaehr '+w+' Woerter. Danach 8-12 nuetzliche Vokabeln mit deutscher Erklaerung und englischer Uebersetzung.\n\nFalls die Quelle Audio ist, transkribiere sie zuerst und fasse dann zusammen.\n\nIMPORTANT: "summary" MUST be a single flat string containing the full summary text (with paragraph breaks as newlines). Do NOT return summary as a nested object with keys like einleitung/hauptpunkte/fazit.\n\nNUR gueltiges JSON:\n{"summary":"Ein langer zusammenhaengender Text...","vocab":[{"word":"","erklaerung":"","english":""}]}';}
 
 async function sCallWithFallback(parts,model){
   const key=getKey(); if(!key) throw new Error('Enter API key.');
@@ -560,9 +563,10 @@ document.getElementById('s-go').addEventListener('click', async ()=>{
     else if(sActivePane==='audio'){const f=document.getElementById('s-audioFile').files[0];if(!f)throw new Error('Choose audio.');sStatus.textContent='Encoding audio...';const b64=await readFileB64(f);parts=[{text:prompt},{inline_data:{mime_type:f.type||'audio/mpeg',data:b64}}];src='[Audio: '+f.name+']';}
     else if(sActivePane==='url'){const url=document.getElementById('s-articleUrl').value.trim();if(!url)throw new Error('Paste a URL.');sStatus.textContent='Fetching article...';const res=await fetch('https://r.jina.ai/'+url);if(!res.ok)throw new Error('Reader failed ('+res.status+')');const t=await res.text();parts=[{text:prompt+'\n\nQuelle:\n\n'+t.slice(0,50000)}];src=t;}
     const result=await sCallWithFallback(parts,model);
-    const sumText=typeof result.summary==='string'?result.summary:typeof result.summary==='object'?JSON.stringify(result.summary):(result.summary||'').toString();
+    const sumText=typeof result.summary==='string'?result.summary:typeof result.summary==='object'?(Array.isArray(result.summary)?result.summary.join('\n\n'):Object.values(result.summary).filter(v=>typeof v==='string').join('\n\n')):(result.summary||'').toString();
     const sumEl=document.getElementById('s-summary');sumEl.innerHTML='';
-    sumText.split(/(\s+)/).forEach(w=>{if(/\S/.test(w)){const s=document.createElement('span');s.className='s-word';s.textContent=w;sumEl.appendChild(s);}else{sumEl.appendChild(document.createTextNode(w));}});
+    const paragraphs=sumText.split(/\n\s*\n|\n/);
+    paragraphs.forEach((para,pi)=>{if(!para.trim())return;const p=document.createElement('p');p.style.marginBottom='0.8em';para.split(/(\s+)/).forEach(w=>{if(/\S/.test(w)){const s=document.createElement('span');s.className='s-word';s.textContent=w;p.appendChild(s);}else{p.appendChild(document.createTextNode(w));}});sumEl.appendChild(p);});
     document.getElementById('s-vocab').innerHTML=(result.vocab||[]).map(v=>'<div class="text-xs"><b class="text-n-cyan">'+escH(v.word)+'</b> \u2014 '+escH(v.erklaerung||v['erkl\u00e4rung']||'')+' <i class="text-n-dim">('+escH(v.english)+')</i></div>').join('');
     document.getElementById('s-rawSource').value=src.slice(0,10000);
     document.getElementById('s-card').classList.remove('hidden'); sStatus.textContent='Reading aloud...'; addXP(15);
