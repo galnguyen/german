@@ -762,7 +762,7 @@ const G_PROMPT='Expert German grammar parser. For each sentence, return every to
 const G_COLORS={subject:'--c-red',verb:'--c-amber',akk_object:'--c-green',dat_object:'--c-cyan',gen_attribute:'--c-purple',adverb:'--c-blue',adjective:'--c-pink'};
 function gCol(r){const v=G_COLORS[r];return v?'var('+v+')':'var(--c-dim)';}
 document.getElementById('g-analyzeBtn').addEventListener('click',async()=>{
-  const text=document.getElementById('g-input').value.trim();if(!text)return notify('Paste German text first.','error');
+  const text=document.getElementById('g-input').value.trim();if(!text)return alert('Paste German text first.');
   const btn=document.getElementById('g-analyzeBtn'),st=document.getElementById('g-status');
   btn.disabled=true;btn.innerHTML='<i data-lucide="loader-2" class="animate-spin" size="16"></i> Parsing...';lucide.createIcons();st.textContent='Analyzing grammar...';
   try{
@@ -770,7 +770,7 @@ document.getElementById('g-analyzeBtn').addEventListener('click',async()=>{
     const fb=raw.indexOf('{'),lb=raw.lastIndexOf('}');
     const data=(fb!==-1)?JSON.parse(raw.slice(fb,lb+1)):JSON.parse(raw);gRender(data);
     document.getElementById('g-results').classList.remove('hidden');st.textContent='Done';addXP(10);
-  }catch(e){console.error(e);notify('Grammar analysis failed: '+e.message,'error');st.textContent='Error';}
+  }catch(e){console.error(e);alert('Grammar analysis failed: '+e.message);st.textContent='Error';}
   finally{btn.disabled=false;btn.innerHTML='<i data-lucide="scan-search" size="16"></i> Analyze';lucide.createIcons();}
 });
 function gRender(data){
