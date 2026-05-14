@@ -91,6 +91,7 @@ input[type="radio"]{accent-color:var(--c-cyan)!important}
   <button class="main-tab font-mono text-xs tracking-wider uppercase px-5 py-3 border-b-2 border-transparent text-n-dim hover:text-n-text transition-all" data-tab="conversation">💬 Konversation</button>
   <button class="main-tab font-mono text-xs tracking-wider uppercase px-5 py-3 border-b-2 border-transparent text-n-dim hover:text-n-text transition-all" data-tab="wortbau">🧱 Wortbausteine</button>
   <button class="main-tab font-mono text-xs tracking-wider uppercase px-5 py-3 border-b-2 border-transparent text-n-dim hover:text-n-text transition-all" data-tab="deklination">🔤 Deklination</button>
+  <button class="main-tab font-mono text-xs tracking-wider uppercase px-5 py-3 border-b-2 border-transparent text-n-dim hover:text-n-text transition-all" data-tab="konjugation">🔄 Konjugation</button>
   <button class="main-tab font-mono text-xs tracking-wider uppercase px-5 py-3 border-b-2 border-transparent text-n-dim hover:text-n-text transition-all" data-tab="uebungen">🏋️ Übungen</button>
 </nav>
 
@@ -477,6 +478,33 @@ input[type="radio"]{accent-color:var(--c-cyan)!important}
     </div>
   </section>
   <div id="dk-results" class="hidden space-y-6"></div>
+</div>
+
+<!-- ========== TAB: KONJUGATION ========== -->
+<div id="tab-konjugation" class="tab-content hidden space-y-6">
+  <section class="bg-n-card rounded-2xl border border-n-border p-5 space-y-4">
+    <div class="flex gap-3">
+      <div class="flex-1">
+        <label class="block text-[10px] font-mono font-bold text-n-dim uppercase tracking-wider mb-2">Verb (Infinitiv)</label>
+        <input id="kj-input" type="text" class="w-full p-2.5 rounded-lg text-sm border" placeholder="z.B. fahren, anfangen, sich setzen...">
+      </div>
+      <div class="flex items-end">
+        <button id="kj-goBtn" class="flex items-center gap-2 bg-n-cyan text-white px-5 py-2.5 rounded-lg text-sm font-bold hover:shadow-md transition-all">
+          <i data-lucide="sparkles" size="16"></i> Look up
+        </button>
+      </div>
+    </div>
+    <div id="kj-status" class="text-[10px] font-mono text-n-dim text-center"></div>
+    <div class="flex flex-wrap gap-2">
+      <button class="kj-try text-[10px] px-2.5 py-1 rounded-full bg-n-border text-n-dim hover:text-n-text transition-all">fahren</button>
+      <button class="kj-try text-[10px] px-2.5 py-1 rounded-full bg-n-border text-n-dim hover:text-n-text transition-all">anfangen</button>
+      <button class="kj-try text-[10px] px-2.5 py-1 rounded-full bg-n-border text-n-dim hover:text-n-text transition-all">sich setzen</button>
+      <button class="kj-try text-[10px] px-2.5 py-1 rounded-full bg-n-border text-n-dim hover:text-n-text transition-all">wissen</button>
+      <button class="kj-try text-[10px] px-2.5 py-1 rounded-full bg-n-border text-n-dim hover:text-n-text transition-all">werden</button>
+      <button class="kj-try text-[10px] px-2.5 py-1 rounded-full bg-n-border text-n-dim hover:text-n-text transition-all">müssen</button>
+    </div>
+  </section>
+  <div id="kj-results" class="hidden space-y-4"></div>
 </div>
 
 <!-- ========== TAB 8: ÜBUNGEN ========== -->
@@ -1086,6 +1114,77 @@ function dkRender(data){
       html+='<div class="space-y-2"><h3 class="font-mono text-[10px] font-bold text-n-dim uppercase tracking-wider px-1">'+set.name+'</h3>'+dkTbl(['','Singular','Plural'],ar)+'</div>';
     });
   }
+  box.innerHTML=html;
+}
+
+// ===== KONJUGATION =====
+const KJ_PROMPT=`German verb conjugation expert. Given a verb (infinitive), return its complete conjugation.<br>For trennbare Verben: show separated forms in Präsens/Präteritum (e.g. "fange an"), combined in Partizip II (e.g. "angefangen").<br>For reflexive verbs: include reflexive pronouns in ALL conjugated forms (e.g. "setze mich", "habe mich gesetzt", "werde mich setzen").<br>Array order: [ich, du, er/sie/es, wir, ihr, sie/Sie]<br>Return ONLY valid JSON:<br>{"infinitive":"fahren","meaning_en":"to drive, to go by vehicle","meaning_vi":"lái xe, đi bằng phương tiện","is_regular":false,"is_trennbar":false,"prefix":"","auxiliary":"sein","is_reflexive":false,"partizip2":"gefahren","praesens":["fahre","fährst","fährt","fahren","fahrt","fahren"],"praeteritum":["fuhr","fuhrst","fuhr","fuhren","fuhrt","fuhren"],"perfekt":["bin gefahren","bist gefahren","ist gefahren","sind gefahren","seid gefahren","sind gefahren"],"plusquamperfekt":["war gefahren","warst gefahren","war gefahren","waren gefahren","wart gefahren","waren gefahren"],"futur1":["werde fahren","wirst fahren","wird fahren","werden fahren","werdet fahren","werden fahren"],"konjunktiv2":["führe","führest","führe","führen","führet","führen"],"imperativ":["Fahr!","Fahrt!","Fahren Sie!"],"example":{"de":"Ich fahre morgen nach Berlin.","en":"I'm driving to Berlin tomorrow.","vi":"Ngày mai tôi lái xe đến Berlin."},"notes":"Uses sein because it indicates movement/change of location."}`;
+const KJ_PERSONS=['ich','du','er/sie/es','wir','ihr','sie/Sie'];
+
+document.getElementById('kj-input').addEventListener('keydown',e=>{if(e.key==='Enter')document.getElementById('kj-goBtn').click();});
+document.querySelectorAll('.kj-try').forEach(b=>b.addEventListener('click',()=>{document.getElementById('kj-input').value=b.textContent;document.getElementById('kj-goBtn').click();}));
+
+document.getElementById('kj-goBtn').addEventListener('click', async()=>{
+  const verb=document.getElementById('kj-input').value.trim();
+  if(!verb)return;
+  const btn=document.getElementById('kj-goBtn'),st=document.getElementById('kj-status');
+  btn.disabled=true;btn.innerHTML='<i data-lucide="loader-2" class="animate-spin" size="16"></i>';lucide.createIcons();st.textContent='Looking up...';
+  try{
+    const kjCk=cacheGet('kj',verb);let data;
+    if(kjCk){data=kjCk;}else{
+    const raw=await geminiCallWithFallback([{text:KJ_PROMPT+'\n\nVERB: '+verb}],'gemini-2.5-flash-lite',{responseMimeType:"application/json",maxOutputTokens:4096,temperature:0.2});
+    const fb=raw.indexOf('{'),lb=raw.lastIndexOf('}');
+    if(fb===-1)throw new Error('No JSON.');
+    data=JSON.parse(raw.slice(fb,lb+1));cacheSet('kj',verb,data);updateCacheCount();}
+    kjRender(data);
+    document.getElementById('kj-results').classList.remove('hidden');st.textContent=kjCk?'Done ⚡ cached':'Done';addXP(kjCk?0:5);
+  }catch(e){alert('Error: '+e.message);st.textContent='Error';}
+  finally{btn.disabled=false;btn.innerHTML='<i data-lucide="sparkles" size="16"></i> Look up';lucide.createIcons();}
+});
+
+function kjRender(d){
+  const box=document.getElementById('kj-results');
+  let html='<div class="bg-n-card rounded-2xl border border-n-border p-5 space-y-4">';
+  html+='<div class="flex items-start justify-between gap-4"><div>';
+  html+='<h2 class="text-2xl font-black font-orbitron text-n-cyan">'+escH(d.infinitive)+'</h2>';
+  html+='<p class="text-sm text-n-text/70">'+escH(d.meaning_en)+'</p>';
+  html+='<p class="text-xs text-n-dim italic">'+escH(d.meaning_vi)+'</p>';
+  html+='</div><div class="flex flex-wrap gap-1 justify-end">';
+  if(!d.is_regular)html+='<span class="text-[9px] font-mono px-2 py-0.5 rounded-full" style="background:var(--c-red);color:#fff">unregelmäßig</span>';
+  else html+='<span class="text-[9px] font-mono px-2 py-0.5 rounded-full" style="background:var(--c-green);color:#fff">regelmäßig</span>';
+  if(d.is_trennbar)html+='<span class="text-[9px] font-mono px-2 py-0.5 rounded-full" style="background:var(--c-amber);color:#fff">trennbar: '+escH(d.prefix)+'|</span>';
+  html+='<span class="text-[9px] font-mono px-2 py-0.5 rounded-full" style="background:var(--c-purple);color:#fff">'+escH(d.auxiliary)+'</span>';
+  if(d.is_reflexive)html+='<span class="text-[9px] font-mono px-2 py-0.5 rounded-full" style="background:var(--c-pink);color:#fff">reflexiv</span>';
+  html+='</div></div>';
+  html+='<div class="text-sm"><span class="text-n-dim">Partizip II:</span> <span class="font-bold" style="color:var(--c-cyan)">'+escH(d.partizip2)+'</span></div>';
+  html+='</div>';
+  const tenses=[{t:'Präsens',f:d.praesens,c:'--c-cyan'},{t:'Präteritum',f:d.praeteritum,c:'--c-amber'},{t:'Perfekt',f:d.perfekt,c:'--c-green'},{t:'Plusquamperfekt',f:d.plusquamperfekt,c:'--c-purple'},{t:'Futur I',f:d.futur1,c:'--c-blue'},{t:'Konjunktiv II',f:d.konjunktiv2,c:'--c-pink'}];
+  html+='<div class="grid grid-cols-1 sm:grid-cols-2 gap-3">';
+  tenses.forEach(t=>{
+    html+='<div class="bg-n-card rounded-xl border border-n-border p-3">';
+    html+='<h4 class="text-[10px] font-mono font-bold uppercase tracking-wider mb-2" style="color:var('+t.c+')">'+t.t+'</h4>';
+    html+='<table class="w-full text-sm">';
+    KJ_PERSONS.forEach((p,i)=>{
+      html+='<tr><td class="text-n-dim pr-3 py-[2px] whitespace-nowrap text-xs">'+p+'</td><td class="font-medium py-[2px]">'+escH(t.f[i])+'</td></tr>';
+    });
+    html+='</table></div>';
+  });
+  html+='</div>';
+  html+='<div class="bg-n-card rounded-xl border border-n-border p-3">';
+  html+='<h4 class="text-[10px] font-mono font-bold uppercase tracking-wider mb-2" style="color:var(--c-red)">Imperativ</h4>';
+  html+='<div class="grid grid-cols-3 gap-3 text-sm">';
+  ['du','ihr','Sie'].forEach((p,i)=>{
+    html+='<div><span class="text-n-dim text-xs">'+p+':</span> <span class="font-bold">'+escH(d.imperativ[i])+'</span></div>';
+  });
+  html+='</div></div>';
+  if(d.example){
+    html+='<div class="bg-n-bg rounded-xl p-3 text-sm space-y-1">';
+    html+='<p class="font-medium">'+escH(d.example.de)+'</p>';
+    html+='<p class="text-n-text/70 text-xs">'+escH(d.example.en)+'</p>';
+    html+='<p class="text-n-dim text-xs italic">'+escH(d.example.vi)+'</p>';
+    html+='</div>';
+  }
+  if(d.notes)html+='<p class="text-xs text-n-dim italic">💡 '+escH(d.notes)+'</p>';
   box.innerHTML=html;
 }
 
