@@ -538,6 +538,22 @@ input[type="radio"]{accent-color:var(--c-cyan)!important}
             <option value="Temporale Präpositionen: seit+Dativ, vor+Dativ, nach+Dativ, während+Genitiv, bis, ab, von...bis">Temporale Präpositionen</option>
             <option value="Konnektoren und Satzstellung: deshalb, trotzdem, außerdem, deswegen + verb-second vs weil, obwohl + verb-final">Konnektoren & Satzstellung</option>
           </optgroup>
+          <optgroup label="🟡 B2 Grammar">
+            <option value="Konjunktiv I (reported speech): er sagte, er sei krank / er habe das gemacht. Forms: sei, habe, könne, müsse, wolle">Konjunktiv I (indirekte Rede)</option>
+            <option value="Partizip I und II als Adjektiv: der schlafende Hund (Partizip I), das geöffnete Fenster (Partizip II), adjective declension applies">Partizip I & II als Adjektiv</option>
+            <option value="Passiv-Alternativen: sich lassen + Infinitiv, sein + zu + Infinitiv, -bar Adjektive, man-Konstruktionen">Passiv-Alternativen</option>
+            <option value="Nomen-Verb-Verbindungen: eine Entscheidung treffen, in Betracht ziehen, zur Verfügung stehen, Einfluss nehmen auf">Nomen-Verb-Verbindungen</option>
+            <option value="Konnektoren B2: je...desto, sowohl...als auch, weder...noch, zumal, indem, anstatt...zu, ohne...zu, statt dass">Konnektoren B2 (je...desto, indem...)</option>
+            <option value="Präpositionen mit Genitiv: trotz, wegen, während, aufgrund, infolge, anstatt, innerhalb, außerhalb, mithilfe">Präpositionen mit Genitiv</option>
+            <option value="Subjektlose Passivkonstruktionen und es als Platzhalter: Es wurde getanzt, Hier wird nicht geraucht, Es lässt sich sagen">Subjektloses Passiv & es-Konstruktionen</option>
+          </optgroup>
+          <optgroup label="🟣 C1 Grammar">
+            <option value="Nominalisierung und Verbalisierung: converting between noun-style (Die Durchführung der Maßnahme) and verb-style (die Maßnahme durchführen)">Nominalisierung & Verbalisierung</option>
+            <option value="Erweiterte Partizipialattribute: complex pre-noun participial phrases, e.g. der von der Firma im letzten Jahr entwickelte Plan">Erweiterte Partizipialattribute</option>
+            <option value="Modalpartikeln: doch, ja, mal, halt, eben, schon, wohl — subtle meaning nuances in spoken and written German">Modalpartikeln (doch, ja, mal...)</option>
+            <option value="Funktionsverbgefüge: in Anspruch nehmen, Einfluss ausüben, Stellung nehmen zu, in Erwägung ziehen, unter Beweis stellen">Funktionsverbgefüge</option>
+            <option value="Genitiv in complex structures: dessen/derer in relative clauses, genitive with prepositions, stacked genitives">Genitiv in komplexen Strukturen</option>
+          </optgroup>
         </select>
       </div>
       <div>
@@ -1118,7 +1134,8 @@ function dkRender(data){
 }
 
 // ===== KONJUGATION =====
-const KJ_PROMPT=`German verb conjugation expert. Given a verb (infinitive), return its complete conjugation.<br>For trennbare Verben: show separated forms in Präsens/Präteritum (e.g. "fange an"), combined in Partizip II (e.g. "angefangen").<br>For reflexive verbs: include reflexive pronouns in ALL conjugated forms (e.g. "setze mich", "habe mich gesetzt", "werde mich setzen").<br>Array order: [ich, du, er/sie/es, wir, ihr, sie/Sie]<br>Return ONLY valid JSON:<br>{"infinitive":"fahren","meaning_en":"to drive, to go by vehicle","meaning_vi":"lái xe, đi bằng phương tiện","is_regular":false,"is_trennbar":false,"prefix":"","auxiliary":"sein","is_reflexive":false,"partizip2":"gefahren","praesens":["fahre","fährst","fährt","fahren","fahrt","fahren"],"praeteritum":["fuhr","fuhrst","fuhr","fuhren","fuhrt","fuhren"],"perfekt":["bin gefahren","bist gefahren","ist gefahren","sind gefahren","seid gefahren","sind gefahren"],"plusquamperfekt":["war gefahren","warst gefahren","war gefahren","waren gefahren","wart gefahren","waren gefahren"],"futur1":["werde fahren","wirst fahren","wird fahren","werden fahren","werdet fahren","werden fahren"],"konjunktiv2":["führe","führest","führe","führen","führet","führen"],"imperativ":["Fahr!","Fahrt!","Fahren Sie!"],"example":{"de":"Ich fahre morgen nach Berlin.","en":"I'm driving to Berlin tomorrow.","vi":"Ngày mai tôi lái xe đến Berlin."},"notes":"Uses sein because it indicates movement/change of location."}`;
+const KJ_PROMPT=`German verb conjugation expert. Given a verb (infinitive), return its complete conjugation.<br>For trennbare Verben: show separated forms in Präsens/Präteritum (e.g. "fange an"), combined in Partizip II (e.g. "angefangen").<br>For reflexive verbs: include reflexive pronouns in ALL conjugated forms (e.g. "setze mich", "habe mich gesetzt", "werde mich setzen").<br>Include Konjunktiv I (indirect/reported speech: er sagte, er fahre).
+Array order: [ich, du, er/sie/es, wir, ihr, sie/Sie]<br>Return ONLY valid JSON:<br>{"infinitive":"fahren","meaning_en":"to drive, to go by vehicle","meaning_vi":"lái xe, đi bằng phương tiện","is_regular":false,"is_trennbar":false,"prefix":"","auxiliary":"sein","is_reflexive":false,"partizip2":"gefahren","praesens":["fahre","fährst","fährt","fahren","fahrt","fahren"],"praeteritum":["fuhr","fuhrst","fuhr","fuhren","fuhrt","fuhren"],"perfekt":["bin gefahren","bist gefahren","ist gefahren","sind gefahren","seid gefahren","sind gefahren"],"plusquamperfekt":["war gefahren","warst gefahren","war gefahren","waren gefahren","wart gefahren","waren gefahren"],"futur1":["werde fahren","wirst fahren","wird fahren","werden fahren","werdet fahren","werden fahren"],"konjunktiv1":["fahre","fahrest","fahre","fahren","fahret","fahren"],"konjunktiv2":["führe","führest","führe","führen","führet","führen"],"imperativ":["Fahr!","Fahrt!","Fahren Sie!"],"example":{"de":"Ich fahre morgen nach Berlin.","en":"I'm driving to Berlin tomorrow.","vi":"Ngày mai tôi lái xe đến Berlin."},"notes":"Uses sein because it indicates movement/change of location."}`;
 const KJ_PERSONS=['ich','du','er/sie/es','wir','ihr','sie/Sie'];
 
 document.getElementById('kj-input').addEventListener('keydown',e=>{if(e.key==='Enter')document.getElementById('kj-goBtn').click();});
@@ -1158,7 +1175,7 @@ function kjRender(d){
   html+='</div></div>';
   html+='<div class="text-sm"><span class="text-n-dim">Partizip II:</span> <span class="font-bold" style="color:var(--c-cyan)">'+escH(d.partizip2)+'</span></div>';
   html+='</div>';
-  const tenses=[{t:'Präsens',f:d.praesens,c:'--c-cyan'},{t:'Präteritum',f:d.praeteritum,c:'--c-amber'},{t:'Perfekt',f:d.perfekt,c:'--c-green'},{t:'Plusquamperfekt',f:d.plusquamperfekt,c:'--c-purple'},{t:'Futur I',f:d.futur1,c:'--c-blue'},{t:'Konjunktiv II',f:d.konjunktiv2,c:'--c-pink'}];
+  const tenses=[{t:'Präsens',f:d.praesens,c:'--c-cyan'},{t:'Präteritum',f:d.praeteritum,c:'--c-amber'},{t:'Perfekt',f:d.perfekt,c:'--c-green'},{t:'Plusquamperfekt',f:d.plusquamperfekt,c:'--c-purple'},{t:'Futur I',f:d.futur1,c:'--c-blue'},{t:'Konjunktiv I',f:d.konjunktiv1||d.praesens,c:'--c-red'},{t:'Konjunktiv II',f:d.konjunktiv2,c:'--c-pink'}];
   html+='<div class="grid grid-cols-1 sm:grid-cols-2 gap-3">';
   tenses.forEach(t=>{
     html+='<div class="bg-n-card rounded-xl border border-n-border p-3">';
