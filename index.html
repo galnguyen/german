@@ -86,6 +86,7 @@ input[type="radio"]{accent-color:var(--c-cyan)!important}
   <button class="main-tab font-mono text-xs tracking-wider uppercase px-5 py-3 border-b-2 border-transparent text-n-dim hover:text-n-text transition-all" data-tab="grammar">🔬 Satzanalyse</button>
   <button class="main-tab font-mono text-xs tracking-wider uppercase px-5 py-3 border-b-2 border-transparent text-n-dim hover:text-n-text transition-all" data-tab="conversation">💬 Konversation</button>
   <button class="main-tab font-mono text-xs tracking-wider uppercase px-5 py-3 border-b-2 border-transparent text-n-dim hover:text-n-text transition-all" data-tab="wortbau">🧱 Wortbausteine</button>
+  <button class="main-tab font-mono text-xs tracking-wider uppercase px-5 py-3 border-b-2 border-transparent text-n-dim hover:text-n-text transition-all" data-tab="deklination">🔤 Deklination</button>
 </nav>
 
 <!-- ========== TAB 1: READER ========== -->
@@ -435,6 +436,42 @@ input[type="radio"]{accent-color:var(--c-cyan)!important}
     </div>
   </section>
   <div id="wb-results" class="hidden space-y-6"></div>
+</div>
+
+<!-- ========== TAB 7: DEKLINATION ========== -->
+<div id="tab-deklination" class="tab-content hidden space-y-6">
+  <section class="bg-n-card rounded-2xl border border-n-border overflow-hidden">
+    <div class="border-b border-n-border px-5 py-3 flex items-center justify-between">
+      <span class="text-[10px] font-mono font-bold text-n-dim uppercase tracking-wider">Noun gender + full declension / Genus & Deklination</span>
+      <div class="flex gap-2">
+        <span class="px-2 py-0.5 rounded text-white text-[8px] font-mono font-bold" style="background:var(--c-blue)">DER</span>
+        <span class="px-2 py-0.5 rounded text-white text-[8px] font-mono font-bold" style="background:var(--c-pink)">DIE</span>
+        <span class="px-2 py-0.5 rounded text-white text-[8px] font-mono font-bold" style="background:var(--c-green)">DAS</span>
+      </div>
+    </div>
+    <div class="p-5 space-y-3">
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
+        <input type="text" id="dk-noun" class="sm:col-span-2 p-3 rounded-lg text-base border" placeholder="Noun — e.g. Tisch, Freiheit, Mädchen..." onkeydown="if(event.key==='Enter')document.getElementById('dk-goBtn').click()">
+        <input type="text" id="dk-adj" class="p-3 rounded-lg text-base border" placeholder="+ Adjective (optional)" onkeydown="if(event.key==='Enter')document.getElementById('dk-goBtn').click()">
+      </div>
+      <div class="flex items-center gap-2">
+        <button id="dk-goBtn" class="flex items-center gap-2 bg-n-cyan text-white px-5 py-2 rounded-lg text-sm font-bold hover:shadow-md transition-all">
+          <i data-lucide="sparkles" size="16"></i> Deklinieren
+        </button>
+        <span id="dk-status" class="text-[10px] font-mono text-n-dim">Ready</span>
+      </div>
+      <div class="flex flex-wrap gap-2">
+        <span class="text-[10px] text-n-dim font-mono">Try:</span>
+        <button onclick="document.getElementById('dk-noun').value='Tisch';document.getElementById('dk-adj').value='';document.getElementById('dk-goBtn').click()" class="text-[10px] px-2 py-1 rounded-full bg-n-border/50 text-n-dim hover:text-n-cyan cursor-pointer">Tisch</button>
+        <button onclick="document.getElementById('dk-noun').value='Frau';document.getElementById('dk-adj').value='jung';document.getElementById('dk-goBtn').click()" class="text-[10px] px-2 py-1 rounded-full bg-n-border/50 text-n-dim hover:text-n-cyan cursor-pointer">junge Frau</button>
+        <button onclick="document.getElementById('dk-noun').value='Kind';document.getElementById('dk-adj').value='klein';document.getElementById('dk-goBtn').click()" class="text-[10px] px-2 py-1 rounded-full bg-n-border/50 text-n-dim hover:text-n-cyan cursor-pointer">kleines Kind</button>
+        <button onclick="document.getElementById('dk-noun').value='Junge';document.getElementById('dk-adj').value='';document.getElementById('dk-goBtn').click()" class="text-[10px] px-2 py-1 rounded-full bg-n-border/50 text-n-dim hover:text-n-cyan cursor-pointer">Junge (n-Dekl.)</button>
+        <button onclick="document.getElementById('dk-noun').value='Herz';document.getElementById('dk-adj').value='';document.getElementById('dk-goBtn').click()" class="text-[10px] px-2 py-1 rounded-full bg-n-border/50 text-n-dim hover:text-n-cyan cursor-pointer">Herz (irregular)</button>
+        <button onclick="document.getElementById('dk-noun').value='Haus';document.getElementById('dk-adj').value='groß';document.getElementById('dk-goBtn').click()" class="text-[10px] px-2 py-1 rounded-full bg-n-border/50 text-n-dim hover:text-n-cyan cursor-pointer">großes Haus</button>
+      </div>
+    </div>
+  </section>
+  <div id="dk-results" class="hidden space-y-6"></div>
 </div>
 
 <!-- FOOTER -->
@@ -893,6 +930,85 @@ function wbRender(data){
     +'<div class="space-y-2">'+cx+'</div></div>'
     +(data.notes?'<div class="bg-n-amber/10 border border-n-amber/30 rounded-xl p-4 text-sm text-n-text/80"><span class="font-mono text-[9px] text-n-amber uppercase tracking-wider font-bold block mb-1">⚠ Notes / Hinweise</span>'+escH(data.notes)+'</div>':'');
   lucide.createIcons();
+}
+
+// ===== DEKLINATION =====
+const DK_PROMPT=`German grammar expert. For the given noun, return gender, translations, and all declined forms (4 cases in singular and plural). If adjective given, include its stem for adding endings, translations, comparative, superlative, adverb note.<br>Handle ALL irregularities: n-Deklination, Umlaut in plural, special genitive, adjective stem changes (teuer\u2192teur, hoch\u2192hoh, dunkel\u2192dunkl).<br>Return ONLY valid JSON:<br>{"noun":{"word":"...","gender":"m|f|n","meaning_en":"...","meaning_vi":"...","nomSg":"...","accSg":"...","datSg":"...","genSg":"...","nomPl":"...","accPl":"...","datPl":"...","genPl":"...","notes":"irregularities or empty"},"adjective":null}<br>With adjective: {"noun":{...},"adjective":{"word":"...","stem":"base for endings","meaning_en":"...","meaning_vi":"...","comparative":"...","superlative":"...","adverbNote":"usage as adverb"}}`;
+const DK_DEF={m:['der','den','dem','des'],f:['die','die','der','der'],n:['das','das','dem','des'],pl:['die','die','den','der']};
+const DK_INDEF={m:['ein','einen','einem','eines'],f:['eine','eine','einer','einer'],n:['ein','ein','einem','eines']};
+const DK_KEIN_PL=['keine','keine','keinen','keiner'];
+const DK_ADJ_W={m:['e','en','en','en'],f:['e','e','en','en'],n:['e','e','en','en'],pl:['en','en','en','en']};
+const DK_ADJ_M={m:['er','en','en','en'],f:['e','e','en','en'],n:['es','es','en','en'],pl:['en','en','en','en']};
+const DK_ADJ_S={m:['er','en','em','en'],f:['e','e','er','er'],n:['es','es','em','en'],pl:['e','e','en','er']};
+const DK_K=['Nominativ','Akkusativ','Dativ','Genitiv'];
+const DK_GC={m:'--c-blue',f:'--c-pink',n:'--c-green'};
+const DK_GN={m:'Maskulin',f:'Feminin',n:'Neutrum'};
+const DK_GA={m:'DER',f:'DIE',n:'DAS'};
+
+document.getElementById('dk-goBtn').addEventListener('click', async()=>{
+  const noun=document.getElementById('dk-noun').value.trim();
+  if(!noun)return alert('Enter a German noun.');
+  const adj=document.getElementById('dk-adj').value.trim();
+  const btn=document.getElementById('dk-goBtn'),st=document.getElementById('dk-status');
+  btn.disabled=true;btn.innerHTML='<i data-lucide="loader-2" class="animate-spin" size="16"></i> ...';lucide.createIcons();st.textContent='Loading...';
+  try{
+    const input=adj?'NOUN: '+noun+'\nADJECTIVE: '+adj:'NOUN: '+noun;
+    const raw=await geminiCallWithFallback([{text:DK_PROMPT+'\n\n'+input}],'gemini-2.5-flash-lite',{responseMimeType:"application/json",maxOutputTokens:4096,temperature:0.2});
+    const fb=raw.indexOf('{'),lb=raw.lastIndexOf('}');
+    if(fb===-1)throw new Error('No JSON.');
+    dkRender(JSON.parse(raw.slice(fb,lb+1)));
+    document.getElementById('dk-results').classList.remove('hidden');st.textContent='Done';addXP(5);
+  }catch(e){alert('Failed: '+e.message);st.textContent='Error';}
+  finally{btn.disabled=false;btn.innerHTML='<i data-lucide="sparkles" size="16"></i> Deklinieren';lucide.createIcons();}
+});
+
+function dkTbl(hds,rows){
+  let h='<div class="bg-n-card rounded-xl border border-n-border overflow-x-auto"><table class="w-full text-sm border-collapse"><thead><tr class="bg-n-border/30">';
+  hds.forEach(t=>h+='<th class="p-2.5 text-left text-[10px] font-mono uppercase tracking-wider text-n-dim border-b border-n-border/50">'+t+'</th>');
+  h+='</tr></thead><tbody>';
+  rows.forEach(r=>{h+='<tr>';r.forEach((c,i)=>h+='<td class="p-2.5 border-b border-n-border/30'+(i===0?' font-mono text-[10px] text-n-dim uppercase tracking-wider font-bold':' font-medium')+'">'+c+'</td>');h+='</tr>';});
+  return h+'</tbody></table></div>';
+}
+
+function dkRender(data){
+  const box=document.getElementById('dk-results'),n=data.noun,g=n.gender,col=DK_GC[g];
+  const sg=[n.nomSg,n.accSg,n.datSg,n.genSg],pl=[n.nomPl,n.accPl,n.datPl,n.genPl];
+  let html='';
+  // Header
+  html+='<div class="bg-n-card rounded-2xl border border-n-border p-6 space-y-3"><div class="flex items-center justify-center gap-3">'
+    +'<span class="px-3 py-1.5 rounded-lg text-white font-orbitron font-black text-xl" style="background:var('+col+')">'+DK_GA[g]+'</span>'
+    +'<span class="font-orbitron text-2xl font-black">'+escH(n.word)+'</span></div>'
+    +'<div class="text-center text-sm"><span class="font-medium">'+escH(n.meaning_en)+'</span> <span class="text-n-dim italic">/ '+escH(n.meaning_vi)+'</span></div>'
+    +'<div class="text-center"><span class="text-[10px] font-mono px-2 py-0.5 rounded-full border border-n-border text-n-dim">'+DK_GN[g]+'</span></div>'
+    +(n.notes?'<div class="text-[10px] text-n-amber text-center italic bg-n-amber/10 px-3 py-1.5 rounded-lg">'+escH(n.notes)+'</div>':'')+'</div>';
+  // Definite article table
+  let dr=[];for(let i=0;i<4;i++)dr.push([DK_K[i],'<span style="color:var('+col+')" class="font-bold">'+escH(DK_DEF[g][i])+'</span> '+escH(sg[i]),'<span class="font-bold text-n-dim">'+escH(DK_DEF.pl[i])+'</span> '+escH(pl[i])]);
+  html+='<div class="space-y-2"><h3 class="font-mono text-[10px] font-bold text-n-dim uppercase tracking-wider px-1">Bestimmter Artikel (der/die/das)</h3>'+dkTbl(['','Singular','Plural'],dr)+'</div>';
+  // Indefinite article table
+  let ir=[];for(let i=0;i<4;i++)ir.push([DK_K[i],'<span style="color:var('+col+')" class="font-bold">'+escH(DK_INDEF[g][i])+'</span> '+escH(sg[i])]);
+  html+='<div class="space-y-2"><h3 class="font-mono text-[10px] font-bold text-n-dim uppercase tracking-wider px-1">Unbestimmter Artikel (ein/eine) <span class="font-normal opacity-60">— Singular only</span></h3>'+dkTbl(['','Singular'],ir)+'</div>';
+  // Adjective
+  if(data.adjective){
+    const a=data.adjective,stem=a.stem||a.word;
+    html+='<div class="bg-n-card rounded-2xl border border-n-border p-5 space-y-2">'
+      +'<div class="flex items-center gap-2 flex-wrap"><span class="font-bold text-lg" style="color:var(--c-purple)">'+escH(a.word)+'</span>'
+      +'<span class="text-sm">'+escH(a.meaning_en)+' <span class="text-n-dim italic">/ '+escH(a.meaning_vi)+'</span></span></div>'
+      +'<div class="text-xs text-n-dim">Komparativ: <b>'+escH(a.comparative)+'</b> · Superlativ: <b>'+escH(a.superlative)+'</b>'
+      +(stem!==a.word?' · Stamm: <b style="color:var(--c-purple)">'+escH(stem)+'</b>':'')+'</div>'
+      +(a.adverbNote?'<div class="text-xs text-n-cyan italic">Adverb: '+escH(a.adverbNote)+'</div>':'')+'</div>';
+    [{name:'Schwach — nach bestimmtem Artikel (der/die/das)',e:DK_ADJ_W,sa:DK_DEF,pa:DK_DEF.pl},
+     {name:'Gemischt — nach unbestimmtem Artikel (ein/eine/kein)',e:DK_ADJ_M,sa:DK_INDEF,pa:DK_KEIN_PL},
+     {name:'Stark — ohne Artikel',e:DK_ADJ_S,sa:null,pa:null}].forEach(set=>{
+      let ar=[];for(let i=0;i<4;i++){
+        const se=set.e[g][i],pe=set.e.pl[i];
+        const sA=set.sa?'<span style="color:var('+col+')" class="font-bold">'+escH(set.sa[g][i])+'</span> ':'';
+        const pA=set.pa?'<span class="font-bold text-n-dim">'+escH(set.pa[i])+'</span> ':'';
+        ar.push([DK_K[i],sA+escH(stem)+'<b style="color:var(--c-purple)">'+escH(se)+'</b> '+escH(sg[i]),pA+escH(stem)+'<b style="color:var(--c-purple)">'+escH(pe)+'</b> '+escH(pl[i])]);
+      }
+      html+='<div class="space-y-2"><h3 class="font-mono text-[10px] font-bold text-n-dim uppercase tracking-wider px-1">'+set.name+'</h3>'+dkTbl(['','Singular','Plural'],ar)+'</div>';
+    });
+  }
+  box.innerHTML=html;
 }
 </script>
 </body>
