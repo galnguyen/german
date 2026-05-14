@@ -87,6 +87,7 @@ input[type="radio"]{accent-color:var(--c-cyan)!important}
   <button class="main-tab font-mono text-xs tracking-wider uppercase px-5 py-3 border-b-2 border-transparent text-n-dim hover:text-n-text transition-all" data-tab="conversation">💬 Konversation</button>
   <button class="main-tab font-mono text-xs tracking-wider uppercase px-5 py-3 border-b-2 border-transparent text-n-dim hover:text-n-text transition-all" data-tab="wortbau">🧱 Wortbausteine</button>
   <button class="main-tab font-mono text-xs tracking-wider uppercase px-5 py-3 border-b-2 border-transparent text-n-dim hover:text-n-text transition-all" data-tab="deklination">🔤 Deklination</button>
+  <button class="main-tab font-mono text-xs tracking-wider uppercase px-5 py-3 border-b-2 border-transparent text-n-dim hover:text-n-text transition-all" data-tab="uebungen">🏋️ Übungen</button>
 </nav>
 
 <!-- ========== TAB 1: READER ========== -->
@@ -472,6 +473,62 @@ input[type="radio"]{accent-color:var(--c-cyan)!important}
     </div>
   </section>
   <div id="dk-results" class="hidden space-y-6"></div>
+</div>
+
+<!-- ========== TAB 8: ÜBUNGEN ========== -->
+<div id="tab-uebungen" class="tab-content hidden space-y-6">
+  <section class="bg-n-card rounded-2xl border border-n-border p-5 space-y-4">
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+      <div class="sm:col-span-2">
+        <label class="block text-[10px] font-mono font-bold text-n-dim uppercase tracking-wider mb-2">Grammar Topic</label>
+        <select id="ue-topic" class="w-full p-2.5 rounded-lg text-sm border">
+          <optgroup label="📐 Cases & Declension">
+            <option value="Adjektivdeklination: adjective endings after definite article (weak), indefinite article (mixed), no article (strong) in all cases">Adjektivdeklination</option>
+            <option value="Wechselpräpositionen: in, an, auf, über, unter, vor, hinter, neben, zwischen + Akkusativ (motion) or Dativ (location)">Wechselpräpositionen (Akk/Dat)</option>
+            <option value="N-Deklination: weak masculine nouns like der Junge, der Student, der Herr, der Kollege">N-Deklination</option>
+            <option value="Verben mit Präpositionen: warten auf+Akk, sich freuen über+Akk, denken an+Akk, träumen von+Dat, etc.">Verben mit Präpositionen</option>
+          </optgroup>
+          <optgroup label="⏰ Tenses & Verb Forms">
+            <option value="Perfekt: haben or sein + Partizip II, regular (ge-t) and irregular (ge-en) verbs, when to use sein">Perfekt</option>
+            <option value="Präteritum: simple past, especially hatte/war/konnte/wollte/sollte/durfte/musste and common irregular verbs">Präteritum</option>
+            <option value="Konjunktiv II: wäre, hätte, könnte, würde + Infinitiv for wishes, polite requests, unreal conditions">Konjunktiv II</option>
+            <option value="Passiv: werden + Partizip II in Präsens and Präteritum, Passiv with modal verbs">Passiv</option>
+            <option value="Reflexive Verben: sich waschen, sich erinnern an, sich freuen über, sich beschweren über, Akkusativ vs Dativ reflexive">Reflexive Verben</option>
+          </optgroup>
+          <optgroup label="📝 Sentence Structure">
+            <option value="Nebensätze: weil, dass, obwohl, wenn, als, damit, ob + verb-final word order in subordinate clauses">Nebensätze (weil, dass, wenn...)</option>
+            <option value="Relativsätze: relative pronouns der/die/das/den/dem/dessen matching gender, number, and case of the noun they refer to">Relativsätze</option>
+            <option value="Indirekte Fragen: ob, wann, wo, wie, warum + verb-final word order, Könnten Sie mir sagen ob/wann/wo...">Indirekte Fragen</option>
+            <option value="Infinitiv mit zu: vergessen zu, anfangen zu, versuchen zu, Es ist wichtig zu, um...zu, ohne...zu, statt...zu">Infinitiv mit zu</option>
+          </optgroup>
+          <optgroup label="🔧 Other">
+            <option value="Komparativ und Superlativ: comparison of adjectives and adverbs, irregular forms (gut/besser/best-, gern/lieber/liebst-), als vs wie">Komparativ & Superlativ</option>
+            <option value="Temporale Präpositionen: seit+Dativ, vor+Dativ, nach+Dativ, während+Genitiv, bis, ab, von...bis">Temporale Präpositionen</option>
+            <option value="Konnektoren und Satzstellung: deshalb, trotzdem, außerdem, deswegen + verb-second vs weil, obwohl + verb-final">Konnektoren & Satzstellung</option>
+          </optgroup>
+        </select>
+      </div>
+      <div>
+        <label class="block text-[10px] font-mono font-bold text-n-dim uppercase tracking-wider mb-2">Questions</label>
+        <select id="ue-count" class="w-full p-2.5 rounded-lg text-sm border">
+          <option value="10">10</option>
+          <option value="15" selected>15</option>
+          <option value="20">20</option>
+        </select>
+      </div>
+    </div>
+    <button id="ue-genBtn" class="flex items-center gap-2 bg-n-cyan text-white px-5 py-2 rounded-lg text-sm font-bold hover:shadow-md transition-all w-full justify-center">
+      <i data-lucide="sparkles" size="16"></i> Generate Exercises
+    </button>
+    <div id="ue-genStatus" class="text-[10px] font-mono text-n-dim text-center"></div>
+  </section>
+  <div id="ue-quiz" class="hidden space-y-3"></div>
+  <div id="ue-submitArea" class="hidden">
+    <button id="ue-submitBtn" class="flex items-center gap-2 bg-n-cyan text-white px-5 py-2.5 rounded-lg text-sm font-bold hover:shadow-md transition-all w-full justify-center">
+      <i data-lucide="check-circle-2" size="16"></i> Submit All Answers
+    </button>
+  </div>
+  <div id="ue-results" class="hidden space-y-4"></div>
 </div>
 
 <!-- FOOTER -->
@@ -1009,6 +1066,108 @@ function dkRender(data){
     });
   }
   box.innerHTML=html;
+}
+
+// ===== ÜBUNGEN =====
+let ueData=null;
+const UE_PROMPT=`You are a German B1 grammar exercise generator. Create exactly {count} exercises on: {topic}.<br>Rules:<br>- ~70% fill_blank (student types answer), ~30% multiple_choice (4 options).<br>- fill_blank: sentence with ONE blank (___). Provide correct answer and 1-2 acceptable alternatives (spelling variants, equally correct forms).<br>- multiple_choice: sentence with blank, 4 options, one correct index (0-3).<br>- Natural B1-level sentences from daily life, work, travel, opinions. Vary context.<br>- Each question tests ONE specific grammar point.<br>- Provide explanation of WHY the answer is correct (grammar rule) in English AND Vietnamese.<br>- Include a hint in parentheses when helpful (e.g. Akkusativ, sein/haben, formal).<br>Return ONLY valid JSON:<br>{"topic":"...","topicSummary":"1-2 sentence grammar rule summary","topicSummary_vi":"Vietnamese summary","questions":[<br>{"type":"fill_blank","sentence":"Sentence with ___.","hint":"optional","answer":"correct","alternatives":["alt1"],"explanation":"English","explanation_vi":"Vietnamese"},<br>{"type":"multiple_choice","sentence":"Sentence with ___.","hint":"","options":["a","b","c","d"],"correct":0,"explanation":"English","explanation_vi":"Vietnamese"}<br>]}`;
+
+document.getElementById('ue-genBtn').addEventListener('click', async()=>{
+  const topic=document.getElementById('ue-topic').value,count=document.getElementById('ue-count').value;
+  const btn=document.getElementById('ue-genBtn'),st=document.getElementById('ue-genStatus');
+  btn.disabled=true;btn.innerHTML='<i data-lucide="loader-2" class="animate-spin" size="16"></i> Generating...';lucide.createIcons();st.textContent='Creating exercises...';
+  try{
+    const prompt=UE_PROMPT.replace('{count}',count).replace('{topic}',topic);
+    const raw=await geminiCallWithFallback([{text:prompt}],'gemini-2.5-flash-lite',{responseMimeType:"application/json",maxOutputTokens:16384,temperature:0.7});
+    const fb=raw.indexOf('{'),lb=raw.lastIndexOf('}');
+    if(fb===-1)throw new Error('No JSON.');
+    ueData=JSON.parse(raw.slice(fb,lb+1));ueRenderQuiz();
+    st.textContent='Answer all questions, then submit.';addXP(5);
+  }catch(e){alert('Failed: '+e.message);st.textContent='Error';}
+  finally{btn.disabled=false;btn.innerHTML='<i data-lucide="sparkles" size="16"></i> Generate Exercises';lucide.createIcons();}
+});
+
+function ueRenderQuiz(){
+  const box=document.getElementById('ue-quiz');
+  document.getElementById('ue-results').classList.add('hidden');
+  let html='<div class="bg-n-cyan/10 border border-n-cyan/30 rounded-xl p-4 glow-cyan">'
+    +'<h3 class="font-bold text-sm text-n-cyan mb-1">'+escH(ueData.topic)+'</h3>'
+    +'<p class="text-xs text-n-text/70">'+escH(ueData.topicSummary)+'</p>'
+    +'<p class="text-xs text-n-dim italic">'+escH(ueData.topicSummary_vi||'')+'</p></div>';
+  ueData.questions.forEach((q,i)=>{
+    html+='<div class="bg-n-card rounded-xl border border-n-border p-4 space-y-2" id="ue-q-'+i+'">'
+      +'<div class="flex items-baseline gap-2"><span class="font-mono text-[10px] text-n-cyan font-bold">'+(i+1)+'</span>'
+      +'<span class="text-[9px] font-mono px-1.5 py-0.5 rounded bg-n-border text-n-dim">'+(q.type==='fill_blank'?'Fill in':'Choose')+'</span></div>'
+      +'<p class="text-base font-medium leading-relaxed">'+escH(q.sentence).replace('___','<span class="text-n-cyan font-bold">___</span>')+'</p>'
+      +(q.hint?'<p class="text-[10px] text-n-dim italic">Hint: '+escH(q.hint)+'</p>':'');
+    if(q.type==='fill_blank'){
+      html+='<input type="text" class="ue-answer w-full p-2.5 rounded-lg border text-sm" data-qi="'+i+'" data-type="fill" placeholder="Your answer...">';
+    }else{
+      html+='<div class="grid grid-cols-1 sm:grid-cols-2 gap-2">';
+      q.options.forEach((opt,oi)=>{
+        html+='<label class="flex items-center gap-2 p-2.5 rounded-lg border border-n-border hover:border-n-cyan/50 cursor-pointer transition-all">'
+          +'<input type="radio" name="ue-mc-'+i+'" value="'+oi+'" class="ue-answer" data-qi="'+i+'" data-type="mc">'
+          +'<span class="text-sm">'+escH(opt)+'</span></label>';
+      });
+      html+='</div>';
+    }
+    html+='</div>';
+  });
+  box.innerHTML=html;box.classList.remove('hidden');
+  document.getElementById('ue-submitArea').classList.remove('hidden');
+}
+
+document.getElementById('ue-submitBtn').addEventListener('click',()=>{
+  if(!ueData)return;
+  let score=0;const total=ueData.questions.length,results=[];
+  ueData.questions.forEach((q,i)=>{
+    let userAns='',ok=false;
+    if(q.type==='fill_blank'){
+      const inp=document.querySelector('input.ue-answer[data-qi="'+i+'"]');
+      userAns=inp?inp.value.trim():'';
+      const nm=s=>s.toLowerCase().trim();
+      ok=nm(userAns)===nm(q.answer)||(q.alternatives||[]).some(a=>nm(userAns)===nm(a));
+    }else{
+      const chk=document.querySelector('input[name="ue-mc-'+i+'"]:checked');
+      userAns=chk?parseInt(chk.value):-1;
+      ok=userAns===q.correct;
+    }
+    if(ok)score++;
+    results.push({q,userAns,ok,i});
+  });
+  // Disable all inputs
+  document.querySelectorAll('.ue-answer').forEach(el=>el.disabled=true);
+  ueRenderResults(score,total,results);
+});
+
+function ueRenderResults(score,total,results){
+  const pct=Math.round(score/total*100);
+  const col=pct>=80?'--c-green':pct>=60?'--c-amber':'--c-red';
+  const box=document.getElementById('ue-results');
+  let html='<div class="bg-n-card rounded-2xl border border-n-border p-5 space-y-3">'
+    +'<div class="text-center"><span class="font-orbitron text-3xl font-black" style="color:var('+col+')">'+pct+'%</span>'
+    +'<div class="text-sm text-n-dim">'+score+' / '+total+' correct</div></div>'
+    +'<div class="w-full bg-n-border rounded-full h-2 overflow-hidden">'
+    +'<div class="h-full rounded-full transition-all duration-700" style="background:var('+col+');width:'+pct+'%"></div></div></div>';
+  results.forEach(r=>{
+    const q=r.q;
+    const correctStr=q.type==='fill_blank'?q.answer:q.options[q.correct];
+    const userStr=q.type==='fill_blank'?r.userAns:(r.userAns>=0?q.options[r.userAns]:'(no answer)');
+    html+='<div class="bg-n-card rounded-xl border border-n-border p-4 space-y-2'+(r.ok?'':' border-l-[3px]')+' " style="'+(r.ok?'':'border-left-color:var(--c-red)')+'">';
+    html+='<div class="flex items-start gap-2"><span class="text-lg">'+(r.ok?'✅':'❌')+'</span><div class="flex-1">';
+    html+='<p class="text-base font-medium">'+escH(q.sentence).replace('___','<span class="font-bold text-n-cyan">'+escH(correctStr)+'</span>')+'</p>';
+    if(!r.ok) html+='<div class="mt-1 text-sm" style="color:var(--c-red)">Your answer: <b>'+escH(userStr)+'</b></div>';
+    html+='<div class="mt-2 bg-n-bg rounded-lg p-3 text-xs leading-relaxed space-y-1">'
+      +'<p class="text-n-text/80">'+escH(q.explanation)+'</p>'
+      +'<p class="text-n-dim italic">'+escH(q.explanation_vi||'')+'</p></div>';
+    html+='</div></div></div>';
+  });
+  html+='<button onclick="document.getElementById(\'ue-quiz\').classList.add(\'hidden\');document.getElementById(\'ue-submitArea\').classList.add(\'hidden\');document.getElementById(\'ue-results\').classList.add(\'hidden\');document.querySelectorAll(\'.ue-answer\').forEach(el=>el.disabled=false);window.scrollTo({top:0,behavior:\'smooth\'})" class="flex items-center gap-2 bg-n-card border-2 border-n-cyan text-n-cyan px-5 py-2.5 rounded-lg text-sm font-bold hover:bg-n-cyan hover:text-white transition-all w-full justify-center">'
+    +'<i data-lucide="refresh-cw" size="16"></i> New Exercise</button>';
+  box.innerHTML=html;box.classList.remove('hidden');
+  document.getElementById('ue-submitArea').classList.add('hidden');
+  box.scrollIntoView({behavior:'smooth'});
+  addXP(score*3);lucide.createIcons();
 }
 </script>
 </body>
