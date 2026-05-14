@@ -85,6 +85,7 @@ input[type="radio"]{accent-color:var(--c-cyan)!important}
   <button class="main-tab font-mono text-xs tracking-wider uppercase px-5 py-3 border-b-2 border-transparent text-n-dim hover:text-n-text transition-all" data-tab="reader">📖 Reader</button>
   <button class="main-tab font-mono text-xs tracking-wider uppercase px-5 py-3 border-b-2 border-transparent text-n-dim hover:text-n-text transition-all" data-tab="grammar">🔬 Satzanalyse</button>
   <button class="main-tab font-mono text-xs tracking-wider uppercase px-5 py-3 border-b-2 border-transparent text-n-dim hover:text-n-text transition-all" data-tab="conversation">💬 Konversation</button>
+  <button class="main-tab font-mono text-xs tracking-wider uppercase px-5 py-3 border-b-2 border-transparent text-n-dim hover:text-n-text transition-all" data-tab="wortbau">🧱 Wortbausteine</button>
 </nav>
 
 <!-- ========== TAB 1: READER ========== -->
@@ -400,6 +401,40 @@ input[type="radio"]{accent-color:var(--c-cyan)!important}
     <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-full inline-block" style="background:var(--c-dim)"></span> Sonstiges</span>
   </div>
   <div id="g-results" class="hidden space-y-6"></div>
+</div>
+
+<!-- ========== TAB 6: WORTBAUSTEINE ========== -->
+<div id="tab-wortbau" class="tab-content hidden space-y-6">
+  <section class="bg-n-card rounded-2xl border border-n-border overflow-hidden">
+    <div class="border-b border-n-border px-5 py-3 flex items-center justify-between">
+      <span class="text-[10px] font-mono font-bold text-n-dim uppercase tracking-wider">Decompose any German word / Zerlege ein deutsches Wort</span>
+      <div class="flex gap-1">
+        <span class="px-2 py-0.5 rounded text-white text-[8px] font-mono font-bold" style="background:var(--c-cyan)">prefix</span>
+        <span class="px-2 py-0.5 rounded text-white text-[8px] font-mono font-bold" style="background:var(--c-amber)">root</span>
+        <span class="px-2 py-0.5 rounded text-white text-[8px] font-mono font-bold" style="background:var(--c-purple)">suffix</span>
+        <span class="px-2 py-0.5 rounded text-white text-[8px] font-mono font-bold" style="background:var(--c-green)">compound</span>
+      </div>
+    </div>
+    <div class="p-5 space-y-3">
+      <div class="flex gap-2">
+        <input type="text" id="wb-input" class="flex-grow p-3 rounded-lg text-base border" placeholder="e.g. ausmachen, Kühlschrank, zuhören, Krankenversicherung..." onkeydown="if(event.key==='Enter')document.getElementById('wb-analyzeBtn').click()">
+        <button id="wb-analyzeBtn" class="flex items-center gap-2 bg-n-cyan text-white px-5 py-2 rounded-lg text-sm font-bold hover:shadow-md transition-all">
+          <i data-lucide="sparkles" size="16"></i> Zerlegen
+        </button>
+      </div>
+      <div class="flex flex-wrap gap-2">
+        <span class="text-[10px] text-n-dim font-mono">Try:</span>
+        <button onclick="document.getElementById('wb-input').value='ausmachen';document.getElementById('wb-analyzeBtn').click()" class="text-[10px] px-2 py-1 rounded-full bg-n-border/50 text-n-dim hover:text-n-cyan cursor-pointer">ausmachen</button>
+        <button onclick="document.getElementById('wb-input').value='Kühlschrank';document.getElementById('wb-analyzeBtn').click()" class="text-[10px] px-2 py-1 rounded-full bg-n-border/50 text-n-dim hover:text-n-cyan cursor-pointer">Kühlschrank</button>
+        <button onclick="document.getElementById('wb-input').value='Krankenversicherung';document.getElementById('wb-analyzeBtn').click()" class="text-[10px] px-2 py-1 rounded-full bg-n-border/50 text-n-dim hover:text-n-cyan cursor-pointer">Krankenversicherung</button>
+        <button onclick="document.getElementById('wb-input').value='vorstellen';document.getElementById('wb-analyzeBtn').click()" class="text-[10px] px-2 py-1 rounded-full bg-n-border/50 text-n-dim hover:text-n-cyan cursor-pointer">vorstellen</button>
+        <button onclick="document.getElementById('wb-input').value='Mittagessen';document.getElementById('wb-analyzeBtn').click()" class="text-[10px] px-2 py-1 rounded-full bg-n-border/50 text-n-dim hover:text-n-cyan cursor-pointer">Mittagessen</button>
+        <button onclick="document.getElementById('wb-input').value='Zusammenfassung';document.getElementById('wb-analyzeBtn').click()" class="text-[10px] px-2 py-1 rounded-full bg-n-border/50 text-n-dim hover:text-n-cyan cursor-pointer">Zusammenfassung</button>
+      </div>
+      <span id="wb-status" class="text-[10px] font-mono text-n-dim">Ready</span>
+    </div>
+  </section>
+  <div id="wb-results" class="hidden space-y-6"></div>
 </div>
 
 <!-- FOOTER -->
@@ -758,7 +793,7 @@ document.getElementById('c-restartBtn').addEventListener('click',()=>{
 });
 
 // ===== TAB 5: SATZANALYSE =====
-const G_PROMPT='Expert German grammar parser. For each sentence, return every token with its grammatical role and case.\nRoles: subject, verb, akk_object, dat_object, gen_attribute, adverb, adjective, preposition, article, conjunction, relative_pronoun, particle, other.\nFor nouns/pronouns/articles specify kasus: Nominativ, Akkusativ, Dativ, Genitiv.\nFor verbs: note tense, person, number. If split (Perfekt habe...gegessen, Modal+Infinitiv, Trennbar), mark BOTH parts as verb and explain the Satzklammer in verbAnalysis.\nFor Relativsaetze: identify the Relativpronomen, its case, and what it refers to.\nFor adjective declension: note the ending and why (nach bestimmtem Artikel, nach unbestimmtem Artikel, ohne Artikel).\nReturn ONLY valid JSON:\n{"sentences":[{"original":"...","translation":"English","tokens":[{"word":"...","role":"...","kasus":"...","info":"brief grammar note"}],"verbAnalysis":"tense, conjugation, Satzklammer explanation","kasusNotes":"which noun/pronoun has which case and why","clauseStructure":"Hauptsatz/Nebensatz/Relativsatz + word order notes"}]}';
+const G_PROMPT='Expert German grammar parser. For each sentence, return every token with its grammatical role and case.\nRoles: subject, verb, akk_object, dat_object, gen_attribute, adverb, adjective, preposition, article, conjunction, relative_pronoun, particle, other.\nFor nouns/pronouns/articles specify kasus: Nominativ, Akkusativ, Dativ, Genitiv.\nFor verbs: note tense, person, number. If split (Perfekt habe...gegessen, Modal+Infinitiv, Trennbar), mark BOTH parts as verb and explain the Satzklammer in verbAnalysis.\nFor Relativsaetze: identify the Relativpronomen, its case, and what it refers to.\nFor adjective declension: note the ending and why (nach bestimmtem Artikel, nach unbestimmtem Artikel, ohne Artikel).\nReturn ONLY valid JSON:\n{"sentences":[{"original":"...","translation":"English","tokens":[{"word":"...","role":"...","kasus":"...","info":"brief grammar note","meaning_en":"English meaning","meaning_vi":"Vietnamese meaning"}],"verbAnalysis":"tense, conjugation, Satzklammer explanation","kasusNotes":"which noun/pronoun has which case and why","clauseStructure":"Hauptsatz/Nebensatz/Relativsatz + word order notes"}]}';
 const G_COLORS={subject:'--c-red',verb:'--c-amber',akk_object:'--c-green',dat_object:'--c-cyan',gen_attribute:'--c-purple',adverb:'--c-blue',adjective:'--c-pink'};
 function gCol(r){const v=G_COLORS[r];return v?'var('+v+')':'var(--c-dim)';}
 document.getElementById('g-analyzeBtn').addEventListener('click',async()=>{
@@ -781,7 +816,9 @@ function gRender(data){
       const kas=t.kasus?'<sup style="font-size:7px;opacity:0.6;margin-left:2px">'+escH(t.kasus.slice(0,3))+'</sup>':'';
       const rl=escH(t.role+(t.kasus?' · '+t.kasus:'')).replace(/"/g,'&quot;');
       const inf=escH(t.info||'').replace(/"/g,'&quot;');
-      return '<span class="g-tok cursor-help inline-block px-1.5 py-1 mx-0.5 rounded transition-all hover:opacity-75" style="color:'+col+';border-bottom:2.5px solid '+col+'" data-rl="'+rl+'" data-inf="'+inf+'">'+escH(t.word)+kas+'</span>';
+      const men=escH(t.meaning_en||'').replace(/"/g,'&quot;');
+      const mvi=escH(t.meaning_vi||'').replace(/"/g,'&quot;');
+      return '<span class="g-tok cursor-help inline-block px-1.5 py-1 mx-0.5 rounded transition-all hover:opacity-75" style="color:'+col+';border-bottom:2.5px solid '+col+'" data-rl="'+rl+'" data-inf="'+inf+'" data-en="'+men+'" data-vi="'+mvi+'">'+escH(t.word)+kas+'</span>';
     }).join(' ');
     return '<div class="bg-n-card rounded-2xl border border-n-border overflow-hidden mb-4">'
       +'<div class="px-5 py-2 border-b border-n-border flex justify-between"><span class="text-[9px] font-mono text-n-dim uppercase">Satz '+(i+1)+'</span><span class="text-[9px] font-mono text-n-dim italic truncate ml-3">'+escH(s.clauseStructure||'')+'</span></div>'
@@ -795,12 +832,67 @@ function gRender(data){
   box.querySelectorAll('.g-tok').forEach(el=>{
     el.addEventListener('mouseenter',e=>{
       const tip=document.getElementById('r-tooltip');
-      document.getElementById('r-tooltipContent').innerHTML='<div class="text-[9px] font-mono text-n-dim uppercase mb-1">'+escH(el.dataset.rl)+'</div><div class="text-xs text-n-text leading-relaxed">'+escH(el.dataset.inf)+'</div>';
+      document.getElementById('r-tooltipContent').innerHTML='<div class="text-[9px] font-mono text-n-dim uppercase mb-1">'+escH(el.dataset.rl)+'</div>'+(el.dataset.en?'<div class="text-xs font-medium text-n-text">'+escH(el.dataset.en)+'</div>':'')+(el.dataset.vi?'<div class="text-[10px] text-n-dim italic">'+escH(el.dataset.vi)+'</div>':'')+'<div class="text-xs text-n-text/70 leading-relaxed mt-1 border-t border-n-border/50 pt-1">'+escH(el.dataset.inf)+'</div>';
       tip.style.display='block';tip.style.left=Math.min(window.innerWidth-220,e.clientX+12)+'px';tip.style.top=(e.clientY+12)+'px';
     });
     el.addEventListener('mousemove',e=>{const tip=document.getElementById('r-tooltip');tip.style.left=Math.min(window.innerWidth-220,e.clientX+12)+'px';tip.style.top=(e.clientY+12)+'px';});
     el.addEventListener('mouseleave',()=>{document.getElementById('r-tooltip').style.display='none';});
   });
+}
+
+// ===== WORTBAUSTEINE =====
+const WB_PROMPT=`German morphology expert. Break the given German word into its meaningful building blocks (prefixes, roots, suffixes, compound parts, linking elements like Fugenelemente).<br>For each block: meaning in English and Vietnamese, plus 3-4 other common German words using the same block (with EN+VI translations).<br>Show ALL different meanings/contexts the full word can have (many German words have 3-5 distinct meanings). Include example sentences for each meaning.<br>Return ONLY valid JSON:<br>{"word":"...","parts":[{"part":"...","type":"prefix|root|suffix|compound|linking","meaning_en":"...","meaning_vi":"...","relatedWords":[{"word":"...","meaning_en":"...","meaning_vi":"..."}]}],"combinedLogic":"How parts combine to form the meaning — explain the logic","contexts":[{"meaning_en":"...","meaning_vi":"...","example":"German sentence","translation_en":"...","translation_vi":"...","register":"formal|informal|idiom|technical"}],"notes":"Pitfalls, false friends, irregular behavior, or interesting etymology"}`;
+
+document.getElementById('wb-analyzeBtn').addEventListener('click', async()=>{
+  const word=document.getElementById('wb-input').value.trim();
+  if(!word)return alert('Enter a German word.');
+  const btn=document.getElementById('wb-analyzeBtn'),st=document.getElementById('wb-status');
+  btn.disabled=true;btn.innerHTML='<i data-lucide="loader-2" class="animate-spin" size="16"></i> Zerlegen...';lucide.createIcons();st.textContent='Analyzing...';
+  try{
+    const raw=await geminiCallWithFallback([{text:WB_PROMPT+'\n\nWORD: '+word}],'gemini-2.5-flash-lite',{responseMimeType:"application/json",maxOutputTokens:8192,temperature:0.3});
+    const fb=raw.indexOf('{'),lb=raw.lastIndexOf('}');
+    if(fb===-1)throw new Error('No JSON.');
+    const data=JSON.parse(raw.slice(fb,lb+1));wbRender(data);
+    document.getElementById('wb-results').classList.remove('hidden');st.textContent='Done';addXP(8);
+  }catch(e){alert('Failed: '+e.message);st.textContent='Error';}
+  finally{btn.disabled=false;btn.innerHTML='<i data-lucide="sparkles" size="16"></i> Zerlegen';lucide.createIcons();}
+});
+
+function wbRender(data){
+  const box=document.getElementById('wb-results');
+  const tc={prefix:'--c-cyan',root:'--c-amber',suffix:'--c-purple',compound:'--c-green',linking:'--c-dim'};
+  // Parts visual (colored blocks with + signs)
+  const pv=data.parts.map(p=>'<span class="inline-block px-3 py-2 rounded-lg text-white font-bold text-lg" style="background:var('+(tc[p.type]||'--c-dim')+')">'+ escH(p.part)+'</span>').join('<span class="text-n-dim text-2xl mx-1">+</span>');
+  // Parts detail cards
+  const pd=data.parts.map(p=>{
+    const col=tc[p.type]||'--c-dim';
+    const rw=(p.relatedWords||[]).map(r=>'<div class="flex items-baseline gap-2 py-1.5 border-b border-n-border/30 last:border-0"><span class="font-bold text-sm" style="color:var('+col+')">'+escH(r.word)+'</span><span class="text-xs text-n-dim">'+escH(r.meaning_en)+'</span><span class="text-[10px] text-n-dim italic">/ '+escH(r.meaning_vi)+'</span></div>').join('');
+    return '<div class="bg-n-card rounded-xl border border-n-border p-4 space-y-2">'
+      +'<div class="flex items-center gap-2"><span class="px-2 py-0.5 rounded text-white text-[10px] font-mono font-bold uppercase" style="background:var('+col+')">'+escH(p.type)+'</span><span class="font-bold text-lg" style="color:var('+col+')">'+escH(p.part)+'</span></div>'
+      +'<div class="text-sm"><span class="font-medium">'+escH(p.meaning_en)+'</span> <span class="text-n-dim italic">/ '+escH(p.meaning_vi)+'</span></div>'
+      +'<div class="border-t border-n-border pt-2 mt-2"><span class="text-[9px] font-mono text-n-dim uppercase tracking-wider block mb-1">Also in:</span>'+rw+'</div>'
+      +'</div>';
+  }).join('');
+  // Contexts
+  const cx=(data.contexts||[]).map((c,i)=>{
+    const rb=c.register?'<span class="text-[9px] font-mono px-1.5 py-0.5 rounded bg-n-border text-n-dim">'+escH(c.register)+'</span>':'';
+    return '<div class="p-4 bg-n-card rounded-xl border border-n-border space-y-2">'
+      +'<div class="flex items-center gap-2 flex-wrap"><span class="text-n-cyan font-bold">'+(i+1)+'.</span><span class="font-bold text-sm">'+escH(c.meaning_en)+'</span><span class="text-sm text-n-dim italic">/ '+escH(c.meaning_vi)+'</span>'+rb+'</div>'
+      +'<div class="pl-5 space-y-1"><p class="text-base font-medium">'+escH(c.example)+'</p><p class="text-xs text-n-dim">'+escH(c.translation_en)+'</p><p class="text-xs text-n-dim italic">'+escH(c.translation_vi)+'</p></div></div>';
+  }).join('');
+  // Assemble
+  box.innerHTML=''
+    +'<div class="bg-n-card rounded-2xl border border-n-border p-6 space-y-4">'
+    +'<div class="text-center space-y-3"><h2 class="font-orbitron text-2xl font-black text-n-text">'+escH(data.word)+'</h2>'
+    +'<div class="flex items-center justify-center gap-1 flex-wrap">'+pv+'</div></div>'
+    +'<div class="bg-n-cyan/10 border border-n-cyan/30 rounded-lg p-4 text-sm text-n-text/80 leading-relaxed glow-cyan">'
+    +'<span class="font-mono text-[9px] text-n-cyan uppercase tracking-wider font-bold block mb-1">Logic / Logik</span>'+escH(data.combinedLogic)+'</div></div>'
+    +'<div class="space-y-3"><h3 class="font-mono text-[10px] font-bold text-n-dim uppercase tracking-wider px-1">Building Blocks / Bausteine</h3>'
+    +'<div class="grid grid-cols-1 md:grid-cols-'+Math.min(data.parts.length,3)+' gap-3">'+pd+'</div></div>'
+    +'<div class="space-y-3"><h3 class="font-mono text-[10px] font-bold text-n-dim uppercase tracking-wider px-1">Meanings in Context / Bedeutungen im Kontext</h3>'
+    +'<div class="space-y-2">'+cx+'</div></div>'
+    +(data.notes?'<div class="bg-n-amber/10 border border-n-amber/30 rounded-xl p-4 text-sm text-n-text/80"><span class="font-mono text-[9px] text-n-amber uppercase tracking-wider font-bold block mb-1">⚠ Notes / Hinweise</span>'+escH(data.notes)+'</div>':'');
+  lucide.createIcons();
 }
 </script>
 </body>
